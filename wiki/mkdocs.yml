@@ -1,0 +1,19 @@
+site_name: My Wiki
+site_url: https://www.tonispraks.com/wiki/
+use_directory_urls: true
+
+theme:
+  name: material
+
+nav:
+  - Home: index.md
+  - Arduino Projects:
+      - Overview: arduino/index.md
+      - Knight Rider: arduino/knight_rider.md
+      - Traffic Lights: arduino/traffic_lights.md
+  - Python Projects:
+      - Overview: python/index.md
+      - Installing Python and Pip: python/pythoninstall.md
+  - Web Development Projects:
+      - Overview: webdev/index.md
+      - Installing MkDocs: webdev/mkdocs.md
