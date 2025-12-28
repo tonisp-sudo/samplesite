@@ -1,0 +1,54 @@
+# Tonis Tech Wiki
+
+Welcome to my personal knowledge base. This is a collection of my engineering projects, software documentation, and technical guides. I use this space to document my learning and provide guidance to whomever might find the information useful.
+
+---
+
+## 🛠️ Project Categories
+
+### [Arduino & Electronics](./arduino/index.md)
+Hardware projects focused on microcontrollers, sensor integration, and circuit design.
+
+* **Current Highlight:** [Knight Rider LED Sequence](./arduino/knight_rider.md)
+
+* **What's inside:** Wiring schematics, BOM lists, and `.ino` source code.
+
+### [Computer Vision & AI](./python/squat-analyzer.md)
+Exploring the intersection of fitness and technology.
+* **The Squat Analyzer:** A Python-based application using **MediaPipe** and **OpenCV** to provide real-time form feedback.
+
+* **Topics:** Pose estimation, angle calculation, and Python optimization.
+
+### [Web Development](./web/site-guide.md)
+The "Meta" section—how I built this website and wiki.
+* Documentation of the HTML/Bootstrap source code.
+* Guide on using MkDocs and GitHub Pages for documentation.
+
+---
+
+## 🚀 Featured Guide: Squat Analyzer
+My current flagship project is the **AI Squat Analyzer**. Using a standard webcam, the script detects key body landmarks to ensure safe lifting form.
+
+**Tech Stack:**
+* **Language:** Python 3.10+
+* **ML Framework:** Google MediaPipe
+* **Graphics:** OpenCV
+* **Logic:** Trigonometric joint-angle calculation
+
+[View the full Squat Analyzer Guide →](./python/squat-analyzer.md)
+
+---
+
+## 📂 Repository Structure
+If you are looking for specific codebases, I organize them as follows:
+
+| Category | Location | Status |
+| :--- | :--- | :--- |
+| **Hardware** | `/wiki/docs/arduino/` | Active |
+| **Python Scripts** | `/wiki/docs/python/` | In Progress |
+| **Web Source** | `/wiki/docs/web/` | Documented |
+
+---
+
+> ### 📝 Note to Visitors
+> This wiki is a work in progress. If a link leads to a "Coming Soon" page, I am likely still cleaning up the code before publishing it.

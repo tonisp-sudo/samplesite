@@ -1302,6 +1302,7 @@ section,
   margin-bottom: 30px;
   border: 2px solid color-mix(in srgb, var(--default-color), transparent 90%);
   transition: all 0.3s ease;
+  height: 100%;
 }
 
 .services .service-card .service-icon {
