@@ -51,4 +51,4 @@ If you are looking for specific codebases, I organize them as follows:
 ---
 
 > ### 📝 Note to Visitors
-> This wiki is a work in progress. If a link leads to a "Coming Soon" page, I am likely still cleaning up the code before publishing it.
+> This wiki is a work in progress (truthfully, it is in it's infancy). Due to that, some pages are not yet available and some pages are not yet complete, but I am working on it and if you find any issues, please let me know by using the contact form on the main website.
