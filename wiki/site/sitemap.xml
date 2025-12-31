@@ -2,34 +2,38 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://www.tonispraks.com/wiki/</loc>
-         <lastmod>2025-12-28</lastmod>
+         <lastmod>2025-12-29</lastmod>
     </url>
     <url>
          <loc>https://www.tonispraks.com/wiki/arduino/</loc>
-         <lastmod>2025-12-28</lastmod>
+         <lastmod>2025-12-29</lastmod>
     </url>
     <url>
          <loc>https://www.tonispraks.com/wiki/arduino/knight_rider/</loc>
-         <lastmod>2025-12-28</lastmod>
+         <lastmod>2025-12-29</lastmod>
     </url>
     <url>
          <loc>https://www.tonispraks.com/wiki/arduino/traffic_lights/</loc>
-         <lastmod>2025-12-28</lastmod>
+         <lastmod>2025-12-29</lastmod>
     </url>
     <url>
          <loc>https://www.tonispraks.com/wiki/python/</loc>
-         <lastmod>2025-12-28</lastmod>
+         <lastmod>2025-12-29</lastmod>
+    </url>
+    <url>
+         <loc>https://www.tonispraks.com/wiki/python/number_guess/</loc>
+         <lastmod>2025-12-29</lastmod>
     </url>
     <url>
          <loc>https://www.tonispraks.com/wiki/python/pythoninstall/</loc>
-         <lastmod>2025-12-28</lastmod>
+         <lastmod>2025-12-29</lastmod>
     </url>
     <url>
          <loc>https://www.tonispraks.com/wiki/webdev/</loc>
-         <lastmod>2025-12-28</lastmod>
+         <lastmod>2025-12-29</lastmod>
     </url>
     <url>
          <loc>https://www.tonispraks.com/wiki/webdev/mkdocs/</loc>
-         <lastmod>2025-12-28</lastmod>
+         <lastmod>2025-12-29</lastmod>
     </url>
 </urlset>
