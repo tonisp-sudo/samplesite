@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://www.tonispraks.com/wiki/webdev/mkdocs/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://www.tonispraks.com/wiki/python/number_guess/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Installing MkDocs - My Wiki</title>
+    <title>Number Guessing Game - My Wiki</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Installing MkDocs";
-        var mkdocs_page_input_path = "webdev/mkdocs.md";
-        var mkdocs_page_url = "/wiki/webdev/mkdocs/";
+        var mkdocs_page_name = "Number Guessing Game";
+        var mkdocs_page_input_path = "python/number_guess.md";
+        var mkdocs_page_url = "/wiki/python/number_guess/";
       </script>
     
     <!--[if lt IE 9]>
@@ -58,29 +58,27 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Python Projects</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../python/">Overview</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../python/pythoninstall/">Installing Python and Pip</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../python/number_guess/">Number Guessing Game</a>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">Web Development Projects</span></p>
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../">Overview</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Installing MkDocs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../pythoninstall/">Installing Python and Pip</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Number Guessing Game</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#the-tech-stack">🏗️ The Tech Stack</a>
+    <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#the-installation-process">🛠️ The Installation Process</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#1-environment-setup">1. Environment Setup</a>
+    <li class="toctree-l2"><a class="reference internal" href="#tools-tech-used">Tools / Tech used</a>
     </li>
-        </ul>
+    <li class="toctree-l2"><a class="reference internal" href="#1-open-a-code-editor-of-choice-i-will-be-using-googles-antigravity">1. Open a code editor of choice, I will be using Google's Antigravity</a>
     </li>
     </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Web Development Projects</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../webdev/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../webdev/mkdocs/">Installing MkDocs</a>
                   </li>
               </ul>
       </div>
@@ -97,8 +95,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Web Development Projects</li>
-      <li class="breadcrumb-item active">Installing MkDocs</li>
+          <li class="breadcrumb-item">Python Projects</li>
+      <li class="breadcrumb-item active">Number Guessing Game</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -107,29 +105,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="how-i-built-this-wiki">How I Built This Wiki</h1>
-<p>When my project library started growing, I realized that a standard HTML website wasn't the best place to host technical documentation. I needed a space that allowed me to write in <strong>Markdown</strong> and automatically handled the navigation, search, and mobile responsiveness.</p>
-<p>This guide explains how I integrated <strong>MkDocs</strong> into my existing website.</p>
-<hr />
-<h2 id="the-tech-stack">🏗️ The Tech Stack</h2>
-<p>To build this, I used:
-* <strong><a href="https://www.mkdocs.org/">MkDocs</a>:</strong> A static site generator geared towards project documentation.
-* <strong><a href="https://squidfunk.github.io/mkdocs-material/">Material for MkDocs</a>:</strong> A powerful theme that provides the search bar, sidebar, and dark mode.
-* <strong>Python/Pip:</strong> To manage the MkDocs installation.
-* <strong>GitHub Pages:</strong> For hosting the final files.
-This project assumes you have Python3 installed which allows you to use pip to install the required packages.</p>
-<hr />
-<h2 id="the-installation-process">🛠️ The Installation Process</h2>
-<h3 id="1-environment-setup">1. Environment Setup</h3>
-<p>First, I installed the core software using the terminal:</p>
-<p>```bash
-pip install mkdocs
-pip install mkdocs-material</p>
+                <h1 id="number-guessing-game-built-using-python-and-random-library">Number Guessing Game Built Using Python and Random Library</h1>
+<h2 id="overview">Overview</h2>
+<p>This is a number guessing game using Python that will leverage the Random library to choose a number between 0 and 25 which the player has to guess. The player has 5 tries to get it right. If the player guesses the number the game will end with a success message, if the player runs out of tries, the game ends with a failure message.</p>
+<h2 id="tools-tech-used">Tools / Tech used</h2>
+<ul>
+<li>Python 3.10*</li>
+<li>Random Library*</li>
+<li>Antigravity*</li>
+</ul>
+<h2 id="1-open-a-code-editor-of-choice-i-will-be-using-googles-antigravity">1. Open a code editor of choice, I will be using Google's Antigravity</h2>
+<p><img alt="Antigravity" src="../assets/openantigravity.png" />
+This is what your screen should look like more or less if using Antigravity. *Note that on the right hand side you will usually find Agent pane, I have it closed.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../" class="btn btn-neutral float-left" title="Overview"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../pythoninstall/" class="btn btn-neutral float-left" title="Installing Python and Pip"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../webdev/" class="btn btn-neutral float-right" title="Overview">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -152,8 +145,10 @@ pip install mkdocs-material</p>
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../pythoninstall/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
+    
+      <span><a href="../../webdev/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

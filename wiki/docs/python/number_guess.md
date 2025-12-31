@@ -7,3 +7,12 @@ This is a number guessing game using Python that will leverage the Random librar
 * Python 3.10*
 * Random Library*
 * Antigravity*
+
+## 1. Open a code editor of choice, I will be using Google's Antigravity
+
+![Antigravity](assets/openantigravity.png)
+This is what your screen should look like more or less if using Antigravity. 
+*Note that on the right hand side you will usually find Agent pane, I have it closed.*
+*NB! To turn off VScode auto suggestions, open settings, search for inlinesuggestions.enable and toggle it false.*
+*This setting also appears in Antigravity, however it did not actually turn off the auto suggestions.*
+

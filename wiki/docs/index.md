@@ -9,18 +9,19 @@ Welcome to my personal knowledge base. This is a collection of my engineering pr
 ### [Arduino & Electronics](./arduino/index.md)
 Hardware projects focused on microcontrollers, sensor integration, and circuit design.
 
-* **Current Highlight:** [Knight Rider LED Sequence](./arduino/knight_rider.md)
+**Current Highlight:** [Knight Rider LED Sequence](./arduino/knight_rider.md)
 
-* **What's inside:** Wiring schematics, BOM lists, and `.ino` source code.
+**What's inside:** Wiring schematics, BOM lists, and `.ino` source code.
 
-### [Computer Vision & AI](./python/squat-analyzer.md)
-Exploring the intersection of fitness and technology.
-* **The Squat Analyzer:** A Python-based application using **MediaPipe** and **OpenCV** to provide real-time form feedback.
+### [Python](./python/squat-analyzer.md)
+Exploring how to use camera vision to analyze squat effectiveness.
 
-* **Topics:** Pose estimation, angle calculation, and Python optimization.
+**The Squat Analyzer:** A Python-based application using **MediaPipe** and **OpenCV** to provide feedback based on video input.
+
+**Topics:** Pose estimation, angle calculation, and Python optimization.
 
 ### [Web Development](./web/site-guide.md)
-The "Meta" section—how I built this website and wiki.
+Section on how I built this and other websites.
 * Documentation of the HTML/Bootstrap source code.
 * Guide on using MkDocs and GitHub Pages for documentation.
 
@@ -36,17 +37,6 @@ My current flagship project is the **AI Squat Analyzer**. Using a standard webca
 * **Logic:** Trigonometric joint-angle calculation
 
 [View the full Squat Analyzer Guide →](./python/squat-analyzer.md)
-
----
-
-## 📂 Repository Structure
-If you are looking for specific codebases, I organize them as follows:
-
-| Category | Location | Status |
-| :--- | :--- | :--- |
-| **Hardware** | `/wiki/docs/arduino/` | Active |
-| **Python Scripts** | `/wiki/docs/python/` | In Progress |
-| **Web Source** | `/wiki/docs/web/` | Documented |
 
 ---
 

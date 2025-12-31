@@ -3,10 +3,12 @@ site_url: https://www.tonispraks.com/wiki/
 use_directory_urls: true
 
 theme:
-  name: material
+  name: readthedocs
+  logo: assets/logo.png
 
 nav:
   - Home: index.md
+  - Return to main site: https://www.tonispraks.com/
   - Arduino Projects:
       - Overview: arduino/index.md
       - Knight Rider: arduino/knight_rider.md
@@ -14,6 +16,8 @@ nav:
   - Python Projects:
       - Overview: python/index.md
       - Installing Python and Pip: python/pythoninstall.md
+      - Number Guessing Game: python/number_guess.md
   - Web Development Projects:
       - Overview: webdev/index.md
       - Installing MkDocs: webdev/mkdocs.md
+  
