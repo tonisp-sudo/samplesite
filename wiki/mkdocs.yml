@@ -17,6 +17,8 @@ nav:
       - Overview: python/index.md
       - Installing Python and Pip: python/pythoninstall.md
       - Number Guessing Game: python/number_guess.md
+      - Python Virtual Environment: python/opening_venv.md
+      - Melbourne House Price Predictor: python/melb_housing_example.md
   - Web Development Projects:
       - Overview: webdev/index.md
       - Installing MkDocs: webdev/mkdocs.md
