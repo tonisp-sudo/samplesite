@@ -16,14 +16,13 @@ To stabilize the model, several critical data fixes were performed:
 * **Imputation:** Used `SimpleImputer(strategy="median")` for numerical features like `BuildingArea` and `Car` to ensure all data is present for the model.
 
 ### Outlier Management
-The raw data contained luxury "mansions" up to $11M and very cheap places that skewed the model's logic.
-* **Action:** Applied a price cutoff at the **99th percentile ($2.6M)**.
-* **Action:** Applied a price cutoff at $250K for the lower end**.
+The raw data contained luxury "mansions" up to $11M and very cheap places that skewed the model's logic. To reduce that, I found 99th percetile and removed everything above that, I also set a low threshold of $250K to remove the very cheap options.
+
 * **Result:** Reduced the "Honest Error" (CV) significantly by narrowing the scope to the general market. It also significantly improved the data visualization as the $11M masions were making everything else look the same in the eyes of the colourmap, hence it was very difficult to read anything but the very expensive housing patterns from the plot.
 
 ### Feature Engineering
-* **Age Calculation:** Derived `Age` from `YearBuilt` (`2026 - YearBuilt`) in hopes it would improve the prediction accuarcy, which it did, marginally.
-* **Location Density:** Replaced broad `Regionname` with specific `Suburb` data to capture localized price premiums, Suburbs category is more constrained than Regionname, thus my resoning was that it will be more accurate for pricing prediction.
+* **House Age Calculation:** Derived `Age` from `YearBuilt` (`2026 - YearBuilt`) in hopes it would improve the prediction accuarcy, which it did, marginally.
+* **Location Density:** Replaced broad `Regionname` with specific `Suburb` data to capture more localized prices. Suburbs category is more constrained than Regionname, thus my resoning was that it will be more accurate for pricing prediction.
 
 ---
 
@@ -54,7 +53,7 @@ To prevent the model from "memorizing" specific houses, the following constraint
 * **Cross-Validation Mean:** ~$208,265 (The "Honest" Error)
 
 Success "Performance Insight"
-    By cleaning the data and constraining the model, we reduced the Cross-Validation error from **$300k+** to **$220k**, creating a much more stable and reliable predictor.
+    By cleaning the data and constraining the model, reduced the Cross-Validation error from **$300k+** to **$220k**, creating a more stable and reliable predictor.
 
 ### Top Price Drivers
 1. **Distance:** (31%) - Proximity to Melbourne CBD is the #1 predictor.
@@ -64,9 +63,9 @@ Success "Performance Insight"
 ---
 
 ## 6. Future Improvements
-* [ ] **School Zones:** Incorporate school catchment data.
-* [ ] **Renovation Status:** Add a feature for "Newly Renovated" vs "Original Condition."
-* [ ] **Hyperparameter Tuning:** Use `GridSearchCV` to find the optimal balance of depth and leaf size.
+* **School Zones:** Incorporate school catchment data.
+* **Renovation Status:** Add a feature for "Newly Renovated" vs "Original Condition."
+* **Hyperparameter Tuning:** Use `GridSearchCV` to find the optimal balance of depth and leaf size.
 
 ## 6. Conclusion (Until improvements are made)
 
