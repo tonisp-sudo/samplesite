@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://www.tonispraks.com/wiki/python/pythoninstall/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://www.tonispraks.com/wiki/python/opening_venv/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Installing Python and Pip - My Wiki</title>
+    <title>Python Virtual Environment - My Wiki</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Installing Python and Pip";
-        var mkdocs_page_input_path = "python/pythoninstall.md";
-        var mkdocs_page_url = "/wiki/python/pythoninstall/";
+        var mkdocs_page_name = "Python Virtual Environment";
+        var mkdocs_page_input_path = "python/opening_venv.md";
+        var mkdocs_page_url = "/wiki/python/opening_venv/";
       </script>
     
     <!--[if lt IE 9]>
@@ -61,27 +61,19 @@
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../">Overview</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Installing Python and Pip</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#1-check-if-python-is-already-installed">1. Check if Python is already installed</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#2-install-python">2. Install Python</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#macos">macOS</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#windows">Windows</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#why-add-python-to-path">Why add Python to PATH?</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#3-verify-installation">3. Verify Installation</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../pythoninstall/">Installing Python and Pip</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../number_guess/">Number Guessing Game</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../opening_venv/">Python Virtual Environment</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Python Virtual Environment</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#what-is-python-virtual-environment">What is Python virtual environment?</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#why-use-python-virtual-environment">Why use Python virtual environment?</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#how-to-start-python-virtual-environment">How to start Python virtual environment?</a>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../melb_housing_example/">Melbourne House Price Predictor</a>
                   </li>
@@ -108,7 +100,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">Python Projects</li>
-      <li class="breadcrumb-item active">Installing Python and Pip</li>
+      <li class="breadcrumb-item active">Python Virtual Environment</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -117,47 +109,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="installing-python-and-pip">Installing Python and Pip</h1>
-<p>To use Python, you must have <strong>Python 3</strong> and <strong>pip</strong> (Python's package manager) installed on your system. Follow the steps for your operating system below.</p>
-<hr />
-<h2 id="1-check-if-python-is-already-installed">1. Check if Python is already installed</h2>
-<p>Open your terminal (Command Prompt, PowerShell, or Terminal) and type:</p>
-<p>python --version (could be python3 --version)
-<img alt="Project Schematic" src="../assets/pythonversion.png" /></p>
-<p>If you see something like this:</p>
-<p><strong>macOS/Linux: zsh: command not found: python or bash: command not found</strong></p>
-<p><strong>Windows: 'python' is not recognized as an internal or external command</strong></p>
-<p>This means Python is not installed.
-If the command returns a version number, as displayed on the image above, then Python is installed.</p>
-<h2 id="2-install-python">2. Install Python</h2>
-<h3 id="macos">macOS</h3>
-<ol>
-<li>Download the latest version of Python from the <a href="https://www.python.org/downloads/">official website</a>.</li>
-<li>Run the installer and make sure to check the box that says "Add Python to PATH".</li>
-<li>Restart your terminal and try checking for version.</li>
-</ol>
-<h3 id="windows">Windows</h3>
-<ol>
-<li>Download the latest version of Python from the <a href="https://www.python.org/downloads/">official website</a>.</li>
-<li>Run the installer and make sure to check the box that says "Add Python to PATH".</li>
-<li>Restart your terminal and try checking for version.</li>
-</ol>
-<h3 id="why-add-python-to-path">Why add Python to PATH?</h3>
-<p>Adding Python to PATH allows you to run Python from the command line. This is necessary for using pip to install packages. Basically, adding Python to PATH means saving Python commands in a directory where your computer will look for them when you type a command. The difference is when it is not in PATH, you will see something like in step 1, where it says "zsh: command not found: python" or "bash: command not found: python". This means that the computer cannot find the Python command. When it is in PATH, it will find the Python command, because it is saved in a directory where the computer will look for it.</p>
-<p><img alt="Python" src="../assets/pythonpath.png" /></p>
-<h2 id="3-verify-installation">3. Verify Installation</h2>
-<p>Run the following commands:</p>
-<p><strong>python --version (could be python3 --version on macOS)</strong></p>
-<p><strong>pip --version (could be pip3 --version on macOS)</strong></p>
-<p><img alt="Python" src="../assets/versioncheck.png" /></p>
-<p>If both commands return a version number, then Python has successfully been installed.</p>
-<hr />
+                <h1 id="python-virtual-environment-venv">Python Virtual Environment (venv)</h1>
+<h2 id="what-is-python-virtual-environment">What is Python virtual environment?</h2>
+<p>Python Virtual Environment (venv) is a feature, like a sandbox environment for Python development. </p>
+<h2 id="why-use-python-virtual-environment">Why use Python virtual environment?</h2>
+<p>Virtual environment makes it easy to manage Python requirement, dependencies and packages. By opening a venv, I will only be adding to that virtual environment while leaving my global Python and other environments unchanged. It is incredibly helpful if different projects require the user to jump between different Python versions. </p>
+<p>Say for example that I need to have Python 3.10 for project A and Python 3.8 for prject B. My computer will default to use the newer version, which is 3.10 (unless python command is called otherwise ie. "python3.8 projectB.py"). In simple terms, a venv enables me to open up a temporary environment, where an alternative version is used and all packages installed to the alternative version are contained in that environment.</p>
+<h2 id="how-to-start-python-virtual-environment">How to start Python virtual environment?</h2>
+<p>Starting a Python virtual environment is simple. Navigate to the directory where you intend to have your project and execute the command. The syntax is as follows: python3.8 -m venv .venv : where python3.8 is the python version you require for your project, -m is the flag that a built in module is executed, venv is the built-in command to open virtual environment and .venv is the virtual environment folder to be created, which can be named anything, however the industry standard is the one used in this example. * Note that the .venv folder will be a hidden folder due to the "." infront of the name to have less clutter in the root folder.</p>
+<p>The command above only created the virtual environment, to actually activate it and start working within it, use the following command:
+source .venv/bin/activate
+Your terminal prompt will change immediately, which is the best way to confirm that virtual environment is active.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../" class="btn btn-neutral float-left" title="Overview"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../number_guess/" class="btn btn-neutral float-right" title="Number Guessing Game">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../number_guess/" class="btn btn-neutral float-left" title="Number Guessing Game"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../melb_housing_example/" class="btn btn-neutral float-right" title="Melbourne House Price Predictor">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -180,10 +148,10 @@ If the command returns a version number, as displayed on the image above, then P
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../number_guess/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../number_guess/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../melb_housing_example/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
