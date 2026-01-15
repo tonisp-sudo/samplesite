@@ -149,14 +149,14 @@
 <li><strong>Imputation:</strong> Used <code>SimpleImputer(strategy="median")</code> for numerical features like <code>BuildingArea</code> and <code>Car</code> to ensure all data is present for the model.</li>
 </ul>
 <h3 id="outlier-management">Outlier Management</h3>
-<p>The raw data contained luxury "mansions" up to $11M and very cheap places that skewed the model's logic.
-* <strong>Action:</strong> Applied a price cutoff at the <strong>99th percentile ($2.6M)</strong>.
-* <strong>Action:</strong> Applied a price cutoff at $250K for the lower end<strong>.
-* </strong>Result:** Reduced the "Honest Error" (CV) significantly by narrowing the scope to the general market. It also significantly improved the data visualization as the $11M masions were making everything else look the same in the eyes of the colourmap, hence it was very difficult to read anything but the very expensive housing patterns from the plot.</p>
+<p>The raw data contained luxury "mansions" up to $11M and very cheap places that skewed the model's logic. To reduce that, I found 99th percetile and removed everything above that, I also set a low threshold of $250K to remove the very cheap options.</p>
+<ul>
+<li><strong>Result:</strong> Reduced the "Honest Error" (CV) significantly by narrowing the scope to the general market. It also significantly improved the data visualization as the $11M masions were making everything else look the same in the eyes of the colourmap, hence it was very difficult to read anything but the very expensive housing patterns from the plot.</li>
+</ul>
 <h3 id="feature-engineering">Feature Engineering</h3>
 <ul>
-<li><strong>Age Calculation:</strong> Derived <code>Age</code> from <code>YearBuilt</code> (<code>2026 - YearBuilt</code>) in hopes it would improve the prediction accuarcy, which it did, marginally.</li>
-<li><strong>Location Density:</strong> Replaced broad <code>Regionname</code> with specific <code>Suburb</code> data to capture localized price premiums, Suburbs category is more constrained than Regionname, thus my resoning was that it will be more accurate for pricing prediction.</li>
+<li><strong>House Age Calculation:</strong> Derived <code>Age</code> from <code>YearBuilt</code> (<code>2026 - YearBuilt</code>) in hopes it would improve the prediction accuarcy, which it did, marginally.</li>
+<li><strong>Location Density:</strong> Replaced broad <code>Regionname</code> with specific <code>Suburb</code> data to capture more localized prices. Suburbs category is more constrained than Regionname, thus my resoning was that it will be more accurate for pricing prediction.</li>
 </ul>
 <hr />
 <h2 id="3-the-ml-pipeline">3. The ML Pipeline</h2>
@@ -197,7 +197,7 @@
 <li><strong>Cross-Validation Mean:</strong> ~$208,265 (The "Honest" Error)</li>
 </ul>
 <p>Success "Performance Insight"
-    By cleaning the data and constraining the model, we reduced the Cross-Validation error from <strong>$300k+</strong> to <strong>$220k</strong>, creating a much more stable and reliable predictor.</p>
+    By cleaning the data and constraining the model, reduced the Cross-Validation error from <strong>$300k+</strong> to <strong>$220k</strong>, creating a more stable and reliable predictor.</p>
 <h3 id="top-price-drivers">Top Price Drivers</h3>
 <ol>
 <li><strong>Distance:</strong> (31%) - Proximity to Melbourne CBD is the #1 predictor.</li>
@@ -207,9 +207,9 @@
 <hr />
 <h2 id="6-future-improvements">6. Future Improvements</h2>
 <ul>
-<li>[ ] <strong>School Zones:</strong> Incorporate school catchment data.</li>
-<li>[ ] <strong>Renovation Status:</strong> Add a feature for "Newly Renovated" vs "Original Condition."</li>
-<li>[ ] <strong>Hyperparameter Tuning:</strong> Use <code>GridSearchCV</code> to find the optimal balance of depth and leaf size.</li>
+<li><strong>School Zones:</strong> Incorporate school catchment data.</li>
+<li><strong>Renovation Status:</strong> Add a feature for "Newly Renovated" vs "Original Condition."</li>
+<li><strong>Hyperparameter Tuning:</strong> Use <code>GridSearchCV</code> to find the optimal balance of depth and leaf size.</li>
 </ul>
 <h2 id="6-conclusion-until-improvements-are-made">6. Conclusion (Until improvements are made)</h2>
 <p>While the model is currently fairly stable, it still has a huge margin of error by real world standard. There is no way anybody can use this model to buy a property when the property might be ~$200k AUD more expensive than assumed.</p>
