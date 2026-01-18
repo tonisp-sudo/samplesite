@@ -101,6 +101,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#6-conclusion-until-improvements-are-made">6. Conclusion (Until improvements are made)</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#7-the-code">7. The Code</a>
+    </li>
     </ul>
                   </li>
               </ul>
@@ -213,6 +215,31 @@
 </ul>
 <h2 id="6-conclusion-until-improvements-are-made">6. Conclusion (Until improvements are made)</h2>
 <p>While the model is currently fairly stable, it still has a huge margin of error by real world standard. There is no way anybody can use this model to buy a property when the property might be ~$200k AUD more expensive than assumed.</p>
+<h2 id="7-the-code">7. The Code</h2>
+<p><img alt="1st Block" src="../assets/housing_price/1st.png" />
+<img alt="2nd Block" src="../assets/housing_price/2nd.png" />
+I have adjusted the percentile to be 99, meaning the values is $AUD 2.4 Million, not 2.6 as shown in the screenshot. This means the <code>cutoff = 2600000</code> has been amended to be <code>cutoff = 2400000</code> in the code.
+<img alt="3rd Block" src="../assets/housing_price/3rd.png" />
+<img alt="4th Block" src="../assets/housing_price/4th.png" />
+<img alt="5th Block" src="../assets/housing_price/5th.png" />
+<img alt="6th Block" src="../assets/housing_price/6th.png" />
+Note that this picture displays the values descending from $AUD 2.6 million, however the code was later amended to include houses with a maximum price of $AUD 2.4 million.
+<img alt="7th Block" src="../assets/housing_price/7th.png" />
+<img alt="8th Block" src="../assets/housing_price/8th.png" />
+<img alt="9th Block" src="../assets/housing_price/9th.png" />
+<img alt="10th Block" src="../assets/housing_price/10th.png" />
+<img alt="11th Block" src="../assets/housing_price/11th.png" />
+<img alt="12th Block" src="../assets/housing_price/12th.png" />
+To clarify, the reason the missing "Price" instances need to be removed is that they account for around 20% of all the values, if all of those instances would be assigned the mean value, it would very much not represent accurate data, as 1 in every 5 house would cost the same, despite other features, which may vary widely.
+<img alt="14th Block" src="../assets/housing_price/14th.png" />
+<img alt="15th Block" src="../assets/housing_price/15th.png" />
+<img alt="16th Block" src="../assets/housing_price/16th.png" />
+<img alt="17th Block" src="../assets/housing_price/17th.png" />
+<img alt="18th Block" src="../assets/housing_price/18th.png" />
+<img alt="19th Block" src="../assets/housing_price/19th.png" />
+<img alt="20th Block" src="../assets/housing_price/20th.png" />
+<img alt="21st Block" src="../assets/housing_price/output.png" />
+<img alt="22nd Block" src="../assets/housing_price/13th.png" /></p>
               
             </div>
           </div><footer>
