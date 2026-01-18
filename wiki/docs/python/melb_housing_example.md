@@ -70,3 +70,30 @@ Success "Performance Insight"
 ## 6. Conclusion (Until improvements are made)
 
 While the model is currently fairly stable, it still has a huge margin of error by real world standard. There is no way anybody can use this model to buy a property when the property might be ~$200k AUD more expensive than assumed.
+
+## 7. The Code
+
+![1st Block](assets/housing_price/1st.png)
+![2nd Block](assets/housing_price/2nd.png)
+I have adjusted the percentile to be 99, meaning the values is $AUD 2.4 Million, not 2.6 as shown in the screenshot. This means the `cutoff = 2600000` has been amended to be `cutoff = 2400000` in the code.
+![3rd Block](assets/housing_price/3rd.png)
+![4th Block](assets/housing_price/4th.png)
+![5th Block](assets/housing_price/5th.png)
+![6th Block](assets/housing_price/6th.png)
+Note that this picture displays the values descending from $AUD 2.6 million, however the code was later amended to include houses with a maximum price of $AUD 2.4 million.
+![7th Block](assets/housing_price/7th.png)
+![8th Block](assets/housing_price/8th.png)
+![9th Block](assets/housing_price/9th.png)
+![10th Block](assets/housing_price/10th.png)
+![11th Block](assets/housing_price/11th.png)
+![12th Block](assets/housing_price/12th.png)
+To clarify, the reason the missing "Price" instances need to be removed is that they account for around 20% of all the values, if all of those instances would be assigned the mean value, it would very much not represent accurate data, as 1 in every 5 house would cost the same, despite other features, which may vary widely.
+![14th Block](assets/housing_price/14th.png)
+![15th Block](assets/housing_price/15th.png)
+![16th Block](assets/housing_price/16th.png)
+![17th Block](assets/housing_price/17th.png)
+![18th Block](assets/housing_price/18th.png)
+![19th Block](assets/housing_price/19th.png)
+![20th Block](assets/housing_price/20th.png)
+![21st Block](assets/housing_price/output.png)
+![22nd Block](assets/housing_price/13th.png)
