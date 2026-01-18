@@ -96,4 +96,14 @@ To clarify, the reason the missing "Price" instances need to be removed is that 
 ![19th Block](assets/housing_price/19th.png)
 ![20th Block](assets/housing_price/20th.png)
 ![21st Block](assets/housing_price/output.png)
-![22nd Block](assets/housing_price/13th.png)
+![22nd Block](assets/housing_price/22nd.png)
+![23rd Block](assets/housing_price/23rd.png)
+![24th Block](assets/housing_price/24th.png)
+![25th Block](assets/housing_price/25th.png)
+![26th Block](assets/housing_price/26th.png)
+![27th Block](assets/housing_price/27th.png)
+![28th Block](assets/housing_price/28th.png)
+
+
+
+https://www.domain.com.au/9-morris-street-coburg-north-vic-3058-2014576806
