@@ -1,15 +1,3 @@
-/**
-* Template Name: Strategy
-* Template URL: https://bootstrapmade.com/strategy-bootstrap-agency-template/
-* Updated: Jun 06 2025 with Bootstrap v5.3.6
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-*/
-
-/*--------------------------------------------------------------
-# Font & Color Variables
-# Help: https://bootstrapmade.com/color-system/
---------------------------------------------------------------*/
 /* Fonts */
 :root {
   --default-font: "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -250,6 +238,20 @@ h6 {
 
   .navmenu li {
     position: relative;
+  }
+
+  .navmenu ul li {
+    opacity: 0;
+    transform: translateX(-20px);
+    /* Adding transition to ensure smooth slide */
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .navmenu ul li.visible {
+    opacity: 1;
+    transform: translateX(0px);
+
+  }
   }
 
   .navmenu a,
@@ -3783,7 +3785,7 @@ section,
   }
 }
 
-/* This targets the container holding your Lottie */
+/* This targets the container holding Lottie */
 .col-lg-5 {
   display: flex;
   flex-direction: column;
@@ -3793,7 +3795,7 @@ section,
   position: relative;
 }
 
-/* The Glass Terminal Look for your Lottie Player THIS IS A TRIAL */
+/* The Glass Terminal Look for Lottie Player THIS IS A TRIAL */
 dotlottie-player {
   background: rgba(255, 255, 255, 0.03);
   /* Very subtle white tint */
