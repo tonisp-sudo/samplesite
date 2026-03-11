@@ -1,10 +1,4 @@
-/**
-* Template Name: Strategy
-* Template URL: https://bootstrapmade.com/strategy-bootstrap-agency-template/
-* Updated: Jun 06 2025 with Bootstrap v5.3.6
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-*/
+
 
 (function() {
   "use strict";
@@ -213,3 +207,20 @@
   document.addEventListener('scroll', navmenuScrollspy);
 
 })();
+
+
+// This block creates a 0.2 second delay for navbar items loading
+// 1. Listen for the page to be ready
+document.addEventListener('DOMContentLoaded', () => {
+
+  // 2. Define a variable that holds all navbar items separately so they can be looped through
+  const navItems = document.querySelectorAll('.navmenu ul li');
+
+  // 3. Loop through and apply the styles
+  navItems.forEach((item, i) => {
+    item.style.transitionDelay = `${i * 0.2}s`;
+    item.classList.add('visible');
+  });
+
+});
+
