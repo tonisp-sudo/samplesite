@@ -193,9 +193,10 @@ h6 {
   background: color-mix(in srgb, var(--accent-color), transparent 15%);
 }
 
-@media (max-width: 1200px) {
-  .header {
-    padding-top: 10px;
+@media (max-width: 1199px) {
+  /* Ensure the body doesn't scroll when menu is open */
+  .mobile-nav-active {
+    overflow: hidden;
   }
 
   .header .header-container {
@@ -229,22 +230,30 @@ h6 {
   }
 
   .navmenu ul {
+    display: none;
+    position: fixed; /* Changed from absolute to fixed */
+    inset: 60px 20px 20px 20px;
+    padding: 10px 0;
     margin: 0;
-    padding: 0;
-    display: flex;
-    list-style: none;
-    align-items: center;
+    border-radius: 15px;
+    background-color: var(--nav-mobile-background-color);
+    overflow-y: auto;
+    transition: 0.3s;
+    z-index: 9999; /* Higher than header and canvas */
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.5);
   }
 
   .navmenu li {
     position: relative;
   }
 
+  /* Following part is for the navbar items transition upon opening the page */
+
   .navmenu ul li {
     opacity: 0;
     transform: translateX(-20px);
     /* Adding transition to ensure smooth slide */
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    transition: opacity 0.9s ease, transform 0.9s ease;
   }
 
   .navmenu ul li.visible {
@@ -343,16 +352,45 @@ h6 {
   }
 }
 
-/* Navmenu - Mobile */
+/* This ONLY runs on mobile/tablets */
 @media (max-width: 1199px) {
-  .mobile-nav-toggle {
-    color: var(--nav-color);
-    font-size: 28px;
-    line-height: 0;
-    margin-right: 10px;
-    cursor: pointer;
-    transition: color 0.3s;
+  .navmenu ul {
+    display: none; /* Hidden by default on mobile */
+    position: fixed !important;
+    top: 80px;
+    left: 10px;
+    right: 10px;
+    width: auto;
+    height: auto;
+    max-height: 80vh;
+    z-index: 10000;
+    background-color: var(--nav-mobile-background-color);
+    padding: 20px;
+    border-radius: 15px;
   }
+
+  /* Show the menu when the burger is clicked */
+  .mobile-nav-active .navmenu ul {
+    display: block;
+  }
+}
+
+/* This ONLY runs on Desktop */
+@media (min-width: 1200px) {
+  .navmenu ul {
+    display: flex !important; /* Force items to show in a row */
+    position: relative !important; /* Put them back inside the header pill */
+    top: 0 !important;
+    left: 0 !important;
+    background: none !important; /* Remove the mobile background box */
+    box-shadow: none !important;
+  }
+  
+  /* Ensure list items are visible and horizontal */
+  .navmenu li {
+    display: block;
+  }
+}
 
   .navmenu {
     padding: 0;
@@ -446,6 +484,9 @@ h6 {
   .mobile-nav-active {
     overflow: hidden;
   }
+
+  }
+}
 
   .mobile-nav-active .mobile-nav-toggle {
     color: #fff;
@@ -1394,7 +1435,7 @@ section,
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--surface-color);
+  background-color: rgba(26, 37, 56, 0.6);
   clip-path: polygon(70% 0, 100% 30%, 100% 100%, 0 100%, 0 0);
   z-index: -1;
   opacity: 0;
@@ -3833,6 +3874,44 @@ dotlottie-player {
   border-color: rgba(255, 255, 255, 0.4);
 }
 
+/* This is used for the service cards ripple */
+#canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none; /* Allows you to click buttons 'underneath' the canvas */
+    z-index: 0; 
+}
+
+/* THIS IS A TEST FOR THE RIPPLE EFFECT */
+
+.service-card {
+  position: relative;
+  overflow: hidden; /* Important: keeps ripple inside card */
+}
+
+.service-card::before {
+  content: "";
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  width: 300%; /* Large enough to cover card */
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-color) 0%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.service-card:hover::before {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 0.15; /* Subtle ripple */
+}
 /*--------------------------------------------------------------
 # Starter Section Section
 --------------------------------------------------------------*/
