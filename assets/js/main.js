@@ -218,9 +218,88 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 3. Loop through and apply the styles
   navItems.forEach((item, i) => {
-    item.style.transitionDelay = `${i * 0.2}s`;
+    item.style.transitionDelay = `${i * 0.3}s`;
     item.classList.add('visible');
   });
 
 });
 
+// Building the ripple effect for service-cards
+
+const vs = `
+    precision mediump float;
+    attribute vec3 aVertexPosition;
+    attribute vec2 aTextureCoord;
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+    varying vec2 vTextureCoord;
+    void main() {
+        vTextureCoord = aTextureCoord;
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+    }
+`;
+
+const fs = `
+    precision mediump float;
+    varying vec2 vTextureCoord;
+    uniform float uTime;
+    uniform float uHover; // 👈 This is our on/off switch
+
+    void main() {
+        vec2 uv = vTextureCoord;
+        
+        // If uHover is 0, distortion becomes 0.
+        // If uHover is 1, the wave activates.
+        float distortion = sin(uv.y * 8.0 + uTime * 0.05) * (uHover * 0.03);
+        uv.x += distortion;
+
+        // Your CSS Colors mapped to RGB (0.0 to 1.0)
+        vec3 surfaceColor = vec3(0.10, 0.14, 0.22); // #1A2538
+        vec3 accentColor = vec3(0.0, 0.64, 1.0);    // #00A3FF
+
+        // Mix the colors based on the moving distortion
+        vec3 finalColor = mix(surfaceColor, accentColor, distortion * 2.0);
+        
+        gl_FragColor = vec4(finalColor, 1.0);
+    }
+`;
+
+// This tells JS to wait until the full page (images, fonts, etc.) is ready
+window.addEventListener("load", () => {
+    // 1. Initialize the curtains instance
+    const curtains = new Curtains({ container: "canvas" });
+
+    // 2. Select all your service cards
+    const planeElements = document.querySelectorAll(".service-card");
+
+    planeElements.forEach((el) => {
+        // We will create a new Plane for every card found
+        const plane = new Plane(curtains, el, {
+            vertexShader: vs,
+            fragmentShader: fs,
+            widthSegments: 20,
+            heightSegments: 20,
+            uniforms: {
+                uTime: { name: "uTime", type: "1f", value: 0 },
+                uHover: { name: "uHover", type: "1f", value: 0 },
+            },
+        });
+        // Detect when the mouse moves over the card
+el.addEventListener("mouseenter", () => {
+    // We access the 'uHover' uniform we created earlier
+    // and set its value to 1.0 (on)
+    plane.uniforms.uHover.value = 1.0;
+});
+
+// Detect when the mouse moves away
+el.addEventListener("mouseleave", () => {
+    // Set it back to 0.0 (off)
+    plane.uniforms.uHover.value = 0.0;
+});
+
+        // 3. The Render Loop: This runs every frame
+        plane.onRender(() => {
+            plane.uniforms.uTime.value += 0.01; // Updates the time uniform
+        });
+    });
+});
