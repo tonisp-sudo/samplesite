@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+  }
+  html, body {
+    width: 100%; height: 100%;
+    background: #000;
+    overflow: hidden;
+    font-family: var(--font-body);
+    color: #fff;
+  }
+  #bg-canvas {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+  }
+
+  /* ── HUD ── */
+  #hud {
+    position: fixed; inset: 0;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  /* Site wordmark — top left */
+  #wordmark {
+    position: absolute;
+    top: 2.2rem; left: 2.5rem;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+  }
+
+  /* Nav — top right */
+  #site-nav {
+    position: absolute;
+    top: 2.2rem; right: 2.5rem;
+    display: flex; gap: 2rem;
+    pointer-events: all;
+  }
+  #site-nav a {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  #site-nav a:hover, #site-nav a.active { color: rgba(255,255,255,0.9); }
+
+  /* Image caption — bottom left */
+  #caption {
+    position: absolute;
+    bottom: 3rem; left: 2.5rem;
+  }
+  #caption-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.1;
+    margin-bottom: 0.4rem;
+    transition: opacity 0.5s;
+  }
+  #caption-sub {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    transition: opacity 0.5s;
+  }
+
+  /* Color chips */
+  #chips {
+    position: absolute;
+    bottom: 3.1rem; left: 50%;
+    transform: translateX(-50%);
+    display: flex; gap: 6px;
+    align-items: center;
+  }
+  .chip {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    transition: transform 0.5s, opacity 0.5s;
+    opacity: 0.55;
+  }
+  .chip.active { transform: scale(1.5); opacity: 1; }
+
+  /* Counter — bottom right */
+  #counter {
+    position: absolute;
+    bottom: 3.2rem; right: 2.5rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.3);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Arrows */
+  .arrow {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    pointer-events: all; cursor: pointer;
+    width: 48px; height: 48px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 50%;
+    color: rgba(255,255,255,0.5);
+    font-size: 1rem;
+    transition: border-color 0.3s, color 0.3s, transform 0.25s;
+    background: rgba(0,0,0,0.15);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    user-select: none;
+  }
+  .arrow:hover { border-color: rgba(255,255,255,0.6); color: #fff; transform: translateY(-50%) scale(1.1); }
+  #arrow-prev { left: 1.8rem; }
+  #arrow-next { right: 1.8rem; }
+
+  /* Index dots */
+  #dots {
+    position: absolute;
+    right: 2.5rem; top: 50%;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 8px;
+    pointer-events: all;
+  }
+  .dot {
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .dot.active { background: rgba(255,255,255,0.9); transform: scale(1.6); }
+
+  /* Scroll hint */
+  #scroll-hint {
+    position: absolute;
+    top: 50%; right: 4.5rem;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column;
+    align-items: center; gap: 6px;
+    color: rgba(255,255,255,0.2);
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: opacity 1s;
+    writing-mode: vertical-rl;
+  }
+  #scroll-hint .tick {
+    width: 1px; height: 24px;
+    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.25));
+    animation: tickAnim 2s ease-in-out infinite;
+  }
+  @keyframes tickAnim {
+    0%,100% { opacity: 0.3; transform: scaleY(0.6); }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  /* Loading bar */
+  #loader {
+    position: fixed; inset: 0;
+    z-index: 50;
+    background: #080808;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 1.5rem;
+    transition: opacity 0.8s;
+  }
+  #loader.out { opacity: 0; pointer-events: none; }
+  #loader-label { font-size: 0.65rem; letter-spacing: 0.25em; color: #444; text-transform: uppercase; }
+  #loader-track { width: 160px; height: 1px; background: rgba(255,255,255,0.08); }
+  #loader-fill { height: 100%; background: rgba(255,255,255,0.5); width: 0; transition: width 0.3s; }
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div id="loader">
+  <div id="loader-track"><div id="loader-fill"></div></div>
+  <div id="loader-label">Loading</div>
+</div>
+
+<div id="hud">
+  <!-- ↓ Change this to your site name -->
+  <div id="wordmark">Tonis Praks</div>
+
+  <!-- ↓ Your site nav links -->
+  <nav id="site-nav">
+    <a href="landing.html">Front Page</a>
+    <a href="pilbara.html" class="active">Pilbara</a>
+    <a href="japan.html" class="active">Japan</a>
+    <a href="wildlife.html" class="active">Wildlife</a>
+  </nav>
+
+  <div id="caption">
+    <div id="caption-title"></div>
+    <div id="caption-sub"></div>
+  </div>
+
+  <div id="chips"></div>
+  <div id="counter"></div>
+
+  <div id="arrow-prev" class="arrow">&#8592;</div>
+  <div id="arrow-next" class="arrow">&#8594;</div>
+  <div id="dots"></div>
+  <div id="scroll-hint"><div class="tick"></div>scroll</div>
+</div>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+
+/* ================================================================
+   ✏️  YOUR IMAGES — edit this array to add/remove photos
+   Each entry:
+     src   : path to your image file (relative or absolute URL)
+     title : large caption text shown bottom-left
+     sub   : small subtitle / date / location shown below title
+   ================================================================ */
+const IMAGES = [
+  {
+    src:   'photos/01.jpg',
+    title: 'Golden Hour',
+    sub:   'Yosemite, California — 2024',
+  },
+  {
+    src:   'photos/02.jpg',
+    title: 'Storm Light',
+    sub:   'Iceland — March 2024',
+  },
+  {
+    src:   'photos/03.jpg',
+    title: 'Still Water',
+    sub:   'Queenstown, New Zealand — 2023',
+  },
+  {
+    src:   'photos/04.jpg',
+    title: 'Blue Hour',
+    sub:   'Santorini, Greece — 2023',
+  },
+  {
+    src:   'photos/05.jpg',
+    title: 'First Light',
+    sub:   'Dolomites, Italy — 2022',
+  },
+];
+/* ================================================================ */
+
+
+/* ── Three.js setup ── */
+const canvas   = document.getElementById('bg-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+
+const scene  = new THREE.Scene();
+const camera = new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+const quad   = new THREE.PlaneGeometry(2, 2);
+
+/* ── Background shader ── */
+const bgMat = new THREE.ShaderMaterial({
+  vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.,1.); }`,
+  fragmentShader: `
+    precision highp float;
+    varying vec2 vUv;
+    uniform vec3 uA, uB, uC;
+    uniform float uVel, uTime;
+
+    float hash(vec2 p){ p=fract(p*vec2(234.34,435.345)); p+=dot(p,p+34.23); return fract(p.x*p.y); }
+    float noise(vec2 p){ vec2 i=floor(p),f=fract(p); f=f*f*(3.-2.*f);
+      return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y); }
+    float fbm(vec2 p){ float v=0.,a=.5; for(int i=0;i<5;i++){v+=a*noise(p);p*=2.1;a*=.5;} return v; }
+
+    void main(){
+      float g = pow(vUv.y, .55);
+      vec3 col = mix(uA, uB, g);
+      float vel = clamp(abs(uVel)*1.5, 0., 1.);
+      float n = fbm(vUv*4. + uTime*.03);
+      col = mix(col, uC, n*.22*(1.+vel*.7));
+      // vignette
+      vec2 c = vUv-.5;
+      col *= clamp(1.-dot(c,c)*1.9, 0., 1.);
+      // velocity shimmer
+      col += smoothstep(.55,1.,vUv.y) * vel * .10 * uC;
+      gl_FragColor = vec4(col,1.);
+    }
+  `,
+  uniforms: {
+    uA:    { value: new THREE.Color(0x090910) },
+    uB:    { value: new THREE.Color(0x10101a) },
+    uC:    { value: new THREE.Color(0x1a1a28) },
+    uVel:  { value: 0 },
+    uTime: { value: 0 },
+  }
+});
+scene.add(new THREE.Mesh(quad, bgMat));
+
+/* ── Image shader ── */
+// Strategy: scale the quad GEOMETRY to match the image's aspect ratio on screen.
+// UVs then map 1:1 across the correctly-shaped rectangle — zero distortion, zero math.
+// uQX / uQY are the clip-space half-extents of the rectangle.
+const imgVert = `
+  varying vec2 vUv;
+  uniform float uScale, uQX, uQY;
+  void main(){
+    vUv = uv;
+    vec3 p = position;
+    p.x *= uScale * uQX;
+    p.y *= uScale * uQY;
+    gl_Position = vec4(p, 1.);
+  }
+`;
+const imgFrag = `
+  precision highp float;
+  varying vec2 vUv;
+  uniform sampler2D uTex;
+  uniform float uOpacity, uVel;
+  void main(){
+    vec2 uv = vUv;
+    vec4 col = texture2D(uTex, uv);
+    // Velocity chromatic split
+    float sp = clamp(abs(uVel) * .005, 0., .015);
+    col.r = texture2D(uTex, clamp(uv + vec2(sp,0.), 0., 1.)).r;
+    col.b = texture2D(uTex, clamp(uv - vec2(sp,0.), 0., 1.)).b;
+    // Subtle inner vignette
+    vec2 e = smoothstep(0., 0.05, uv) * smoothstep(0., 0.05, 1.-uv);
+    col.rgb *= 0.78 + 0.22 * e.x * e.y;
+    gl_FragColor = vec4(col.rgb, col.a * uOpacity);
+  }
+`;
+
+// Given image aspect ratio (w/h) and screen aspect (w/h),
+// return clip-space half-extents so the image displays at its true aspect,
+// contained within `frame` of the screen's shorter clip axis.
+const FRAME = 0.78;
+function quadExtents(aspI, aspS) {
+  // In clip space: x=1 covers half screen width, y=1 covers half screen height.
+  // A quad with clipX=cx, clipY=cy has screen pixel ratio = (cx/cy) * aspS.
+  // We want (cx/cy) * aspS = aspI  →  cx/cy = aspI/aspS.
+  // Contain into FRAME: normalise so max(cx,cy) = FRAME.
+  let cx = aspI / aspS;
+  let cy = 1.0;
+  const mx = Math.max(cx, cy);
+  return { qx: (cx / mx) * FRAME, qy: (cy / mx) * FRAME };
+}
+
+function makeMesh() {
+  const { qx, qy } = quadExtents(1, innerWidth / innerHeight);
+  const mat = new THREE.ShaderMaterial({
+    vertexShader: imgVert,
+    fragmentShader: imgFrag,
+    uniforms: {
+      uTex:     { value: null },
+      uOpacity: { value: 0 },
+      uScale:   { value: 1.0 },
+      uQX:      { value: qx },
+      uQY:      { value: qy },
+      uVel:     { value: 0 },
+    },
+    transparent: true,
+    depthWrite: false,
+  });
+  const m = new THREE.Mesh(quad, mat);
+  scene.add(m);
+  return m;
+}
+const meshA = makeMesh();
+const meshB = makeMesh();
+
+/* ── Drop-shadow mesh — shares the same uQX/uQY so it exactly matches the image ── */
+const shadowMat = new THREE.ShaderMaterial({
+  vertexShader: `
+    varying vec2 vUv;
+    uniform float uScale, uQX, uQY;
+    void main(){
+      vUv = uv;
+      vec3 p = position;
+      p.x *= uScale * uQX * 1.04;
+      p.y *= uScale * uQY * 1.04;
+      p.y -= 0.008 * uScale;
+      gl_Position = vec4(p, 1.);
+    }
+  `,
+  fragmentShader: `
+    precision highp float;
+    varying vec2 vUv;
+    uniform float uOpacity;
+    void main(){
+      vec2 d = abs(vUv - .5) * 2.0;
+      float s = pow(max(d.x, d.y), 2.5);
+      gl_FragColor = vec4(0., 0., 0., clamp((1.-s)*0.65*uOpacity, 0., 1.));
+    }
+  `,
+  uniforms: {
+    uOpacity: { value: 0 },
+    uScale:   { value: 1.0 },
+    uQX:      { value: FRAME },
+    uQY:      { value: FRAME },
+  },
+  transparent: true,
+  depthWrite: false,
+});
+const shadowMesh = new THREE.Mesh(quad, shadowMat);
+shadowMesh.renderOrder = 0;
+meshA.renderOrder = 1;
+meshB.renderOrder = 2;
+scene.add(shadowMesh);
+
+/* ── Palette extraction ── */
+function extractPalette(img) {
+  const c = document.createElement('canvas');
+  c.width = c.height = 64;
+  const ctx = c.getContext('2d');
+  ctx.drawImage(img, 0, 0, 64, 64);
+  const d = ctx.getImageData(0,0,64,64).data;
+  const regions = [[0,0,32,32],[32,0,64,32],[0,32,32,64],[32,32,64,64],[12,12,52,52]];
+  const cols = regions.map(([x1,y1,x2,y2]) => {
+    let r=0,g=0,b=0,n=0;
+    for(let y=y1;y<y2;y++) for(let x=x1;x<x2;x++){const i=(y*64+x)*4;r+=d[i];g+=d[i+1];b+=d[i+2];n++;}
+    return [r/n/255, g/n/255, b/n/255];
+  });
+  cols.sort((a,b)=>(a[0]+a[1]+a[2])-(b[0]+b[1]+b[2]));
+  const dark   = cols[0].map(v => v*.35);
+  const mid    = cols[Math.floor(cols.length/2)];
+  const accent = cols[cols.length-1].map(v => Math.min(1, v+.15));
+  return { dark, mid, accent };
+}
+
+/* ── Load all textures upfront ── */
+const loader = new THREE.TextureLoader();
+let imageData = [];
+
+async function loadAll() {
+  const fill = document.getElementById('loader-fill');
+  for (let i = 0; i < IMAGES.length; i++) {
+    fill.style.width = (i / IMAGES.length * 100) + '%';
+    const entry = IMAGES[i];
+    await new Promise(resolve => {
+      loader.load(entry.src, tex => {
+        tex.minFilter = THREE.LinearFilter;
+        tex.magFilter = THREE.LinearFilter;
+        tex.colorSpace = THREE.SRGBColorSpace;
+        tex.wrapS = THREE.ClampToEdgeWrapping;
+        tex.wrapT = THREE.ClampToEdgeWrapping;
+        tex.needsUpdate = true;
+        const img = tex.image;
+        const palette = extractPalette(img);
+        imageData.push({ ...entry, tex, palette, aspect: img.width / img.height });
+        resolve();
+      }, undefined, () => {
+        // On error: push a placeholder so indices stay correct
+        imageData.push({ ...entry, tex: null, palette: null, aspect: 1.5 });
+        resolve();
+      });
+    });
+  }
+  fill.style.width = '100%';
+}
+
+/* ── Gallery state ── */
+let cur = 0, transitioning = false, tT = 0, tDir = 1;
+let vel = 0;
+const bgA = new THREE.Color(), bgB = new THREE.Color(), bgC = new THREE.Color();
+
+function lerp(a,b,t){ return a+(b-a)*t; }
+function ease(t){ t=Math.max(0,Math.min(1,t)); return t*t*(3-2*t); }
+
+function lerpTowardPalette(p, s) {
+  if (!p) return;
+  bgA.r=lerp(bgA.r,p.dark[0],s);   bgA.g=lerp(bgA.g,p.dark[1],s);   bgA.b=lerp(bgA.b,p.dark[2],s);
+  bgB.r=lerp(bgB.r,p.mid[0],s);    bgB.g=lerp(bgB.g,p.mid[1],s);    bgB.b=lerp(bgB.b,p.mid[2],s);
+  bgC.r=lerp(bgC.r,p.accent[0],s); bgC.g=lerp(bgC.g,p.accent[1],s); bgC.b=lerp(bgC.b,p.accent[2],s);
+}
+
+function goTo(idx) {
+  if (transitioning || imageData.length === 0) return;
+  idx = ((idx % imageData.length) + imageData.length) % imageData.length;
+  if (idx === cur) return;
+
+  tDir = idx > cur ? 1 : -1;
+  tT = 0;
+  transitioning = true;
+
+  const d = imageData[idx];
+  const { qx, qy } = quadExtents(d.aspect, innerWidth / innerHeight);
+  meshB.material.uniforms.uTex.value     = d.tex;
+  meshB.material.uniforms.uQX.value      = qx;
+  meshB.material.uniforms.uQY.value      = qy;
+  meshB.material.uniforms.uOpacity.value = 0;
+  meshB._targetIndex = idx;
+}
+
+function updateHUD() {
+  const d = imageData[cur];
+  document.getElementById('caption-title').textContent = d.title || '';
+  document.getElementById('caption-sub').textContent   = d.sub   || '';
+  document.getElementById('counter').textContent =
+    String(cur+1).padStart(2,'0') + ' — ' + String(imageData.length).padStart(2,'0');
+
+  // Dots
+  document.querySelectorAll('.dot').forEach((el,i) => el.classList.toggle('active', i === cur));
+
+  // Chips
+  const chips = document.getElementById('chips');
+  chips.innerHTML = '';
+  if (d.palette) {
+    [d.palette.dark, d.palette.mid, d.palette.accent].forEach(([r,g,b]) => {
+      const el = document.createElement('div');
+      el.className = 'chip';
+      el.style.background = `rgb(${Math.round(r*255)},${Math.round(g*255)},${Math.round(b*255)})`;
+      chips.appendChild(el);
+    });
+  }
+}
+
+/* ── Render loop ── */
+const clock = new THREE.Clock();
+let time = 0, hintTimer = null;
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  time += dt;
+
+  vel *= 0.85;
+
+  if (transitioning) {
+    tT += dt * 2.0;
+    const e = ease(tT);
+
+    // Outgoing: fade out + shrink away (scale 1 → 0.88)
+    meshA.material.uniforms.uOpacity.value = 1 - e;
+    meshA.material.uniforms.uScale.value   = 1.0 - e * 0.12;
+
+    // Incoming: fade in + grow from far (scale 1.12 → 1)
+    meshB.material.uniforms.uOpacity.value = e;
+    meshB.material.uniforms.uScale.value   = 1.12 - e * 0.12;
+
+    if (tT >= 1) {
+      cur = meshB._targetIndex;
+      const { qx: qxC, qy: qyC } = quadExtents(imageData[cur].aspect, innerWidth / innerHeight);
+      meshA.material.uniforms.uTex.value     = imageData[cur].tex;
+      meshA.material.uniforms.uQX.value      = qxC;
+      meshA.material.uniforms.uQY.value      = qyC;
+      meshA.material.uniforms.uOpacity.value = 1;
+      meshA.material.uniforms.uScale.value   = 1;
+      meshB.material.uniforms.uOpacity.value = 0;
+      meshB.material.uniforms.uScale.value   = 1;
+      transitioning = false;
+      updateHUD();
+    }
+  }
+
+  if (imageData[cur]?.palette) lerpTowardPalette(imageData[cur].palette, 0.025);
+  bgMat.uniforms.uA.value.copy(bgA);
+  bgMat.uniforms.uB.value.copy(bgB);
+  bgMat.uniforms.uC.value.copy(bgC);
+  bgMat.uniforms.uVel.value += (vel - bgMat.uniforms.uVel.value) * 0.12;
+  bgMat.uniforms.uTime.value = time;
+
+  [meshA, meshB].forEach(m => { m.material.uniforms.uVel.value = vel; });
+
+  // Shadow: lerp toward the dominant image's quad extents
+  const aOp = meshA.material.uniforms.uOpacity.value;
+  const bOp = meshB.material.uniforms.uOpacity.value;
+  const dominant = aOp >= bOp ? meshA : meshB;
+  shadowMat.uniforms.uOpacity.value = Math.max(aOp, bOp);
+  shadowMat.uniforms.uScale.value   = dominant.material.uniforms.uScale.value;
+  shadowMat.uniforms.uQX.value += (dominant.material.uniforms.uQX.value - shadowMat.uniforms.uQX.value) * 0.08;
+  shadowMat.uniforms.uQY.value += (dominant.material.uniforms.uQY.value - shadowMat.uniforms.uQY.value) * 0.08;
+
+  renderer.render(scene, camera);
+}
+
+/* ── Input ── */
+let wheelLock;
+window.addEventListener('wheel', e => {
+  vel += e.deltaY * 0.003;
+  vel  = Math.max(-5, Math.min(5, vel));
+  clearTimeout(wheelLock);
+  wheelLock = setTimeout(() => {
+    if (Math.abs(vel) > 0.15) goTo(cur + (vel > 0 ? 1 : -1));
+  }, 90);
+}, { passive: true });
+
+let touchStartY = 0;
+window.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
+window.addEventListener('touchend', e => {
+  const dy = touchStartY - e.changedTouches[0].clientY;
+  if (Math.abs(dy) > 50) goTo(cur + (dy > 0 ? 1 : -1));
+}, { passive: true });
+
+window.addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown' || e.key === 'ArrowRight') goTo(cur + 1);
+  if (e.key === 'ArrowUp'   || e.key === 'ArrowLeft')  goTo(cur - 1);
+});
+
+document.getElementById('arrow-prev').addEventListener('click', () => goTo(cur - 1));
+document.getElementById('arrow-next').addEventListener('click', () => goTo(cur + 1));
+
+window.addEventListener('resize', () => {
+  renderer.setSize(innerWidth, innerHeight);
+  // Recompute quad extents for current images
+  if (imageData.length > 0) {
+    const aspS = innerWidth / innerHeight;
+    const { qx: qxA, qy: qyA } = quadExtents(imageData[cur].aspect, aspS);
+    meshA.material.uniforms.uQX.value = qxA;
+    meshA.material.uniforms.uQY.value = qyA;
+    if (transitioning && meshB._targetIndex !== undefined) {
+      const { qx: qxB, qy: qyB } = quadExtents(imageData[meshB._targetIndex].aspect, aspS);
+      meshB.material.uniforms.uQX.value = qxB;
+      meshB.material.uniforms.uQY.value = qyB;
+    }
+  }
+});
+
+/* ── Build dots ── */
+function buildDots() {
+  const container = document.getElementById('dots');
+  container.innerHTML = '';
+  imageData.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    container.appendChild(d);
+  });
+}
+
+/* ── Init ── */
+(async function init() {
+  animate(); // start render loop immediately (shows black)
+  await loadAll();
+
+  if (imageData.length === 0) return;
+
+  // Seed background from first image palette
+  const p0 = imageData[0].palette;
+  if (p0) {
+    bgA.setRGB(...p0.dark);
+    bgB.setRGB(...p0.mid);
+    bgC.setRGB(...p0.accent);
+  }
+
+  // Mount first image
+  const { qx: qx0, qy: qy0 } = quadExtents(imageData[0].aspect, innerWidth / innerHeight);
+  meshA.material.uniforms.uTex.value     = imageData[0].tex;
+  meshA.material.uniforms.uQX.value      = qx0;
+  meshA.material.uniforms.uQY.value      = qy0;
+  meshA.material.uniforms.uOpacity.value = 1;
+  shadowMat.uniforms.uOpacity.value = 1;
+  shadowMat.uniforms.uQX.value = qx0;
+  shadowMat.uniforms.uQY.value = qy0;
+
+  buildDots();
+  updateHUD();
+
+  // Fade out loader
+  const loader = document.getElementById('loader');
+  loader.classList.add('out');
+  setTimeout(() => loader.remove(), 900);
+
+  // Hide scroll hint after 5s
+  setTimeout(() => {
+    const hint = document.getElementById('scroll-hint');
+    if (hint) hint.style.opacity = '0';
+  }, 5000);
+})();
+</script>
+</body>
+</html>

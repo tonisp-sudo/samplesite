@@ -1,924 +1,476 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-  <title>Web Design & Development | Affordable Small Business Websites | Praks IT</title>
-
-  <meta name="description"
-    content="Affordable and reliable web design, hosting, and SEO services for small businesses in Australia. Get a fast, professional website today. Also offering local IT support and network setup.">
-
-  <meta name="keywords"
-    content="Professional Web Development, Digital Marketing, Fast Hosting, and Reliable Maintenance for Australian Businesses. Get your secure, high-performance website today.">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tonis Praks Universe</title>
+  <meta name="description" content="Tonis Praks — Developer, Creator, Explorer.">
   <meta name="author" content="Tonis Praks">
-
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      "name": "Praks IT",
-      "address": {
-        "@type": "PostalAddress",
-        "addressCountry": "AU"
-      },
-      "description": "Local IT Support and Web Development Services for Small Businesses in Australia"
-    }
-  </script>
-  <!--<link href="assets/img/favicon.png" rel="icon">
-  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">-->
 
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 
-  <link href="https://fonts.googleapis.com" rel="preconnect">
-  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap"
-    rel="stylesheet" media="print" onload="this.media='all'">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="print" onload="this.media='all'">
-  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet" media="print"
-    onload="this.media='all'">
-  <link href="assets/vendor/aos/aos.css" rel="stylesheet" media="print" onload="this.media='all'">
-  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet" media="print" onload="this.media='all'">
-  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+  <script>
+    tailwind.config = {
+      theme: { extend: { fontFamily: { syne: ['Syne','sans-serif'], mono: ['Space Mono','monospace'], body: ['DM Sans','sans-serif'] } } }
+    }
+  </script>
 
-  <link href="assets/css/main.css" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #f5f0e8; --warm: #ede8df; --ink: #1a1714; --ink2: #2e2b28;
+      --muted: #8a8278; --gold: #b8933e; --gold2: #d4aa5a;
+      --rust: #9b4f2a; --sage: #5a7a5a; --border: rgba(26,23,20,.1);
+    }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--ink); cursor:none; overflow-x:hidden; }
 
-  <!-- DotLottie Player -->
-  <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
+    #p5-wrap { position:fixed; inset:0; z-index:0; pointer-events:none; }
+    #p5-wrap canvas { display:block; pointer-events:all; }
 
+    /* grain */
+    body::after { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9000; opacity:.5; }
+
+    /* cursor */
+    #c-dot { width:7px;height:7px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%); }
+    #c-ring { width:32px;height:32px;border:1.5px solid rgba(184,147,62,.55);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .25s,height .25s,border-color .25s,background .25s; }
+    #c-ring.big { width:52px;height:52px;border-color:var(--gold);background:rgba(184,147,62,.06); }
+
+    /* nav */
+    nav { position:fixed;top:0;left:0;right:0;z-index:500;padding:1.5rem 3rem;display:flex;align-items:center;justify-content:space-between;transition:background .4s,border-color .4s; }
+    nav.scrolled { background:rgba(245,240,232,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--border); }
+    .nav-logo { font-family:'Syne',sans-serif;font-weight:800;font-size:.95rem;letter-spacing:.06em;color:var(--ink);text-decoration:none; }
+    .nav-logo span { color:var(--gold); }
+    .nav-links { display:flex;gap:2.5rem;list-style:none; }
+    .nav-links a { font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s;position:relative; }
+    .nav-links a::after { content:'';position:absolute;bottom:-3px;left:0;right:100%;height:1px;background:var(--gold);transition:right .3s; }
+    .nav-links a:hover { color:var(--ink); }
+    .nav-links a:hover::after { right:0; }
+    .nav-toggle { display:none;background:none;border:none;cursor:none;color:var(--ink);padding:.4rem; }
+    @media(max-width:768px) {
+      nav { padding:1.2rem 1.5rem; }
+      .nav-toggle { display:block; }
+      .nav-links { position:fixed;top:0;right:-100%;bottom:0;width:260px;background:var(--cream);flex-direction:column;justify-content:center;padding:2rem;gap:2rem;border-left:1px solid var(--border);transition:right .4s cubic-bezier(.25,.46,.45,.94);z-index:600; }
+      .nav-links.open { right:0; }
+    }
+
+    /* hero */
+    #hero { position:relative;height:100vh;display:flex;align-items:center;z-index:10;padding:0 3rem; }
+    @media(max-width:768px) { #hero { padding:0 1.5rem; } }
+    .hero-eyebrow { font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;opacity:0;animation:fadeUp .8s .2s forwards; }
+    .hero-name { font-family:'Syne',sans-serif;font-size:clamp(4rem,11vw,9.5rem);font-weight:800;line-height:.88;letter-spacing:-.025em;opacity:0;animation:fadeUp .8s .4s forwards; }
+    .hero-name .outline { -webkit-text-stroke:1.5px var(--ink);color:transparent; }
+    .hero-sub { font-size:1.05rem;color:var(--muted);font-weight:300;margin-top:2rem;max-width:440px;line-height:1.75;opacity:0;animation:fadeUp .8s .6s forwards; }
+    .hero-actions { display:flex;gap:1.25rem;margin-top:2.75rem;flex-wrap:wrap;opacity:0;animation:fadeUp .8s .8s forwards; }
+
+    .btn-solid { display:inline-flex;align-items:center;gap:.65rem;padding:.85rem 1.9rem;background:var(--ink);color:var(--cream);font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;font-weight:700;transition:background .25s,transform .25s;border:none; }
+    .btn-solid:hover { background:var(--gold);transform:translateY(-2px); }
+    .btn-outline { display:inline-flex;align-items:center;gap:.65rem;padding:.85rem 1.9rem;border:1.5px solid var(--ink);color:var(--ink);font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;transition:border-color .25s,color .25s,transform .25s; }
+    .btn-outline:hover { border-color:var(--gold);color:var(--gold);transform:translateY(-2px); }
+
+    .scroll-hint { position:absolute;bottom:2.5rem;left:3rem;display:flex;align-items:center;gap:1rem;font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.22em;color:var(--muted);text-transform:uppercase;opacity:0;animation:fadeIn 1s 1.3s forwards; }
+    .scroll-line { width:36px;height:1px;background:var(--muted);position:relative;overflow:hidden; }
+    .scroll-line::after { content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:var(--gold);animation:lineRun 2s 1.6s ease-in-out infinite; }
+    @keyframes lineRun { 0%{left:-100%} 100%{left:100%} }
+
+    /* ticker */
+    .ticker-wrap { position:relative;z-index:10;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:.9rem 0;overflow:hidden;background:var(--warm); }
+    .ticker-track { display:flex;gap:4rem;width:max-content;animation:ticker 22s linear infinite; }
+    .ticker-item { font-family:'Syne',sans-serif;font-size:.75rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;display:flex;align-items:center;gap:1.25rem;white-space:nowrap; }
+    .ticker-item .dot { width:5px;height:5px;background:var(--gold);border-radius:50%;flex-shrink:0; }
+    @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+    /* section labels */
+    .s-label { font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:.9rem; }
+    .s-title { font-family:'Syne',sans-serif;font-size:clamp(2.2rem,4.5vw,4rem);font-weight:800;line-height:1.0; }
+
+    /* universe cards */
+    #universe { position:relative;z-index:10;padding:8rem 3rem; }
+    @media(max-width:768px) { #universe { padding:5rem 1.5rem; } }
+    .cards-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:3.5rem; }
+    @media(max-width:900px) { .cards-grid { grid-template-columns:1fr; } }
+
+    .u-card { position:relative;height:500px;overflow:hidden;background:var(--ink2);cursor:none; }
+    .u-card::after { content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(26,23,20,.9) 0%,rgba(26,23,20,.15) 60%);z-index:2;transition:opacity .4s; }
+    .u-card:hover::after { opacity:.7; }
+    .u-card-bg { position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .8s cubic-bezier(.25,.46,.45,.94); }
+    .u-card:hover .u-card-bg { transform:scale(1.08); }
+    .u-card-top { position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transition:transform .5s;z-index:4; }
+    .u-card:hover .u-card-top { transform:scaleX(1); }
+    .u-card-body { position:absolute;bottom:0;left:0;right:0;padding:2.25rem;z-index:3; }
+    .u-card-num { font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.2em;color:var(--gold2);margin-bottom:.9rem; }
+    .u-card-title { font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;color:var(--cream);line-height:1.05; }
+    .u-card-desc { font-size:.88rem;color:rgba(245,240,232,.6);line-height:1.65;margin-top:.75rem;max-width:280px;opacity:0;transform:translateY(8px);transition:opacity .4s,transform .4s; }
+    .u-card:hover .u-card-desc { opacity:1;transform:translateY(0); }
+    .u-card-link { display:inline-flex;align-items:center;gap:.5rem;margin-top:1.25rem;font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold2);text-decoration:none;opacity:0;transform:translateX(-8px);transition:opacity .4s .05s,transform .4s .05s; }
+    .u-card:hover .u-card-link { opacity:1;transform:translateX(0); }
+    .u-card-link svg { transition:transform .25s; }
+    .u-card-link:hover svg { transform:translateX(4px); }
+    .card-deco { position:absolute;inset:0;width:100%;height:100%;opacity:.08; }
+
+    /* h-gallery */
+    #gallery-section { position:relative;z-index:10;background:var(--ink);color:var(--cream);padding:6rem 0 0;overflow:hidden; }
+    .gallery-header { padding:0 3rem 4rem; }
+    .gallery-header .s-label { color:var(--gold2); }
+    .gallery-header .s-title { color:var(--cream); }
+    .h-scroll-outer { position:relative;height:520px;overflow:hidden; }
+    .h-scroll-track { display:flex;gap:16px;height:100%;padding:0 3rem;user-select:none; }
+    .h-slide { position:relative;flex:0 0 380px;height:100%;overflow:hidden;background:var(--ink2);cursor:none; }
+    .h-slide-inner { width:100%;height:100%;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;transition:transform .6s cubic-bezier(.25,.46,.45,.94); }
+    .h-slide:hover .h-slide-inner { transform:scale(1.04); }
+    .h-slide-label { position:absolute;bottom:0;left:0;right:0;padding:1.5rem;background:linear-gradient(transparent,rgba(26,23,20,.88));font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold2); }
+    .gallery-drag-hint { padding:1.5rem 3rem 2rem;font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(245,240,232,.3);display:flex;align-items:center;gap:.75rem; }
+    .drag-arr { width:28px;height:1px;background:rgba(212,170,90,.4);position:relative; }
+    .drag-arr::after { content:'';position:absolute;right:0;top:-3px;width:7px;height:7px;border-top:1px solid rgba(212,170,90,.6);border-right:1px solid rgba(212,170,90,.6);transform:rotate(45deg); }
+
+    /* contact */
+    #contact-section { position:relative;z-index:10;padding:8rem 3rem;border-top:1px solid var(--border); }
+    @media(max-width:768px) { #contact-section { padding:5rem 1.5rem; } }
+    .contact-grid { display:grid;grid-template-columns:1fr 1.2fr;gap:5rem;align-items:start;margin-top:4rem; }
+    @media(max-width:900px) { .contact-grid { grid-template-columns:1fr;gap:3rem; } }
+    .ci-item { display:flex;align-items:flex-start;gap:1.1rem;margin-bottom:2.25rem; }
+    .ci-icon { width:44px;height:44px;flex-shrink:0;border:1px solid rgba(184,147,62,.3);display:flex;align-items:center;justify-content:center;color:var(--gold); }
+    .ci-lbl { font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.2rem; }
+    .ci-val { color:var(--muted);font-size:.88rem;text-decoration:none;transition:color .2s; }
+    .ci-val:hover { color:var(--gold); }
+    .contact-form input,.contact-form textarea { width:100%;background:var(--warm);border:1px solid var(--border);color:var(--ink);padding:.95rem 1.1rem;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .3s;margin-bottom:.9rem; }
+    .contact-form input:focus,.contact-form textarea:focus { border-color:var(--gold); }
+    .contact-form input::placeholder,.contact-form textarea::placeholder { color:var(--muted); }
+    .contact-form textarea { height:150px;resize:vertical; }
+    .form-row { display:grid;grid-template-columns:1fr 1fr;gap:.9rem; }
+
+    /* footer */
+    footer { position:relative;z-index:10;padding:2.5rem 3rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.25rem;background:var(--warm); }
+    @media(max-width:768px) { footer { padding:2rem 1.5rem; } }
+    .footer-copy { font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.1em;color:var(--muted); }
+    .footer-links { display:flex;gap:1.75rem; }
+    .footer-links a { font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s; }
+    .footer-links a:hover { color:var(--gold); }
+
+    /* scroll top */
+    #scroll-top { position:fixed;bottom:2rem;right:2rem;z-index:400;width:44px;height:44px;background:var(--ink);border:none;color:var(--cream);display:none;align-items:center;justify-content:center;cursor:none;transition:background .25s; }
+    #scroll-top:hover { background:var(--gold); }
+    #scroll-top.vis { display:flex; }
+
+    /* reveal */
+    .sr { opacity:0;transform:translateY(28px);transition:opacity .75s ease,transform .75s ease; }
+    .sr.vis { opacity:1;transform:translateY(0); }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  </style>
 </head>
+<body>
+  <div id="c-dot"></div>
+  <div id="c-ring"></div>
+  <div id="p5-wrap"></div>
 
-<body class="index-page">
-  <div id="canvas"></div>
+  <!-- NAV -->
+  <nav id="navbar">
+    <a href="#hero" class="nav-logo">TONIS PRAKS <span>UNIVERSE</span></a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="5" x2="20" y2="5"/><line x1="2" y1="11" x2="20" y2="11"/><line x1="2" y1="17" x2="20" y2="17"/></svg>
+    </button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#universe">Universe</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="#contact-section">Contact</a></li>
+      <li><a href="/wiki/site/index.html">Learn</a></li>
+    </ul>
+  </nav>
 
-  <header id="header" class="header d-flex align-items-center fixed-top">
-    <div
-      class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
-
-      <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0">
-
-        <img src="assets/img/logo.webp" alt="">
-        <h1 class="sitename">Praks IT</h1>
-      </a>
-
-      <nav id="navmenu" class="navmenu">
-        <ul>
-          <li><a href="#hero" class="active">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#services">Services</a></li>
-          <!--<li><a href="#portfolio">Portfolio</a></li>-->
-          <!---- <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-            <ul>
-              <li><a href="#">Dropdown 1</a></li>
-              <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-                <ul>
-                  <li><a href="#">Deep Dropdown 1</a></li> 
-                  <li><a href="#">Deep Dropdown 2</a></li>
-                  <li><a href="#">Deep Dropdown 3</a></li>
-                  <li><a href="#">Deep Dropdown 4</a></li>
-                  <li><a href="#">Deep Dropdown 5</a></li>
-                </ul>
-              </li>
-              <li><a href="#">Dropdown 2</a></li>
-              <li><a href="#">Dropdown 3</a></li>
-              <li><a href="#">Dropdown 4</a></li>
-            </ul>
-          </li> -->
-          <li><a href="#contact">Contact</a></li>
-          <li><a href="/wiki/site/index.html">Wiki</a></li>
-        </ul>
-        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-      </nav>
-
-      <a class="btn-getstarted" href="#about">Get Started</a>
-
+  <!-- HERO -->
+  <section id="hero">
+    <div style="max-width:860px">
+      <p class="hero-eyebrow">Welcome to the universe of</p>
+      <h1 class="hero-name">TONIS<br><span class="outline">PRAKS</span></h1>
+      <p class="hero-sub">Developer. Creator. Explorer. A personal space where study, projects, and captured moments converge.</p>
+      <div class="hero-actions">
+        <a href="#universe" class="btn-solid">Explore <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 7h10M7 3l4 4-4 4"/></svg></a>
+        <a href="#contact-section" class="btn-outline">Contact Me</a>
+      </div>
     </div>
-  </header>
+    <div class="scroll-hint"><div class="scroll-line"></div>Scroll</div>
+  </section>
 
-  <main class="main">
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker-track">
+      <span class="ticker-item"><span class="dot"></span>Study & Learning</span>
+      <span class="ticker-item"><span class="dot"></span>Web Development</span>
+      <span class="ticker-item"><span class="dot"></span>Networking</span>
+      <span class="ticker-item"><span class="dot"></span>Photography</span>
+      <span class="ticker-item"><span class="dot"></span>Applications</span>
+      <span class="ticker-item"><span class="dot"></span>Cybersecurity</span>
+      <span class="ticker-item"><span class="dot"></span>Australia</span>
+      <span class="ticker-item"><span class="dot"></span>Study & Learning</span>
+      <span class="ticker-item"><span class="dot"></span>Web Development</span>
+      <span class="ticker-item"><span class="dot"></span>Networking</span>
+      <span class="ticker-item"><span class="dot"></span>Photography</span>
+      <span class="ticker-item"><span class="dot"></span>Applications</span>
+      <span class="ticker-item"><span class="dot"></span>Cybersecurity</span>
+      <span class="ticker-item"><span class="dot"></span>Australia</span>
+    </div>
+  </div>
 
-    <!-- Hero Section -->
-    <section id="hero" class="hero section">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-7 content-col" data-aos="fade-up">
-            <div class="content">
-              <div class="agency-name">
-                <h5>Hi, my name is</h5>
-              </div>
+  <!-- UNIVERSE CARDS -->
+  <section id="universe">
+    <div class="sr"><p class="s-label">Navigate</p><h2 class="s-title">My Universe</h2></div>
+    <div class="cards-grid sr" style="transition-delay:.15s">
 
-              <div class="main-heading">
-                <h1>TONIS <br>PRAKS</h1>
-              </div>
-
-              <div class="divider"></div>
-
-              <div class="description">
-                <p>Web Developer | Network & Computer Specialist. <br>
-                  I’m your local Web Development and IT partner. I specialize in setting up reliable, hassle-free
-                  websites so you can focus on running your business. No jargon, just dependable support.
-                </p>
-              </div>
-
-              <div class="cta-button">
-                <a href="#services" class="btn">
-                  <span>EXPLORE SERVICES</span>
-                  <i class="bi bi-arrow-right"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-5">
-            <dotlottie-player src="assets/img/abstract/Webdev.lottie" background="transparent" speed="1"
-              style="width: 100%; height: 500px;" direction="1" playMode="normal" loop autoplay>
-            </dotlottie-player>
-
-            <!--<div class="stats-card">
-              <div class="stats-number">
-                <h2>My</h2>
-              </div>
-              <div class="stats-label">
-                <p>Wiki</p>
-              </div>
-              <div class="stats-arrow">
-                <a href="/wiki/site/index.html"><i class="bi bi-arrow-up-right"></i></a>
-              </div>-->
-          </div>
+      <div class="u-card" style="background:linear-gradient(145deg,#2e3545,#1a1f2e)">
+        <div class="u-card-top"></div>
+        <svg class="card-deco" viewBox="0 0 400 500"><line x1="40" y1="100" x2="360" y2="100" stroke="#6e8ec8" stroke-width=".6"/><line x1="40" y1="145" x2="300" y2="145" stroke="#6e8ec8" stroke-width=".6"/><line x1="40" y1="190" x2="280" y2="190" stroke="#6e8ec8" stroke-width=".6"/><line x1="40" y1="235" x2="220" y2="235" stroke="#6e8ec8" stroke-width=".6"/><circle cx="40" cy="100" r="4" fill="#c8a96e"/><circle cx="40" cy="145" r="4" fill="#c8a96e"/><circle cx="40" cy="190" r="4" fill="#c8a96e"/><circle cx="40" cy="235" r="4" fill="#c8a96e"/><rect x="70" y="300" width="260" height="150" rx="3" stroke="#6e8ec8" stroke-width=".6" fill="none"/></svg>
+        <div class="u-card-body">
+          <p class="u-card-num">01 / Study</p>
+          <h3 class="u-card-title">Study &<br>Learning</h3>
+          <p class="u-card-desc">Notes, courses, certs, and the endless journey of learning everything about tech and the world.</p>
+          <a href="/wiki/site/index.html" class="u-card-link">Enter <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 7h10M7 3l4 4-4 4"/></svg></a>
         </div>
       </div>
-      </div>
-      </div>
-    </section><!-- /Hero Section -->
 
-    <!-- About Section -->
-    <section id="about" class="about section">
-
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2>About</h2>
-        <div><span>Learn More</span> <span class="description-title"></span></div>
-      </div><!-- End Section Title -->
-
-      <div class="container">
-
-        <div class="row gx-5 align-items-center">
-          <div class="col-lg-6" data-aos="fade-right" data-aos-delay="200">
-            <div class="about-image position-relative">
-              <img src="assets/img/about/about-portrait-1.webp" class="img-fluid rounded-4 shadow-sm" alt="About Image"
-                loading="lazy">
-              <div class="">
-                <span class="years"></span>
-                <span class="text"></span>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-6 mt-4 mt-lg-0" data-aos="fade-left" data-aos-delay="300">
-            <div class="about-content">
-              <h2>Your Dependable, Local Web Partner</h2>
-              <p class="lead">Your online presence is essential to your business success. It shouldn't be a
-                source of
-                stress. I focus on delivering professional web development, hosting, and maintenance that
-                handles the
-                complexity for you. I back this up with the clear guidance and dependable IT support required to
-                keep
-                your entire operation running smoothly.</p>
-              <p>Whether you need a simple, fast website or a home network that finally works without glitches,
-                I bring
-                practical expertise to solve your real-world tech problems quickly and affordably.</p>
-
-              <div class="row g-4 mt-3">
-                <div class="col-md-6" data-aos="zoom-in" data-aos-delay="400">
-                  <div class="feature-item">
-                    <i class="bi bi-check-circle-fill"></i>
-                    <h5>One-on-One Service</h5>
-                    <p>You collaborate directly with the specialist leading your project. This ensures
-                      crystal-clear
-                      communication, immediate project accountability, and a tailored final product that
-                      perfectly
-                      aligns with your vision and business goals.</p>
-                  </div>
-                </div>
-                <div class="col-md-6" data-aos="zoom-in" data-aos-delay="450">
-                  <div class="feature-item">
-                    <i class="bi bi-lightbulb-fill"></i>
-                    <h5>Practical Solutions, Not Overkill</h5>
-                    <p>I recommend the tech you actually need, nothing more. We focus on reliable solutions that
-                      fit
-                      your budget and your comfort level.</p>
-                  </div>
-                </div>
-              </div>
-
-              <a href="#services" class="btn btn-primary mt-4">Explore Our Services</a>
-            </div>
-          </div>
+      <div class="u-card" style="background:linear-gradient(145deg,#3a2a1a,#1e1408)">
+        <div class="u-card-top"></div>
+        <svg class="card-deco" viewBox="0 0 400 500"><rect x="70" y="80" width="110" height="110" rx="6" stroke="#c8a96e" stroke-width=".7" fill="none"/><rect x="220" y="80" width="110" height="110" rx="6" stroke="#c8a96e" stroke-width=".7" fill="none"/><rect x="70" y="230" width="110" height="110" rx="6" stroke="#c8a96e" stroke-width=".7" fill="none"/><rect x="220" y="230" width="110" height="110" rx="6" stroke="#c8a96e" stroke-width=".7" fill="none"/></svg>
+        <div class="u-card-body">
+          <p class="u-card-num">02 / Apps</p>
+          <h3 class="u-card-title">Applications<br>& Projects</h3>
+          <p class="u-card-desc">Built tools, web apps, and experiments solving real problems with code.</p>
+          <a href="#" class="u-card-link">Explore <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 7h10M7 3l4 4-4 4"/></svg></a>
         </div>
-
-        <!--<div class="testimonial-section mt-5 pt-5" data-aos="fade-up" data-aos-delay="100">
-          <div class="row">
-            <div class="col-lg-4" data-aos="fade-right" data-aos-delay="200">
-              <div class="testimonial-intro">
-                <h3>Our Clients Speak Highly</h3>
-                <p>Hear directly from those who have experienced the impact of our partnership and achieved their strategic goals.</p>
-                <div class="swiper-nav-buttons mt-4">
-                  <button class="slider-prev"><i class="bi bi-arrow-left"></i></button>
-                  <button class="slider-next"><i class="bi bi-arrow-right"></i></button>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-8" data-aos="fade-left" data-aos-delay="300">
-              <div class="testimonial-slider swiper init-swiper">
-                <script type="application/json" class="swiper-config">
-                  {
-                    "loop": true,
-                    "speed": 800,
-                    "autoplay": {
-                      "delay": 5000
-                    },
-                    "slidesPerView": 1,
-                    "spaceBetween": 30,
-                    "navigation": {
-                      "nextEl": ".slider-next",
-                      "prevEl": ".slider-prev"
-                    },
-                    "breakpoints": {
-                      "768": {
-                        "slidesPerView": 2
-                      }
-                    }
-                  }
-                </script>
-                <div class="swiper-wrapper">
-                  <div class="swiper-slide">
-                    <div class="testimonial-item">
-                      <div class="rating mb-3">
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                      </div>
-                      <p>"Their strategic vision and unwavering commitment to results provided exceptional value. Our operational efficiency has signficantly improved."</p>
-                      <div class="client-info d-flex align-items-center mt-4">
-                        <img src="assets/img/person/person-f-1.webp" class="client-img" alt="Client" loading="lazy">
-                        <div>
-                          <h6 class="mb-0">Eleanor Vance</h6>
-                          <span>Operations Manager</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="swiper-slide">
-                    <div class="testimonial-item">
-                      <div class="rating mb-3">
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-half"></i>
-                      </div>
-                      <p>"Collaborating with their team was a revelation. Their innovative strategies guided us toward achieving our objectives with precision and speed."</p>
-                      <div class="client-info d-flex align-items-center mt-4">
-                        <img src="assets/img/person/person-m-1.webp" class="client-img" alt="Client" loading="lazy">
-                        <div>
-                          <h6 class="mb-0">David Kim</h6>
-                          <span>Product Lead</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="swiper-slide">
-                    <div class="testimonial-item">
-                      <div class="rating mb-3">
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                      </div>
-                      <p>"The depth of knowledge and unwavering dedication they bring to every project is exceptional. They've become an essential ally in driving our expansion."</p>
-                      <div class="client-info d-flex align-items-center mt-4">
-                        <img src="assets/img/person/person-f-2.webp" class="client-img" alt="Client" loading="lazy">
-                        <div>
-                          <h6 class="mb-0">Isabella Diaz</h6>
-                          <span>Research Analyst</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="swiper-slide">
-                    <div class="testimonial-item">
-                      <div class="rating mb-3">
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-half"></i>
-                      </div>
-                      <p>"Their dedication to delivering superior solutions and their meticulous attention to detail have profoundly impacted our corporate growth trajectory."</p>
-                      <div class="client-info d-flex align-items-center mt-4">
-                        <img src="assets/img/person/person-f-3.webp" class="client-img" alt="Client" loading="lazy">
-                        <div>
-                          <h6 class="mb-0">Olivia Chen</h6>
-                          <span>Development Strategist</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>-->
-
-    </section><!-- /About Section -->
-
-    <!-- Services Section -->
-    <section id="services" class="services section">
-
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Services</h2>
-        <div><span>Explore Our</span> <span class="description-title">Services</span></div>
-      </div><!-- End Section Title -->
-
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="service-header">
-          <div class="row align-items-center">
-            <div class="col-lg-8 col-md-12">
-              <div class="service-intro">
-                <h2 class="service-heading">
-                  <div>Simple Solutions</div>
-                  <div><span>for Your Real-World Tech Needs</span></div>
-                </h2>
-              </div>
-            </div>
-            <div class="col-lg-4 col-md-12">
-              <div class="service-summary">
-                <p>
-                  I offer practical, local IT and web services specifically designed for homeowners and small
-                  businesses. Let's tackle your tech challenges together—from slow Wi-Fi to getting your first
-                  website
-                  online.
-                </p>
-                <a href="#email-form" class="service-btn">
-                  Contact Me
-                  <i class="bi bi-arrow-right"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row justify-content-center">
-          <div class="col-lg-4 col-md-6 mb-3" data-aos="fade-up" data-aos-delay="100">
-            <div class="service-card position-relative z-1">
-              <div class="service-icon">
-                <i class="bi bi-globe"></i>
-              </div>
-              <a href="#contact" class="card-action d-flex align-items-center justify-content-center rounded-circle">
-                <i class="bi bi-arrow-up-right"></i>
-              </a>
-              <h3>
-                <a href="contact">
-                  Home & Small Business <span>Network Setup</span>
-                </a>
-              </h3>
-              <p>
-                Designing and implementing reliable wired and wireless networks tailored to your needs,
-                including: Router & switch configuration Wireless optimization IoT + smart home integration
-                VLANs, internal segmentation Troubleshooting and diagnostics
-              </p>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 mb-3" data-aos="fade-up" data-aos-delay="200">
-            <div class="service-card position-relative z-1">
-              <div class="service-icon">
-                <i class="bi bi-gem"></i>
-              </div>
-              <a href="#contact" class="card-action d-flex align-items-center justify-content-center rounded-circle">
-                <i class="bi bi-arrow-up-right"></i>
-              </a>
-              <h3>
-                <a href="#">
-                  Private server & Storage <span>Setup</span>
-                </a>
-              </h3>
-              <p>
-                Implementing and configuring local server and storage solutions systems and network file
-                sharing, giving you secure and private control over your data and backups.
-              </p>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 mb-3" data-aos="fade-up" data-aos-delay="300">
-            <div class="service-card position-relative z-1">
-              <div class="service-icon">
-                <i class="bi bi-cloud"></i>
-              </div>
-              <a href="#contact" class="card-action d-flex align-items-center justify-content-center rounded-circle">
-                <i class="bi bi-arrow-up-right"></i>
-              </a>
-              <h3>
-                <a href="#">
-                  Simple Cloud Setup and <span>Support</span>
-                </a>
-              </h3>
-              <p>
-                Setting up and manageing cloud resources such as AWS and Azure services, virtual networks,
-                user access, and cost monitoring to ensure efficient and secure cloud-based operations.
-              </p>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-            <div class="service-card position-relative z-1">
-              <div class="service-icon">
-                <i class="bi bi-lock"></i>
-              </div>
-              <a href="#contact" class="card-action d-flex align-items-center justify-content-center rounded-circle">
-                <i class="bi bi-arrow-up-right"></i>
-              </a>
-              <h3>
-                <a href="#">
-                  Cybersecurity & Network<span>Protection</span>
-                </a>
-              </h3>
-              <p>
-                Strengthening networks through firewall policies, access control, traffic inspection, DNS
-                filtering, and best-practice security measures to protect your systems and data.
-              </p>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-            <div class="service-card position-relative z-1">
-              <div class="service-icon">
-                <i class="bi bi-code-slash"></i>
-              </div>
-              <a href="#contact" class="card-action d-flex align-items-center justify-content-center rounded-circle">
-                <i class="bi bi-arrow-up-right"></i>
-              </a>
-              <h3>
-                <a href="#">
-                  Web Development & <span>Hosting</span>
-                </a>
-              </h3>
-              <p>
-                Deploying, customizing and hosting websites, including theme modifications, CSS styling,
-                performance optimization, and domain configuration to help your brand stand out online.
-              </p>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-            <div class="service-card position-relative z-1">
-              <div class="service-icon">
-                <i class="bi bi-gear"></i>
-              </div>
-              <a href="#contact" class="card-action d-flex align-items-center justify-content-center rounded-circle">
-                <i class="bi bi-arrow-up-right"></i>
-              </a>
-              <h3>
-                <!--<a href="service-details.html">-->
-                Hands-On Tech Support & Advice <span></span>
-                </a>
-              </h3>
-              <p>
-                Practical IT guidance and hands-on technical support, assisting with troubleshooting, device
-                setup, software configuration, and personalized technology advice tailored to your needs.
-              </p>
-            </div>
-          </div>
-        </div>
-
       </div>
 
-    </section><!-- /Services Section -->
-
-
-
-
-
-
-    <!-- Portfolio Section -->
-
-
-
-
-    <!--<section id="portfolio" class="portfolio section">-->
-
-    <!-- Section Title -->
-    <!--<div class="container section-title" data-aos="fade-up">
-        <h2>Portfolio</h2>
-        <div><span>Check Our</span> <span class="description-title">Portfolio</span></div>
+      <div class="u-card" style="background:linear-gradient(145deg,#1e2a20,#0e1810)">
+        <div class="u-card-top"></div>
+        <svg class="card-deco" viewBox="0 0 400 500"><rect x="55" y="90" width="290" height="210" rx="3" stroke="#5a9e6e" stroke-width=".7" fill="none"/><circle cx="200" cy="195" r="65" stroke="#5a9e6e" stroke-width=".7" fill="none"/><circle cx="200" cy="195" r="28" stroke="#c8a96e" stroke-width=".6" fill="none"/><circle cx="200" cy="195" r="5" fill="#c8a96e" opacity=".7"/><rect x="165" y="76" width="70" height="18" rx="3" stroke="#5a9e6e" stroke-width=".6" fill="none"/></svg>
+        <div class="u-card-body">
+          <p class="u-card-num">03 / Gallery</p>
+          <h3 class="u-card-title">Photo<br>Gallery</h3>
+          <p class="u-card-desc">The world through my lens. Landscapes, life, and quiet moments worth preserving.</p>
+          <a href="gallery.html" class="u-card-link">View Gallery <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 7h10M7 3l4 4-4 4"/></svg></a>
+        </div>
       </div>
+    </div>
+  </section>
 
-      <div class="container-fluid" data-aos="fade-up" data-aos-delay="100">
+  <!-- HORIZONTAL SCROLL GALLERY PREVIEW -->
+  <section id="gallery-section">
+    <div class="gallery-header sr">
+      <p class="s-label">Captured Moments</p>
+      <h2 class="s-title">Photo Gallery</h2>
+    </div>
+    <div class="h-scroll-outer" id="h-outer">
+      <div class="h-scroll-track" id="h-track">
 
-        <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
+        <div class="h-slide" onclick="window.location.href='gallery.html';" style="cursor:pointer;">
+          <div class="h-slide-inner" style="background-image:url('assets/japan/img_scaled.jpeg'),linear-gradient(145deg,#1e2d1e,#0e1a0e);"></div>
+          <div class="h-slide-label">Urban</div>
+        </div>
 
-          <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="200">
-            <li data-filter="*" class="filter-active">
-              <i class="bi bi-grid-3x3"></i> All Projects
-            </li>
-            <li data-filter=".filter-ui">
-              <i class="bi bi-gear"></i> Coding
-            </li>
-            <li data-filter=".filter-development">
-              <i class="bi bi-code-slash"></i> Development
-            </li>
-          </ul>
+        <div class="h-slide" onclick="window.location.href='gallery.html';" style="cursor:pointer;">
+          <div class="h-slide-inner" style="background-image:url('assets/japan/img_scaled.jpeg'),linear-gradient(145deg,#1e2d1e,#0e1a0e);"></div>
+          <div class="h-slide-label">Pilbara</div>
+        </div>
 
-          <div class="row g-4 isotope-container" data-aos="fade-up" data-aos-delay="300">
-
-            <div class="col-xl-3 col-lg-4 col-md-6 portfolio-item isotope-item filter-ui">
-              <article class="portfolio-entry">
-                <figure class="entry-image">
-                  <img src="assets/img/portfolio/portfolio-1.webp" class="img-fluid" alt="" loading="lazy">
-                  <div class="entry-overlay">
-                    <div class="overlay-content">
-                      <div class="entry-meta">Web Development</div>
-                      <h3 class="entry-title">Business Website</h3>
-                      <div class="entry-links">
-                        <a href="assets/img/portfolio/portfolio-1.webp" class="glightbox"
-                          data-gallery="portfolio-gallery-ui"
-                          data-glightbox="title: Mobile Banking App; description: Praesent commodo cursus magna, vel scelerisque nisl consectetur.">
-                          <i class="bi bi-arrows-angle-expand"></i>
-                        </a>
-                        <a href="portfolio-details.html">
-                          <i class="bi bi-arrow-right"></i>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </figure>
-              </article>
-            </div>
-
-
-            <div class="col-xl-3 col-lg-4 col-md-6 portfolio-item isotope-item filter-ui">
-              <article class="portfolio-entry">
-                <figure class="entry-image">
-                  <img src="assets/img/portfolio/portfolio-2.webp" class="img-fluid" alt="" loading="lazy">
-                  <div class="entry-overlay">
-                    <div class="overlay-content">
-                      <div class="entry-meta">Web Development</div>
-                      <h3 class="entry-title">Smart Home Interface</h3>
-                      <div class="entry-links">
-                        <a href="assets/img/portfolio/portfolio-2.webp" class="glightbox"
-                          data-gallery="portfolio-gallery-ui"
-                          data-glightbox="title: Smart Home Interface; description: At vero eos et accusamus et iusto odio dignissimos ducimus.">
-                          <i class="bi bi-arrows-angle-expand"></i>
-                        </a>
-                        <a href="portfolio-details.html">
-                          <i class="bi bi-arrow-right"></i>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </figure>
-              </article>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 portfolio-item isotope-item filter-development">
-              <article class="portfolio-entry">
-                <figure class="entry-image">
-                  <img src="assets/img/portfolio/portfolio-11.webp" class="img-fluid" alt="" loading="lazy">
-                  <div class="entry-overlay">
-                    <div class="overlay-content">
-                      <div class="entry-meta">Development</div>
-                      <h3 class="entry-title">Cloud Management System</h3>
-                      <div class="entry-links">
-                        <a href="assets/img/portfolio/portfolio-11.webp" class="glightbox"
-                          data-gallery="portfolio-gallery-development"
-                          data-glightbox="title: Cloud Management System; description: Temporibus autem quibusdam et aut officiis debitis.">
-                          <i class="bi bi-arrows-angle-expand"></i>
-                        </a>
-                        <a href="portfolio-details.html">
-                          <i class="bi bi-arrow-right"></i>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </figure>
-              </article>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 portfolio-item isotope-item filter-photography">
-              <article class="portfolio-entry">
-                <figure class="entry-image">
-                  <img src="assets/img/portfolio/portfolio-8.webp" class="img-fluid" alt="" loading="lazy">
-                  <div class="entry-overlay">
-                    <div class="overlay-content">
-                      <div class="entry-meta">Coding</div>
-                      <h3 class="entry-title">Squat analyzer</h3>
-                      <div class="entry-links">
-                        <a href="assets/img/portfolio/portfolio-8.webp" class="glightbox"
-                          data-gallery="portfolio-gallery-photography"
-                          data-glightbox="title: Nature Collection; description: Integer posuere erat a ante venenatis dapibus posuere velit aliquet.">
-                          <i class="bi bi-arrows-angle-expand"></i>
-                        </a>
-                        <a href="portfolio-details.html">
-                          <i class="bi bi-arrow-right"></i>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </figure>
-              </article>
-            </div>
-
-
-
-
+        <div class="h-slide" onclick="window.location.href='gallery.html';" style="cursor:pointer;">
+          <div class="h-slide-inner" style="background:linear-gradient(145deg,#141e2a,#080e18);">
+            <svg width="60" height="60" fill="none" opacity=".2"><circle cx="30" cy="22" r="12" stroke="#6e8ec8" stroke-width="1"/><path d="M10 54 Q10 38 30 38 Q50 38 50 54" stroke="#6e8ec8" stroke-width="1" fill="none"/></svg>
           </div>
-
+          <div class="h-slide-label">People — Portraits</div>
         </div>
 
-    </section>-->
-
-    <!-- /Portfolio Section -->
-
-    <!-- Team Section -->
-    <section id="team" class="team section light-background">
-
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Team</h2>
-        <div><span>Check Our</span> <span class="description-title">Team</span></div>
-      </div><!-- End Section Title -->
-
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="row gy-4">
-
-          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-            <div class="team-member d-flex">
-              <div class="member-img">
-                <img src="assets/img/person/person-m-7.webp" class="img-fluid" alt="" loading="lazy">
-              </div>
-              <div class="member-info flex-grow-1">
-                <h4>Tonis Praks</h4>
-                <span>Technical Officer</span>
-                <p>I build robust, reliable infrastructure and create dynamic web solutions using modern
-                  technologies.
-                  Let's connect to build your next great project.</p>
-                <div class="social">
-
-
-                  <a href=""><i class="bi bi-linkedin"></i></a>
-                  <a href=""><i class="bi bi-github"></i></a>
-                </div>
-              </div>
-            </div>
-          </div><!-- End Team Member -->
-
-
-
-
-
-
-
-
-
-
-        </div>
-
-      </div>
-
-    </section><!-- /Team Section -->
-
-
-
-
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact section">
-
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Contact</h2>
-        <div><span>Let's</span> <span class="description-title">Connect</span></div>
-      </div><!-- End Section Title -->
-
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <!-- Contact Info Boxes -->
-        <div class="row gy-4 mb-5">
-          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
-            <div class="contact-info-box">
-              <div class="icon-box">
-                <i class="bi bi-geo-alt"></i>
-              </div>
-              <div class="info-content">
-                <h4>Our Address</h4>
-                <p>Australia</p>
-              </div>
-            </div>
+        <div class="h-slide" onclick="window.location.href='gallery.html';" style="cursor:pointer;">
+          <div class="h-slide-inner" style="background:linear-gradient(145deg,#1e2820,#0e1812);">
+            <svg width="60" height="60" fill="none" opacity=".2"><path d="M10 50 Q15 20 30 15 Q45 20 50 50" stroke="#5a9e6e" stroke-width="1" fill="none"/><line x1="30" y1="15" x2="30" y2="50" stroke="#5a9e6e" stroke-width=".8"/></svg>
           </div>
+          <div class="h-slide-label">Nature — Flora</div>
+        </div>
 
-          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
-            <div class="contact-info-box">
-              <div class="icon-box">
-                <i class="bi bi-envelope"></i>
-              </div>
-              <div class="info-content">
-                <h4>Email Address</h4>
-                <p>tonispraks94@gmail.com</p>
-
-              </div>
-            </div>
+        <div class="h-slide" onclick="window.location.href='gallery.html';" style="cursor:pointer;">
+          <div class="h-slide-inner" style="background:linear-gradient(145deg,#28201e,#18100e);">
+            <svg width="60" height="60" fill="none" opacity=".2"><polygon points="30,8 52,50 8,50" stroke="#c8a96e" stroke-width="1" fill="none"/><line x1="30" y1="22" x2="30" y2="38" stroke="#c8a96e" stroke-width="1"/><circle cx="30" cy="43" r="2" fill="#c8a96e"/></svg>
           </div>
+          <div class="h-slide-label">Travel — Adventures</div>
+        </div>
 
-          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
-            <div class="contact-info-box">
-              <div class="icon-box">
-                <i class="bi bi-headset"></i>
-              </div>
-              <div class="info-content">
-                <h4>Hours of Operation</h4>
-                <p>Sunday-Fri: 9 AM - 6 PM</p>
-              </div>
-            </div>
+        <div class="h-slide" onclick="window.location.href='gallery.html';" style="cursor:pointer;">
+          <div class="h-slide-inner" style="background:linear-gradient(145deg,#201a28,#100a18);">
+            <svg width="60" height="60" fill="none" opacity=".2"><circle cx="30" cy="30" r="22" stroke="#8e6ec8" stroke-width=".6"/><line x1="30" y1="8" x2="30" y2="52" stroke="#8e6ec8" stroke-width=".6"/><line x1="8" y1="30" x2="52" y2="30" stroke="#8e6ec8" stroke-width=".6"/><ellipse cx="30" cy="30" rx="11" ry="22" stroke="#8e6ec8" stroke-width=".6" fill="none"/></svg>
           </div>
-        </div>
-
-      </div>
-
-      <div class="map-section" data-aos="fade-up" data-aos-delay="200">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d15000000!2d133.775136!3d-25.274398!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sau!4v1700000000000!5m2!1sen!2sau"
-          width="100%" height="500" style="border:0;" allowfullscreen="" loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
-      </div>
-
-      <!-- Contact Form Section (Overlapping) -->
-      <div id="email-form" class="container form-container-overlap">
-        <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="300">
-          <div class="col-lg-10">
-            <div class="contact-form-wrapper">
-              <h2 class="text-center mb-4">Get in Touch</h2>
-
-              <form action="https://formspree.io/f/xovgdkgp" method="POST" class="needs-validation">
-                <div class="row g-3">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <div class="input-with-icon">
-                        <i class="bi bi-person"></i>
-                        <input type="text" class="form-control" name="name" placeholder="First Name" required="">
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <div class="input-with-icon">
-                        <i class="bi bi-envelope"></i>
-                        <input type="email" class="form-control" name="email" placeholder="Email Address" required="">
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <div class="input-with-icon">
-                        <i class="bi bi-text-left"></i>
-                        <input type="text" class="form-control" name="subject" placeholder="Subject" required="">
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-12">
-                    <div class="form-group">
-                      <div class="input-with-icon">
-                        <i class="bi bi-chat-dots message-icon"></i>
-                        <textarea class="form-control" name="message" placeholder="Write Message..."
-                          style="height: 180px" required=""></textarea>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-12">
-                  </div>
-
-                  <div class="col-12 text-center">
-                    <button type="submit" class="btn btn-primary btn-submit">SEND MESSAGE</button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-    </section>
-    <!-- /Contact Section -->
-
-  </main>
-
-  <!--FOOTER-->
-
-  <footer id="footer" class="footer">
-
-    <div class="container footer-top">
-      <div class="row gy-4">
-        <div class="col-lg-5 col-md-12 footer-about">
-          <a href="index.html" class="logo d-flex align-items-center">
-            <span class="sitename">Praks IT</span>
-          </a>
-          <p>Praks IT is your local IT and web resource, dedicated to keeping your home or small business running
-            smoothly. I provide the dependable network support and practical website solutions you need without the
-            corporate complexity..</p>
-          <div class="social-links d-flex mt-4">
-            <a href="https://github.com/tonisp-sudo"><i class="bi bi-github"></i></a>
-            <a href="https://www.linkedin.com/in/tonispraks/"><i class="bi bi-linkedin"></i></a>
-          </div>
-        </div>
-
-        <div class="col-lg-2 col-6 footer-links">
-          <h4>Useful Links</h4>
-          <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#about">About us</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#">Terms of service</a></li>
-            <li><a href="#">Privacy policy</a></li>
-          </ul>
-        </div>
-
-        <div class="col-lg-2 col-6 footer-links">
-          <h4>Our Services</h4>
-          <ul>
-            <li><a href="#services">Networks</a></li>
-            <li><a href="#services">Servers & Storage</a></li>
-            <li><a href="#services">Cloud Technologies</a></li>
-            <li><a href="#services">Cybersecurity</a></li>
-            <li><a href="#services">Web development & Hosting</a></li>
-            <li><a href="#services">Tech Support & Advice</a></li>
-          </ul>
-        </div>
-
-        <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
-          <h4>Contact Us</h4>
-          <p>Australia</p>
-          <p class="mt-4"><strong>Phone:</strong> <span>+610 477 734 266</span></p>
-          <p><strong>Email:</strong> <span>tonispraks94@gmail..com</span></p>
+          <div class="h-slide-label">World — Street</div>
         </div>
 
       </div>
     </div>
+    <div class="gallery-drag-hint"><div class="drag-arr"></div>Drag to explore — <a href="gallery.html" style="color:var(--gold2);text-decoration:none;border-bottom:1px solid rgba(212,170,90,.3);">view full gallery →</a></div>
+  </section>
 
-    <div class="container copyright text-center mt-4">
-      <p>© <span>Copyright</span> <strong class="px-1 sitename">Tonis Praks</strong> <span>All Rights Reserved</span>
-      </p>
-      <div class="credits">
-        <!-- All the links in the footer should remain intact. -->
-        <!-- You can delete the links only if you've purchased the pro version. -->
-        <!-- Licensing information: https://bootstrapmade.com/license/ -->
-        <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
-        Designed by <a href="https://github.com/tonisp-sudo">Tonis Praks</a>
+  <!-- CONTACT -->
+  <section id="contact-section">
+    <div class="sr"><p class="s-label">Get in touch</p><h2 class="s-title">Let's Connect</h2></div>
+    <div class="contact-grid">
+      <div class="sr" style="transition-delay:.1s">
+        <div class="ci-item"><div class="ci-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 7c0 5-6 9-6 9S3 12 3 7a6 6 0 0112 0z"/><circle cx="9" cy="7" r="2"/></svg></div><div><div class="ci-lbl">Location</div><p class="ci-val">Australia</p></div></div>
+        <div class="ci-item"><div class="ci-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="16" height="12" rx="1.5"/><path d="M1 4l8 7 8-7"/></svg></div><div><div class="ci-lbl">Email</div><a href="mailto:tonis@praks.com.au" class="ci-val">tonis@praks.com.au</a></div></div>
+        <div class="ci-item"><div class="ci-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 12v2a1.3 1.3 0 01-1.5 1.3A13 13 0 012.7 3.5 1.3 1.3 0 014 2h2a1.3 1.3 0 011.3 1c.2.7.4 1.4.7 2.1a1.3 1.3 0 01-.3 1.4L7 7.1A10 10 0 0010.9 11l.6-.7a1.3 1.3 0 011.4-.3c.7.3 1.4.5 2.1.7A1.3 1.3 0 0116 12z"/></svg></div><div><div class="ci-lbl">Phone</div><a href="tel:+610477734266" class="ci-val">+61 0477 734 266</a></div></div>
+        <div class="ci-item"><div class="ci-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="9" r="7"/><path d="M9 5v4l2.5 2.5"/></svg></div><div><div class="ci-lbl">Hours</div><p class="ci-val">Sun – Fri: 9 AM – 6 PM</p></div></div>
+      </div>
+      <div class="contact-form sr" style="transition-delay:.2s">
+        <form action="https://formspree.io/f/xovgdkgp" method="POST">
+          <div class="form-row"><input type="text" name="name" placeholder="First Name" required><input type="email" name="email" placeholder="Email Address" required></div>
+          <input type="text" name="subject" placeholder="Subject" required>
+          <textarea name="message" placeholder="Your message..." required></textarea>
+          <button type="submit" class="btn-solid" style="width:100%;justify-content:center">Send Message <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 6L2 2l2 4-2 4 10-4z"/></svg></button>
+        </form>
       </div>
     </div>
+  </section>
 
+  <footer>
+    <p class="footer-copy">© 2025 Tonis Praks. All Rights Reserved.</p>
+    <div class="footer-links">
+      <a href="https://github.com/tonisp-sudo" target="_blank">GitHub</a>
+      <a href="https://www.linkedin.com/in/tonispraks/" target="_blank">LinkedIn</a>
+      <a href="/wiki/site/index.html">Wiki</a>
+    </div>
   </footer>
 
-  <!-- Scroll Top -->
-  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
-      class="bi bi-arrow-up-short"></i></a>
+  <button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Top">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 11V3M3 7l4-4 4 4"/></svg>
+  </button>
 
-  <!-- Preloader -->
-  <div id="preloader"></div>
+  <script>
+    // ── Cursor ──
+    const dot=document.getElementById('c-dot'),ring=document.getElementById('c-ring');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.cssText=`left:${mx}px;top:${my}px`});
+    document.addEventListener('mouseover',e=>{e.target.closest('a,button')?ring.classList.add('big'):ring.classList.remove('big')});
+    (function ar(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;ring.style.cssText=`left:${rx}px;top:${ry}px`;requestAnimationFrame(ar)})();
 
-  <!-- Vendor JS Files -->
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
-  <script src="assets/vendor/aos/aos.js"></script>
-  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
-  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+    // ── Navbar ──
+    const nb=document.getElementById('navbar'),sBtn=document.getElementById('scroll-top');
+    window.addEventListener('scroll',()=>{nb.classList.toggle('scrolled',scrollY>50);sBtn.classList.toggle('vis',scrollY>400)});
 
-  <!-- Main JS File -->
-  <script src="assets/js/main.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/curtainsjs/8.1.5/curtains.min.js"></script>
+    // ── Mobile nav ──
+    document.getElementById('nav-toggle').addEventListener('click',()=>document.getElementById('nav-links').classList.toggle('open'));
+    document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',()=>document.getElementById('nav-links').classList.remove('open')));
 
+    // ── Scroll reveal ──
+    const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target)}}),{threshold:.1,rootMargin:'0px 0px -50px 0px'});
+    document.querySelectorAll('.sr').forEach(el=>obs.observe(el));
+  </script>
+
+  <!-- GSAP horizontal gallery drag -->
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+    const track=document.getElementById('h-track'),outer=document.getElementById('h-outer');
+    let curX=0;
+    function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
+    function getMinX(){return-(track.scrollWidth-outer.clientWidth);}
+
+    let dragging=false,lastMX=0;
+    track.addEventListener('mousedown',e=>{dragging=true;lastMX=e.clientX;gsap.killTweensOf(track);ring.classList.add('big');});
+    document.addEventListener('mouseup',()=>{dragging=false;ring.classList.remove('big');});
+    document.addEventListener('mousemove',e=>{
+      if(!dragging)return;
+      const dx=e.clientX-lastMX; lastMX=e.clientX;
+      curX=clamp(curX+dx*1.3,getMinX(),0);
+      gsap.to(track,{x:curX,duration:.25,ease:'power2.out'});
+    });
+
+    let tLast=0;
+    track.addEventListener('touchstart',e=>{tLast=e.touches[0].clientX;},{passive:true});
+    track.addEventListener('touchmove',e=>{
+      const dx=e.touches[0].clientX-tLast; tLast=e.touches[0].clientX;
+      curX=clamp(curX+dx,getMinX(),0);
+      gsap.to(track,{x:curX,duration:.2,ease:'power2.out'});
+    },{passive:true});
+
+    gsap.utils.toArray('.h-slide').forEach((s,i)=>{
+      gsap.from(s,{scrollTrigger:{trigger:'#gallery-section',start:'top 70%'},opacity:0,y:60,delay:i*.08,duration:.7,ease:'power2.out'});
+    });
+  </script>
+
+  <!-- p5.js particle morph background -->
+  <script>
+    new p5(function(p){
+      const wrap=document.getElementById('p5-wrap');
+      const N=130;
+      const PALETTE=['#b8933e','#9b4f2a','#5a7a5a','#7a6a5a','#8a8278','#c8a96e'];
+      let pts=[],shapeIdx=0;
+
+      function shape(idx,cx,cy,r){
+        const out=[];
+        if(idx===0){for(let i=0;i<N;i++)out.push({x:cx+p.random(-1,1)*r*1.8,y:cy+p.random(-1,1)*r*1.2});}
+        else if(idx===1){for(let i=0;i<N;i++){const a=i/N*p.TWO_PI;out.push({x:cx+Math.cos(a)*r,y:cy+Math.sin(a)*r});}}
+        else if(idx===2){const c=Math.ceil(Math.sqrt(N));for(let i=0;i<N;i++){const col=i%c,row=Math.floor(i/c);out.push({x:cx-r+(col/(c-1))*r*2,y:cy-r*.7+(row/(c-1))*r*1.4});}}
+        else if(idx===3){for(let i=0;i<N;i++){const a=i/N*p.TWO_PI;const rr=i%2===0?r:r*.42;out.push({x:cx+Math.cos(a)*rr,y:cy+Math.sin(a)*rr});}}
+        else{for(let i=0;i<N;i++){const a=i/N*p.TWO_PI*3;const rr=i/N*r;out.push({x:cx+Math.cos(a)*rr,y:cy+Math.sin(a)*rr});}}
+        return out;
+      }
+
+      p.setup=function(){
+        const cnv=p.createCanvas(window.innerWidth,window.innerHeight);
+        cnv.parent(wrap);
+        const r=Math.min(p.width,p.height)*.25;
+        const init=shape(0,p.width/2,p.height/2,r);
+        for(let i=0;i<N;i++){
+          const col=p.color(PALETTE[Math.floor(p.random(PALETTE.length))]);
+          pts.push({x:init[i].x,y:init[i].y,tx:init[i].x,ty:init[i].y,vx:0,vy:0,sz:p.random(3,6.5),col,a:p.random(100,190),sp:p.random(.04,.09)});
+        }
+        let si=1;
+        function next(){
+          const r2=Math.min(p.width,p.height)*.25;
+          const s=shape(si,p.width/2,p.height/2,r2);
+          pts.forEach((pt,i)=>{pt.tx=s[i].x;pt.ty=s[i].y;});
+          si=(si+1)%5;
+          setTimeout(next,3600);
+        }
+        setTimeout(next,3200);
+      };
+
+      p.draw=function(){
+        p.clear();
+        for(let i=0;i<N;i++){
+          for(let j=i+1;j<N;j++){
+            const d=p.dist(pts[i].x,pts[i].y,pts[j].x,pts[j].y);
+            if(d<72){p.stroke(184,147,62,p.map(d,0,72,22,0));p.strokeWeight(.35);p.line(pts[i].x,pts[i].y,pts[j].x,pts[j].y);}
+          }
+        }
+        pts.forEach(pt=>{
+          pt.vx+=(pt.tx-pt.x)*pt.sp; pt.vy+=(pt.ty-pt.y)*pt.sp;
+          pt.vx*=.76; pt.vy*=.76;
+          pt.x+=pt.vx; pt.y+=pt.vy;
+          const dx=pt.x-p.mouseX,dy=pt.y-p.mouseY,md=Math.sqrt(dx*dx+dy*dy);
+          if(md<85){const f=(85-md)/85;pt.x+=(dx/md)*f*5.5;pt.y+=(dy/md)*f*5.5;}
+          p.noStroke();
+          const c=pt.col;
+          p.fill(p.red(c),p.green(c),p.blue(c),pt.a);
+          p.ellipse(pt.x,pt.y,pt.sz);
+        });
+      };
+
+      p.mousePressed=function(){
+        shapeIdx=(shapeIdx+1)%5;
+        const r=Math.min(p.width,p.height)*.25;
+        const s=shape(shapeIdx,p.width/2,p.height/2,r);
+        pts.forEach((pt,i)=>{pt.tx=s[i].x;pt.ty=s[i].y;});
+      };
+
+      p.windowResized=function(){p.resizeCanvas(window.innerWidth,window.innerHeight);};
+    });
+  </script>
 </body>
-
 </html>
