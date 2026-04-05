@@ -79,35 +79,15 @@
     @media(max-width:900px) { .gallery-grid { grid-template-columns:repeat(2,1fr);padding:0 1.5rem 5rem; } }
     @media(max-width:540px) { .gallery-grid { grid-template-columns:1fr; } }
 
-    /* ── SUBGALLERY CARD ──
-       FIX: removed `opacity:0` default from .sg-wrapper.
-       Cards are now visible immediately on load.
-       The IntersectionObserver adds a subtle slide-up reveal
-       only for cards that are genuinely below the fold.
-       The conflicting gsap.from() entrance has been removed entirely.
-    ── */
-    .sg-wrapper {
-      transition: opacity .5s ease, transform .5s ease;
-    }
-    /* Cards start hidden only when JS is running (set via JS, not CSS default) */
-    .sg-wrapper.will-reveal {
-      opacity: 0;
-      transform: translateY(24px);
-    }
-    .sg-wrapper.will-reveal.vis {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    /* Stagger delays */
-    .sg-wrapper:nth-child(1){ transition-delay:0s }
-    .sg-wrapper:nth-child(2){ transition-delay:.08s }
-    .sg-wrapper:nth-child(3){ transition-delay:.16s }
-    .sg-wrapper:nth-child(4){ transition-delay:0s }
-    .sg-wrapper:nth-child(5){ transition-delay:.08s }
-    .sg-wrapper:nth-child(6){ transition-delay:.16s }
-
-    /* Filter dimming (applied by JS, not animation system) */
-    .sg-wrapper.dimmed { opacity:.15 !important; transform:scale(.97) !important; pointer-events:none; }
+    /* ── SUBGALLERY CARD ── */
+    .sg-wrapper { opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease; }
+    .sg-wrapper.vis { opacity:1;transform:translateY(0); }
+    .sg-wrapper:nth-child(1){transition-delay:0s}
+    .sg-wrapper:nth-child(2){transition-delay:.1s}
+    .sg-wrapper:nth-child(3){transition-delay:.2s}
+    .sg-wrapper:nth-child(4){transition-delay:0s}
+    .sg-wrapper:nth-child(5){transition-delay:.1s}
+    .sg-wrapper:nth-child(6){transition-delay:.2s}
 
     .sg-card { position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--ink2);cursor:none;text-decoration:none;display:block; }
     .sg-card--wide { grid-column:span 2;aspect-ratio:16/9; }
@@ -121,6 +101,7 @@
     .sg-card:hover .sg-card-line { transform:scaleX(1); }
 
     .sg-badge { position:absolute;top:1.25rem;right:1.25rem;z-index:3;background:rgba(245,240,232,.12);backdrop-filter:blur(8px);border:1px solid rgba(245,240,232,.2);padding:.3rem .75rem;font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.1em;color:rgba(245,240,232,.8); }
+    /* Placeholder badge style */
     .sg-badge.placeholder { background:rgba(184,147,62,.15);border-color:rgba(184,147,62,.3);color:var(--gold2); }
 
     .sg-card-body { position:absolute;bottom:0;left:0;right:0;padding:2rem;z-index:3; }
@@ -131,15 +112,25 @@
     .sg-card-arrow { display:inline-flex;align-items:center;gap:.5rem;margin-top:1rem;font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold2);opacity:0;transform:translateX(-8px);transition:all .4s .05s; }
     .sg-card:hover .sg-card-arrow { opacity:1;transform:translateX(0); }
 
-    /* ── PHOTO PLACEHOLDER ── */
-    .photo-placeholder { position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;background:var(--ink2);border:1.5px dashed rgba(184,147,62,.25);z-index:1;transition:border-color .3s,background .3s; }
+    /* ── PHOTO PLACEHOLDER (used inside each subgallery section) ── */
+    /* Drop-zone visual for photos not yet added */
+    .photo-placeholder {
+      position:absolute;inset:0;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;
+      background:var(--ink2);
+      border:1.5px dashed rgba(184,147,62,.25);
+      z-index:1;
+      transition:border-color .3s,background .3s;
+    }
     .photo-placeholder:hover { border-color:rgba(184,147,62,.5);background:#252220; }
     .photo-placeholder svg { opacity:.25; }
     .photo-placeholder span { font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(184,147,62,.35); }
 
-    /* ── SUBGALLERY GRID ── */
+    /* ── SUBGALLERY GRID (below each category heading) ── */
+    /* Inline photo grids shown when a category is expanded or on its own page */
     .subgallery-section { padding:0 3rem 5rem; }
     @media(max-width:768px) { .subgallery-section { padding:0 1.5rem 3.5rem; } }
+
     .subgallery-header { display:flex;align-items:baseline;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border); }
     .subgallery-title { font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800; }
     .subgallery-link { font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;transition:color .2s; }
@@ -154,8 +145,11 @@
     .photo-item { position:relative;aspect-ratio:1;overflow:hidden;background:var(--ink2);cursor:none; }
     .photo-item--wide { grid-column:span 2;aspect-ratio:2/1; }
     .photo-item--tall { grid-row:span 2;aspect-ratio:1/2; }
-    .photo-item img { width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s cubic-bezier(.25,.46,.45,.94),filter .4s;filter:grayscale(5%); }
+
+    .photo-item img { width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s cubic-bezier(.25,.46,.45,.94),filter .4s; filter:grayscale(5%); }
     .photo-item:hover img { transform:scale(1.05);filter:grayscale(0%); }
+
+    /* Lightbox overlay */
     .photo-item-overlay { position:absolute;inset:0;background:rgba(26,23,20,0);z-index:2;transition:background .3s;display:flex;align-items:flex-end;padding:1rem; }
     .photo-item:hover .photo-item-overlay { background:rgba(26,23,20,.25); }
     .photo-item-caption { font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.1em;color:rgba(245,240,232,.7);text-transform:uppercase;opacity:0;transform:translateY(4px);transition:all .3s; }
@@ -169,7 +163,7 @@
     .lb-close:hover { border-color:var(--gold); }
     .lb-caption { position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(245,240,232,.5); }
 
-    /* ── SR scroll reveal (hero, filter bar, subgallery sections) ── */
+    /* ── SR / scroll reveal ── */
     .sr { opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease; }
     .sr.vis { opacity:1;transform:translateY(0); }
 
@@ -210,7 +204,6 @@
       <li><a href="index.html">Home</a></li>
       <li><a href="index.html#universe">Universe</a></li>
       <li><a href="gallery.html" class="active">Gallery</a></li>
-      <li><a href="apps.html">Apps</a></li>
       <li><a href="index.html#contact-section">Contact</a></li>
       <li><a href="/wiki/site/index.html">Learn</a></li>
     </ul>
@@ -243,24 +236,28 @@
   </div>
 
   <!-- ══════════════════════════════════════════════════════
-       GALLERY GRID
-       To add a cover photo, replace the gradient background:
-         style="background-image: url('assets/FOLDER/cover.jpg'); background-size:cover; background-position:center;"
+       GALLERY GRID — Category cards
+       Each .sg-wrapper links to its own subgallery page.
+       Replace the gradient bg with a real cover photo:
+         background-image: url('assets/YOUR-FOLDER/cover.jpg')
   ═══════════════════════════════════════════════════════ -->
   <div class="gallery-grid" id="gallery-grid">
 
-    <!-- ① LANDSCAPES — wide -->
+    <!-- ① LANDSCAPES — wide hero card -->
     <div class="sg-wrapper sg-card--wide" data-cat="landscape">
       <a href="gallery-landscapes.html" class="sg-card sg-card--wide">
         <div class="sg-card-line"></div>
-        <div class="sg-card-bg" style="background-image:url('assets/landscapes/cover.jpg'),linear-gradient(135deg,#1e2d1e 0%,#2a3d1a 40%,#3d5228 100%);background-size:cover;background-position:center;">
-          <svg style="width:100%;height:100%;opacity:.18" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+        <!--
+          COVER PHOTO — Landscapes
+          Replace the gradient with:
+          style="background-image: url('assets/landscapes/cover.jpg'); background-size:cover; background-position:center;"
+        -->
+<div class="sg-card-bg" style="background-image: url('assets/landscapes/cover.jpg'); background-size: cover; background-position: center;">          <svg style="width:100%;height:100%;opacity:.18" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
             <path d="M0 300 L120 180 L200 250 L320 120 L440 200 L560 100 L680 180 L800 140 L800 400 L0 400Z" fill="rgba(90,154,110,.25)"/>
             <path d="M0 350 L100 300 L200 320 L320 260 L440 290 L560 240 L680 270 L800 230 L800 400 L0 400Z" fill="rgba(90,154,110,.15)"/>
             <circle cx="650" cy="80" r="40" fill="none" stroke="rgba(200,169,110,.3)" stroke-width="1"/>
           </svg>
         </div>
-        <div class="sg-badge placeholder">Add cover photo</div>
         <div class="sg-card-body">
           <p class="sg-card-cat">01 / Landscape</p>
           <h2 class="sg-card-title">Australian<br>Landscapes</h2>
@@ -274,7 +271,11 @@
     <div class="sg-wrapper" data-cat="urban">
       <a href="gallery-urban.html" class="sg-card">
         <div class="sg-card-line"></div>
-        <div class="sg-card-bg" style="background-image:url('assets/urban/cover.jpg'),linear-gradient(135deg,#1a1e2e 0%,#252840 100%);background-size:cover;background-position:center;">
+        <!--
+          COVER PHOTO — Urban
+          Replace with: style="background-image: url('assets/urban/cover.jpg'); background-size:cover; background-position:center;"
+        -->
+        <div class="sg-card-bg" style="background-image: url('assets/urban/cover.jpg'); background-size:cover; background-position:center;"">
           <svg style="width:100%;height:100%;opacity:.2" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice">
             <rect x="20" y="200" width="40" height="200" fill="rgba(110,142,200,.4)"/>
             <rect x="75" y="220" width="30" height="180" fill="rgba(110,142,200,.35)"/>
@@ -285,7 +286,6 @@
             <rect x="350" y="220" width="30" height="180" fill="rgba(110,142,200,.35)"/>
           </svg>
         </div>
-        <div class="sg-badge placeholder">Add cover photo</div>
         <div class="sg-card-body">
           <p class="sg-card-cat">02 / Urban</p>
           <h2 class="sg-card-title">Urban<br>Architecture</h2>
@@ -295,11 +295,15 @@
       </a>
     </div>
 
-    <!-- ③ PORTRAITS -->
+    <!-- ③ PEOPLE / PORTRAITS -->
     <div class="sg-wrapper" data-cat="people">
       <a href="gallery-portraits.html" class="sg-card">
         <div class="sg-card-line"></div>
-        <div class="sg-card-bg" style="background-image:url('assets/portraits/cover.jpg'),linear-gradient(135deg,#2a1e18 0%,#3d2a20 100%);background-size:cover;background-position:center;">
+        <!--
+          COVER PHOTO — Portraits
+          Replace with: style="background-image: url('assets/portraits/cover.jpg'); background-size:cover; background-position:center;"
+        -->
+        <div class="sg-card-bg" style="background:linear-gradient(135deg,#2a1e18 0%,#3d2a20 100%);">
           <svg style="width:100%;height:100%;opacity:.2" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice">
             <circle cx="200" cy="160" r="60" stroke="rgba(200,169,110,.5)" stroke-width="1" fill="rgba(155,79,42,.1)"/>
             <path d="M80 370 Q80 270 200 270 Q320 270 320 370" stroke="rgba(200,169,110,.4)" stroke-width="1" fill="none"/>
@@ -319,7 +323,11 @@
     <div class="sg-wrapper" data-cat="nature">
       <a href="gallery-nature.html" class="sg-card">
         <div class="sg-card-line"></div>
-        <div class="sg-card-bg" style="background-image:url('assets/nature/cover.jpg'),linear-gradient(135deg,#1a2820 0%,#243020 100%);background-size:cover;background-position:center;">
+        <!--
+          COVER PHOTO — Nature
+          Replace with: style="background-image: url('assets/nature/cover.jpg'); background-size:cover; background-position:center;"
+        -->
+        <div class="sg-card-bg" style="background:linear-gradient(135deg,#1a2820 0%,#243020 100%);">
           <svg style="width:100%;height:100%;opacity:.2" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice">
             <path d="M200 350 Q100 250 130 150 Q160 50 200 80 Q240 50 270 150 Q300 250 200 350Z" stroke="rgba(90,122,90,.8)" stroke-width="1" fill="rgba(90,122,90,.12)"/>
             <path d="M200 350 Q200 200 160 100" stroke="rgba(90,122,90,.5)" stroke-width=".8" fill="none"/>
@@ -339,7 +347,11 @@
     <div class="sg-wrapper" data-cat="travel">
       <a href="gallery-travel.html" class="sg-card">
         <div class="sg-card-line"></div>
-        <div class="sg-card-bg" style="background-image:url('assets/travel/cover.jpg'),linear-gradient(135deg,#28201a 0%,#3d2c1a 100%);background-size:cover;background-position:center;">
+        <!--
+          COVER PHOTO — Travel
+          Replace with: style="background-image: url('assets/travel/cover.jpg'); background-size:cover; background-position:center;"
+        -->
+        <div class="sg-card-bg" style="background:linear-gradient(135deg,#28201a 0%,#3d2c1a 100%);">
           <svg style="width:100%;height:100%;opacity:.2" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice">
             <circle cx="200" cy="200" r="130" stroke="rgba(200,169,110,.5)" stroke-width="1" fill="none"/>
             <ellipse cx="200" cy="200" rx="65" ry="130" stroke="rgba(200,169,110,.3)" stroke-width=".7" fill="none"/>
@@ -361,7 +373,11 @@
     <div class="sg-wrapper sg-card--wide" data-cat="street">
       <a href="gallery-street.html" class="sg-card sg-card--wide">
         <div class="sg-card-line"></div>
-        <div class="sg-card-bg" style="background-image:url('assets/street/cover.jpg'),linear-gradient(135deg,#1a181e 0%,#252230 100%);background-size:cover;background-position:center;">
+        <!--
+          COVER PHOTO — Street
+          Replace with: style="background-image: url('assets/street/cover.jpg'); background-size:cover; background-position:center;"
+        -->
+        <div class="sg-card-bg" style="background:linear-gradient(135deg,#1a181e 0%,#252230 100%);">
           <svg style="width:100%;height:100%;opacity:.18" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
             <line x1="0" y1="400" x2="400" y2="180" stroke="rgba(150,120,200,.4)" stroke-width=".8"/>
             <line x1="800" y1="400" x2="400" y2="180" stroke="rgba(150,120,200,.4)" stroke-width=".8"/>
@@ -381,97 +397,179 @@
 
   </div><!-- /gallery-grid -->
 
+
   <!-- ══════════════════════════════════════════════════════
        INLINE PHOTO PREVIEWS
+       Each category block shows a 4-up photo grid.
+       Replace the .photo-placeholder divs with real <img> tags.
+       
        HOW TO ADD A PHOTO:
-         1. Remove the <div class="photo-placeholder">…</div>
-         2. Add: <img src="assets/FOLDER/photo.jpg" alt="Description">
-         Lightbox activates automatically once a real <img> is present.
+         1. Remove the entire <div class="photo-placeholder">…</div>
+         2. Add: <img src="assets/YOUR-FOLDER/photo.jpg" alt="Description">
+         3. Optionally add a caption in .photo-item-caption
+
        LAYOUTS:
-         .photo-item            → square
-         .photo-item--wide      → 2-col landscape
-         .photo-item--tall      → 2-row portrait
+         .photo-item            → 1×1 square
+         .photo-item.photo-item--wide  → 2×1 landscape
+         .photo-item.photo-item--tall  → 1×2 portrait
   ═══════════════════════════════════════════════════════ -->
 
-  <!-- ── 01 LANDSCAPES ── -->
+  <!-- ── 01 LANDSCAPES PREVIEW ── -->
   <section class="subgallery-section sr" id="preview-landscape">
     <div class="subgallery-header">
       <h3 class="subgallery-title">Australian Landscapes</h3>
-      <a href="gallery-landscapes.html" class="subgallery-link">View all <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      <a href="gallery-landscapes.html" class="subgallery-link">
+        View all <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+      </a>
     </div>
     <div class="photo-grid">
+
+      <!-- Wide feature photo -->
       <div class="photo-item photo-item--wide" data-caption="Landscape — Feature">
-        <div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/landscapes/01.jpg</span></div>
+        <!-- ↓ REPLACE with: <img src="assets/landscapes/01.jpg" alt="Red Centre"> -->
+        <div class="photo-placeholder">
+          <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>assets/landscapes/01.jpg</span>
+        </div>
         <div class="photo-item-overlay"><span class="photo-item-caption">Feature shot</span></div>
       </div>
+
+      <!-- Square -->
       <div class="photo-item" data-caption="Landscape — Detail">
-        <div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/landscapes/02.jpg</span></div>
+        <!-- ↓ REPLACE with: <img src="assets/landscapes/02.jpg" alt="Detail"> -->
+        <div class="photo-placeholder">
+          <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>assets/landscapes/02.jpg</span>
+        </div>
         <div class="photo-item-overlay"><span class="photo-item-caption">Detail</span></div>
       </div>
+
+      <!-- Square -->
       <div class="photo-item" data-caption="Landscape — Horizon">
-        <div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/landscapes/03.jpg</span></div>
+        <!-- ↓ REPLACE with: <img src="assets/landscapes/03.jpg" alt="Horizon"> -->
+        <div class="photo-placeholder">
+          <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>assets/landscapes/03.jpg</span>
+        </div>
         <div class="photo-item-overlay"><span class="photo-item-caption">Horizon</span></div>
       </div>
+
+      <!-- Square -->
       <div class="photo-item" data-caption="Landscape — Sky">
-        <div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/landscapes/04.jpg</span></div>
+        <!-- ↓ REPLACE with: <img src="assets/landscapes/04.jpg" alt="Sky"> -->
+        <div class="photo-placeholder">
+          <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>assets/landscapes/04.jpg</span>
+        </div>
         <div class="photo-item-overlay"><span class="photo-item-caption">Sky</span></div>
       </div>
+
+      <!-- Square -->
       <div class="photo-item" data-caption="Landscape — Texture">
-        <div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/landscapes/05.jpg</span></div>
+        <!-- ↓ REPLACE with: <img src="assets/landscapes/05.jpg" alt="Texture"> -->
+        <div class="photo-placeholder">
+          <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>assets/landscapes/05.jpg</span>
+        </div>
         <div class="photo-item-overlay"><span class="photo-item-caption">Texture</span></div>
       </div>
+
     </div>
   </section>
 
-  <!-- ── 02 URBAN ── -->
+  <!-- ── 02 URBAN PREVIEW ── -->
   <section class="subgallery-section sr" id="preview-urban">
     <div class="subgallery-header">
       <h3 class="subgallery-title">Urban Architecture</h3>
-      <a href="gallery-urban.html" class="subgallery-link">View all <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      <a href="gallery-urban.html" class="subgallery-link">
+        View all <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+      </a>
     </div>
     <div class="photo-grid">
+
       <div class="photo-item photo-item--tall" data-caption="Urban — Tower">
-        <div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/urban/01.jpg</span></div>
+        <!-- ↓ REPLACE with: <img src="assets/urban/01.jpg" alt="Tower"> -->
+        <div class="photo-placeholder">
+          <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>assets/urban/01.jpg</span>
+        </div>
         <div class="photo-item-overlay"><span class="photo-item-caption">Tower</span></div>
       </div>
+
       <div class="photo-item" data-caption="Urban — Facade">
-        <div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/urban/02.jpg</span></div>
+        <!-- ↓ REPLACE with: <img src="assets/urban/02.jpg" alt="Facade"> -->
+        <div class="photo-placeholder">
+          <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>assets/urban/02.jpg</span>
+        </div>
         <div class="photo-item-overlay"><span class="photo-item-caption">Facade</span></div>
       </div>
+
       <div class="photo-item" data-caption="Urban — Detail">
-        <div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/urban/03.jpg</span></div>
+        <!-- ↓ REPLACE with: <img src="assets/urban/03.jpg" alt="Detail"> -->
+        <div class="photo-placeholder">
+          <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>assets/urban/03.jpg</span>
+        </div>
         <div class="photo-item-overlay"><span class="photo-item-caption">Detail</span></div>
       </div>
+
       <div class="photo-item" data-caption="Urban — Lines">
-        <div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/urban/04.jpg</span></div>
+        <!-- ↓ REPLACE with: <img src="assets/urban/04.jpg" alt="Lines"> -->
+        <div class="photo-placeholder">
+          <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>assets/urban/04.jpg</span>
+        </div>
         <div class="photo-item-overlay"><span class="photo-item-caption">Lines</span></div>
       </div>
+
       <div class="photo-item" data-caption="Urban — Shadow">
-        <div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/urban/05.jpg</span></div>
+        <!-- ↓ REPLACE with: <img src="assets/urban/05.jpg" alt="Shadow"> -->
+        <div class="photo-placeholder">
+          <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>assets/urban/05.jpg</span>
+        </div>
         <div class="photo-item-overlay"><span class="photo-item-caption">Shadow</span></div>
       </div>
+
     </div>
   </section>
 
-  <!-- ── 03 PORTRAITS ── -->
+  <!-- ── 03 PORTRAITS PREVIEW ── -->
   <section class="subgallery-section sr" id="preview-people">
     <div class="subgallery-header">
       <h3 class="subgallery-title">Portraits & People</h3>
-      <a href="gallery-portraits.html" class="subgallery-link">View all <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      <a href="gallery-portraits.html" class="subgallery-link">
+        View all <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+      </a>
     </div>
     <div class="photo-grid">
-      <div class="photo-item" data-caption="Portraits — 01"><div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/portraits/01.jpg</span></div><div class="photo-item-overlay"><span class="photo-item-caption">Portrait 01</span></div></div>
-      <div class="photo-item" data-caption="Portraits — 02"><div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/portraits/02.jpg</span></div><div class="photo-item-overlay"><span class="photo-item-caption">Portrait 02</span></div></div>
-      <div class="photo-item photo-item--wide" data-caption="Portraits — 03"><div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/portraits/03.jpg</span></div><div class="photo-item-overlay"><span class="photo-item-caption">Portrait 03</span></div></div>
-      <div class="photo-item" data-caption="Portraits — 04"><div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/portraits/04.jpg</span></div><div class="photo-item-overlay"><span class="photo-item-caption">Portrait 04</span></div></div>
+      <div class="photo-item" data-caption="Portraits — 01">
+        <div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/portraits/01.jpg</span></div>
+        <div class="photo-item-overlay"><span class="photo-item-caption">Portrait 01</span></div>
+      </div>
+      <div class="photo-item" data-caption="Portraits — 02">
+        <div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/portraits/02.jpg</span></div>
+        <div class="photo-item-overlay"><span class="photo-item-caption">Portrait 02</span></div>
+      </div>
+      <div class="photo-item photo-item--wide" data-caption="Portraits — 03">
+        <div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/portraits/03.jpg</span></div>
+        <div class="photo-item-overlay"><span class="photo-item-caption">Portrait 03</span></div>
+      </div>
+      <div class="photo-item" data-caption="Portraits — 04">
+        <div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/portraits/04.jpg</span></div>
+        <div class="photo-item-overlay"><span class="photo-item-caption">Portrait 04</span></div>
+      </div>
     </div>
   </section>
 
-  <!-- ── 04 NATURE ── -->
+  <!-- ── 04 NATURE PREVIEW ── -->
   <section class="subgallery-section sr" id="preview-nature">
     <div class="subgallery-header">
       <h3 class="subgallery-title">Nature & Flora</h3>
-      <a href="gallery-nature.html" class="subgallery-link">View all <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      <a href="gallery-nature.html" class="subgallery-link">
+        View all <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+      </a>
     </div>
     <div class="photo-grid">
       <div class="photo-item" data-caption="Nature — 01"><div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/nature/01.jpg</span></div><div class="photo-item-overlay"><span class="photo-item-caption">Nature 01</span></div></div>
@@ -481,11 +579,13 @@
     </div>
   </section>
 
-  <!-- ── 05 TRAVEL ── -->
+  <!-- ── 05 TRAVEL PREVIEW ── -->
   <section class="subgallery-section sr" id="preview-travel">
     <div class="subgallery-header">
       <h3 class="subgallery-title">Travel & Adventures</h3>
-      <a href="gallery-travel.html" class="subgallery-link">View all <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      <a href="gallery-travel.html" class="subgallery-link">
+        View all <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+      </a>
     </div>
     <div class="photo-grid">
       <div class="photo-item photo-item--wide" data-caption="Travel — 01"><div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/travel/01.jpg</span></div><div class="photo-item-overlay"><span class="photo-item-caption">Travel 01</span></div></div>
@@ -495,11 +595,13 @@
     </div>
   </section>
 
-  <!-- ── 06 STREET ── -->
+  <!-- ── 06 STREET PREVIEW ── -->
   <section class="subgallery-section sr" id="preview-street">
     <div class="subgallery-header">
       <h3 class="subgallery-title">Street & World</h3>
-      <a href="gallery-street.html" class="subgallery-link">View all <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg></a>
+      <a href="gallery-street.html" class="subgallery-link">
+        View all <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+      </a>
     </div>
     <div class="photo-grid">
       <div class="photo-item" data-caption="Street — 01"><div class="photo-placeholder"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>assets/street/01.jpg</span></div><div class="photo-item-overlay"><span class="photo-item-caption">Street 01</span></div></div>
@@ -540,81 +642,61 @@
     document.getElementById('nav-toggle').addEventListener('click',()=>document.getElementById('nav-links').classList.toggle('open'));
     document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',()=>document.getElementById('nav-links').classList.remove('open')));
 
-    // ── FIX: Gallery card reveal ──
-    // Cards in the viewport on page load are shown immediately.
-    // Cards below the fold get the will-reveal class and animate in as scrolled into view.
-    // The conflicting gsap.from() entrance animation that was causing the blank space is gone.
-    const allWrappers = document.querySelectorAll('.sg-wrapper');
-    const gridRect    = document.getElementById('gallery-grid').getBoundingClientRect();
-
-    // Mark cards that are actually below the fold for scroll animation
-    allWrappers.forEach(el => {
-      const r = el.getBoundingClientRect();
-      if (r.top > window.innerHeight * 0.95) {
-        el.classList.add('will-reveal');
-      }
-    });
-
-    // Intersection observer — only activates on will-reveal cards
-    const cardObs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('vis');
-          cardObs.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-
-    document.querySelectorAll('.sg-wrapper.will-reveal').forEach(el => cardObs.observe(el));
-
-    // ── Scroll reveal for .sr elements (hero, filter bar, subgallery sections) ──
-    const srObs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add('vis'); srObs.unobserve(e.target); }
-      });
-    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.sr').forEach(el => srObs.observe(el));
+    // ── Scroll reveal ──
+    const srObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');srObs.unobserve(e.target)}}),{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.sr,.sg-wrapper').forEach(el=>srObs.observe(el));
 
     // ── Filter ──
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.filter-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
         btn.classList.add('active');
-        const f = btn.dataset.filter;
+        const f=btn.dataset.filter;
 
-        document.querySelectorAll('.sg-wrapper').forEach(card => {
-          const show = f === 'all' || card.dataset.cat === f;
-          card.classList.toggle('dimmed', !show);
+        // Filter collection cards
+        document.querySelectorAll('.sg-wrapper').forEach(card=>{
+          const cat=card.dataset.cat;
+          const show=f==='all'||cat===f;
+          gsap.to(card,{opacity:show?1:.15,scale:show?1:.97,duration:.4,ease:'power2.out'});
+          card.style.pointerEvents=show?'':'none';
         });
 
-        if (f !== 'all') {
-          const target = document.getElementById('preview-' + f);
-          if (target) setTimeout(() => target.scrollIntoView({ behavior:'smooth', block:'start' }), 300);
+        // Scroll to matching preview section
+        if(f!=='all'){
+          const target=document.getElementById('preview-'+f);
+          if(target) setTimeout(()=>target.scrollIntoView({behavior:'smooth',block:'start'}),300);
         }
       });
     });
 
     // ── Lightbox ──
-    const lb    = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lb-img');
-    const lbCap = document.getElementById('lb-caption');
+    const lb=document.getElementById('lightbox');
+    const lbImg=document.getElementById('lb-img');
+    const lbCap=document.getElementById('lb-caption');
 
-    document.querySelectorAll('.photo-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const img = item.querySelector('img');
-        if (!img) return;
-        lbImg.src = img.src;
-        lbImg.alt = img.alt;
-        lbCap.textContent = item.dataset.caption || '';
+    document.querySelectorAll('.photo-item').forEach(item=>{
+      item.addEventListener('click',()=>{
+        const img=item.querySelector('img');
+        if(!img) return; // placeholder — no lightbox
+        lbImg.src=img.src;
+        lbImg.alt=img.alt;
+        lbCap.textContent=item.dataset.caption||'';
         lb.classList.add('open');
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow='hidden';
       });
     });
 
-    document.getElementById('lb-close').addEventListener('click', closeLb);
-    lb.addEventListener('click', e => { if (e.target === lb) closeLb(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
-    function closeLb() { lb.classList.remove('open'); document.body.style.overflow = ''; }
+    document.getElementById('lb-close').addEventListener('click',closeLb);
+    lb.addEventListener('click',e=>{if(e.target===lb)closeLb();});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();});
+    function closeLb(){lb.classList.remove('open');document.body.style.overflow='';}
+
+    // ── GSAP entrance ──
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.from('.sg-wrapper',{
+      scrollTrigger:{trigger:'#gallery-grid',start:'top 75%'},
+      opacity:0,y:50,stagger:.1,duration:.8,ease:'power2.out'
+    });
   </script>
 </body>
 </html>
