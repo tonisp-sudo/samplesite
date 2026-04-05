@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Web Design & Development | Affordable Small Business Websites | Praks IT</title>
+
+    <meta name="description"
+        content="Affordable and reliable web design, hosting, and SEO services for small businesses in Australia. Get a fast, professional website today. Also offering local IT support and network setup.">
+
+    <meta name="keywords"
+        content="Professional Web Development, Digital Marketing, Fast Hosting, and Reliable Maintenance for Australian Businesses. Get your secure, high-performance website today.">
+
+    <meta name="author" content="Tonis Praks">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Praks IT",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "AU"
+      },
+      "description": "Local IT Support and Web Development Services for Small Businesses in Australia"
+    }
+  </script>
+    <!--<link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">-->
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet" media="print" onload="this.media='all'">
+
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet" media="print"
+        onload="this.media='all'">
+    <link href="assets/vendor/aos/aos.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+
+    <link href="assets/css/main.css" rel="stylesheet">
+
+    <!-- DotLottie Player -->
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<!-- Start of page body -->
+
+<!-- This body class holds the whole background gradient color -->
+<body class="bg-gradient-to-br from-blue-300 via-indigo-50 to-pink-700 min-h-screen">
+
+    <!-- Next line holds the title properties  -->
+        <h1 class="flex justify-center font-extrabold text-5xl my-20">JavaScript Study App</h1>
+
+        <!-- This paragraph will hold the rules section for how the application works -->
+         
+         <p class="flex justify-center font-semibold text-5l">To use this application, click "Next" or "Previous" to toggle between questions, click on the flashcard to reveal the correct answer.</p>
+        
+        <!-- Following line is where the card lives and the buttons -->
+        <div class="flex h-3/6 justify-center py-6">
+            <!-- <div class="group h-64 w-96 [perspective:1000px]"> -->
+            <div class="bg-neutral-primary-soft block max-w-sm p-6 border border-black shadow-sm rounded-base shadow-xs my-12">
+                <h5 class=mb-3 text-2xl font-semibold tracking-tight text-heading leading-8>Noteworthy technology
+                    acquisitions 2021</h5>
+                <p class=text-body  mb-6 id="question">Here are the biggest technology acquisitions of 2025 so far, in reverse
+                    chronological order.</p>
+            </div>
+        </div>
+<!-- Buttons -->
+ <div class="flex justify-center">
+    <button class="bg-blue-500 w-40 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition mx-10">
+                    Previous
+                </button>
+
+                <button class="bg-blue-500 w-40 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition mx-10">
+                    Next
+                </button>
+ </div>
+
+
+        <!-- Bottom button, will try to lead it in to a massive grid view of all questions -->
+        <div class="flex justify-center">
+        <button class="bg-gradient-to-br from-blue-300 via-indigo-50 to-pink-700 w-40 text-gray-500 px-6 py-2 rounded-full border-solid hover:bg-gradient-to-br from-blue-400 via-indigo-100 to-pink-800 transition shadow-xs my-24">View all questions</button>
+        </div>
+
+
+        <!-- Start of JS logic -->
+        <script>
+
+// Next lines of constants will store data hooks
+const question = document.getElementById("question")
+            // This constant holds the all the questions and answers
+const cards = [
+    { question: "Which data structure stores an ordered list?", answer: "An Array" },
+    { question: "What does DOM stand for?", answer: "Document Object Model" },
+    { question: "True or False: 'const' values can never be changed.", answer: "False (their contents can change if they are objects/arrays!)" }
+];
+
+// The next variable will store the current question position (which question is current)
+let currentQuestion = 0;
+
+
+
+        </script>
+
+</body>
