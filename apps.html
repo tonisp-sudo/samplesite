@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Applications & Projects — Tonis Praks Universe</title>
+  <meta name="description" content="Applications and projects built by Tonis Praks — tools, web apps, and experiments.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    :root {
+      --cream: #f5f0e8; --warm: #ede8df; --ink: #1a1714; --ink2: #2e2b28;
+      --muted: #8a8278; --gold: #b8933e; --gold2: #d4aa5a;
+      --rust: #9b4f2a; --sage: #5a7a5a; --border: rgba(26,23,20,.1);
+    }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--ink); cursor:none; overflow-x:hidden; }
+
+    /* grain */
+    body::after { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9000; opacity:.5; }
+
+    /* cursor */
+    #c-dot { width:7px;height:7px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%); }
+    #c-ring { width:32px;height:32px;border:1.5px solid rgba(184,147,62,.5);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .25s,height .25s,border-color .25s,background .25s; }
+    #c-ring.big { width:52px;height:52px;border-color:var(--gold);background:rgba(184,147,62,.06); }
+
+    /* ── NAV ── */
+    nav { position:fixed;top:0;left:0;right:0;z-index:500;padding:1.5rem 3rem;display:flex;align-items:center;justify-content:space-between;background:rgba(245,240,232,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border); }
+    @media(max-width:768px) { nav { padding:1.2rem 1.5rem; } }
+    .nav-logo { font-family:'Syne',sans-serif;font-weight:800;font-size:.95rem;letter-spacing:.06em;color:var(--ink);text-decoration:none; }
+    .nav-logo span { color:var(--gold); }
+    .nav-links { display:flex;gap:2.5rem;list-style:none; }
+    .nav-links a { font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s;position:relative; }
+    .nav-links a::after { content:'';position:absolute;bottom:-3px;left:0;right:100%;height:1px;background:var(--gold);transition:right .3s; }
+    .nav-links a:hover { color:var(--ink); }
+    .nav-links a:hover::after { right:0; }
+    .nav-links a.active { color:var(--gold); }
+    .nav-links a.active::after { right:0; }
+    .nav-toggle { display:none;background:none;border:none;cursor:none;color:var(--ink);padding:.4rem; }
+    @media(max-width:768px) {
+      .nav-toggle { display:block; }
+      .nav-links { position:fixed;top:0;right:-100%;bottom:0;width:260px;background:var(--cream);flex-direction:column;justify-content:center;padding:2rem;gap:2rem;border-left:1px solid var(--border);transition:right .4s cubic-bezier(.25,.46,.45,.94);z-index:600; }
+      .nav-links.open { right:0; }
+    }
+
+    /* ── HERO ── */
+    .apps-hero { padding:9rem 3rem 5rem;position:relative;overflow:hidden; }
+    @media(max-width:768px) { .apps-hero { padding:7rem 1.5rem 3.5rem; } }
+    .hero-eyebrow { font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem; }
+    .apps-hero h1 { font-family:'Syne',sans-serif;font-size:clamp(3.5rem,8vw,7rem);font-weight:800;line-height:.9;letter-spacing:-.025em; }
+    .apps-hero h1 .outline { -webkit-text-stroke:1.5px var(--ink);color:transparent; }
+    .apps-hero p { font-size:1rem;color:var(--muted);font-weight:300;margin-top:1.5rem;max-width:480px;line-height:1.75; }
+    .hero-line { position:absolute;right:3rem;top:50%;transform:translateY(-50%);width:1px;height:50%;background:linear-gradient(to bottom,transparent,var(--gold),transparent);opacity:.3; }
+    @media(max-width:768px) { .hero-line { display:none; } }
+
+    /* ── FILTER BAR ── */
+    .filter-bar { padding:0 3rem 3rem;display:flex;gap:.75rem;flex-wrap:wrap;align-items:center; }
+    @media(max-width:768px) { .filter-bar { padding:0 1.5rem 2.5rem; } }
+    .filter-label { font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-right:.25rem; }
+    .filter-btn { padding:.35rem 1rem;font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--border);color:var(--muted);background:none;cursor:none;transition:all .2s; }
+    .filter-btn:hover,.filter-btn.active { border-color:var(--gold);color:var(--gold);background:rgba(184,147,62,.05); }
+
+    /* ── SECTION DIVIDER ── */
+    .section-divider { padding:0 3rem;margin-bottom:3rem;display:flex;align-items:center;gap:1.5rem; }
+    @media(max-width:768px) { .section-divider { padding:0 1.5rem; } }
+    .divider-label { font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);white-space:nowrap; }
+    .divider-line { flex:1;height:1px;background:var(--border); }
+
+    /* ── PROJECT GRID ── */
+    .projects-grid { padding:0 3rem 8rem;display:grid;grid-template-columns:repeat(3,1fr);gap:2px; }
+    @media(max-width:1100px) { .projects-grid { grid-template-columns:repeat(2,1fr); } }
+    @media(max-width:640px) { .projects-grid { grid-template-columns:1fr;padding:0 1.5rem 5rem; } }
+    @media(max-width:1100px) { .projects-grid { padding:0 1.5rem 5rem; } }
+
+    /* ── PROJECT CARD ── */
+    .proj-card {
+      position:relative;
+      background:var(--ink2);
+      overflow:hidden;
+      text-decoration:none;
+      display:flex;
+      flex-direction:column;
+      cursor:none;
+      transition:transform .4s cubic-bezier(.25,.46,.45,.94);
+      min-height:360px;
+    }
+    .proj-card:hover { transform:translateY(-4px); }
+
+    /* top gold reveal line */
+    .proj-card-line { position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transition:transform .5s;z-index:4;transform-origin:left; }
+    .proj-card:hover .proj-card-line { transform:scaleX(1); }
+
+    /* visual area — holds icon / screenshot placeholder */
+    .proj-visual {
+      position:relative;
+      height:200px;
+      background:var(--ink);
+      flex-shrink:0;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .proj-visual-bg { position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .8s cubic-bezier(.25,.46,.45,.94);opacity:.85; }
+    .proj-card:hover .proj-visual-bg { transform:scale(1.05); }
+    .proj-visual-icon { position:relative;z-index:2;opacity:.6;transition:opacity .3s; }
+    .proj-card:hover .proj-visual-icon { opacity:.9; }
+
+    /* status badge */
+    .proj-badge {
+      position:absolute;top:1rem;right:1rem;z-index:3;
+      padding:.25rem .75rem;
+      font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;
+      border-radius:2px;
+    }
+    .proj-badge--live    { background:rgba(90,154,90,.25);border:1px solid rgba(90,154,90,.5);color:#7ec87e; }
+    .proj-badge--wip     { background:rgba(200,169,62,.2);border:1px solid rgba(200,169,62,.4);color:var(--gold2); }
+    .proj-badge--planned { background:rgba(138,130,120,.15);border:1px solid rgba(138,130,120,.3);color:var(--muted); }
+
+    /* card body */
+    .proj-body { padding:1.75rem;flex:1;display:flex;flex-direction:column;gap:.75rem; }
+    .proj-num { font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.2em;color:var(--gold2); }
+    .proj-title { font-family:'Syne',sans-serif;font-size:1.35rem;font-weight:800;color:var(--cream);line-height:1.1; }
+    .proj-desc { font-size:.85rem;color:rgba(245,240,232,.5);line-height:1.6;flex:1; }
+
+    /* tags */
+    .proj-tags { display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.25rem; }
+    .proj-tag { padding:.2rem .6rem;font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(184,147,62,.2);color:rgba(184,147,62,.6); }
+
+    /* cta row */
+    .proj-cta { display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:1.25rem;border-top:1px solid rgba(245,240,232,.07); }
+    .proj-link {
+      display:inline-flex;align-items:center;gap:.4rem;
+      font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;
+      color:var(--gold2);text-decoration:none;
+      opacity:0;transform:translateX(-6px);
+      transition:opacity .35s,transform .35s,color .2s;
+    }
+    .proj-card:hover .proj-link { opacity:1;transform:translateX(0); }
+    .proj-link:hover { color:var(--cream); }
+    .proj-link svg { transition:transform .25s; }
+    .proj-link:hover svg { transform:translateX(3px); }
+
+    /* ── PLACEHOLDER CARD ── */
+    /* Add a new project by duplicating a .proj-wrapper and filling in the fields */
+    .proj-card--placeholder {
+      border:1.5px dashed rgba(184,147,62,.18);
+      background:transparent;
+    }
+    .proj-card--placeholder:hover { transform:none;border-color:rgba(184,147,62,.35); }
+    .proj-card--placeholder .proj-visual { background:transparent; }
+    .proj-card--placeholder .proj-title { color:rgba(184,147,62,.4); }
+    .proj-card--placeholder .proj-desc { color:rgba(138,130,120,.4); }
+
+    /* ── FEATURED ROW (wide 2-col card) ── */
+    .proj-wrapper--wide { grid-column:span 2; }
+    @media(max-width:640px) { .proj-wrapper--wide { grid-column:span 1; } }
+    .proj-wrapper--wide .proj-card { flex-direction:row;min-height:260px; }
+    .proj-wrapper--wide .proj-visual { height:auto;width:340px;flex-shrink:0; }
+    @media(max-width:900px) {
+      .proj-wrapper--wide .proj-card { flex-direction:column; }
+      .proj-wrapper--wide .proj-visual { width:auto;height:200px; }
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .sr { opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease; }
+    .sr.vis { opacity:1;transform:translateY(0); }
+    .proj-wrapper { opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s ease; }
+    .proj-wrapper.vis { opacity:1;transform:translateY(0); }
+    .proj-wrapper:nth-child(1){ transition-delay:0s }
+    .proj-wrapper:nth-child(2){ transition-delay:.08s }
+    .proj-wrapper:nth-child(3){ transition-delay:.16s }
+    .proj-wrapper:nth-child(4){ transition-delay:0s }
+    .proj-wrapper:nth-child(5){ transition-delay:.08s }
+    .proj-wrapper:nth-child(6){ transition-delay:.16s }
+
+    /* ── SCROLL TOP ── */
+    #scroll-top { position:fixed;bottom:2rem;right:2rem;z-index:400;width:44px;height:44px;background:var(--ink);border:none;color:var(--cream);display:none;align-items:center;justify-content:center;cursor:none;transition:background .25s; }
+    #scroll-top:hover { background:var(--gold); }
+    #scroll-top.vis { display:flex; }
+
+    /* footer */
+    footer { position:relative;z-index:10;padding:2.5rem 3rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.25rem;background:var(--warm); }
+    @media(max-width:768px) { footer { padding:2rem 1.5rem; } }
+    .footer-copy { font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.1em;color:var(--muted); }
+    .footer-links { display:flex;gap:1.75rem; }
+    .footer-links a { font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s; }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+  <div id="c-dot"></div>
+  <div id="c-ring"></div>
+
+  <!-- ── NAV ── -->
+  <nav>
+    <a href="index.html" class="nav-logo">TONIS PRAKS <span>UNIVERSE</span></a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="5" x2="20" y2="5"/><line x1="2" y1="11" x2="20" y2="11"/><line x1="2" y1="17" x2="20" y2="17"/></svg>
+    </button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#universe">Universe</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="apps.html" class="active">Apps</a></li>
+      <li><a href="/wiki/site/index.html">Learn</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <header class="apps-hero">
+    <p class="hero-eyebrow sr">02 / Applications & Projects</p>
+    <h1 class="sr" style="transition-delay:.1s">APPS &<br><span class="outline">PROJECTS</span></h1>
+    <p class="sr" style="transition-delay:.2s">Built tools, web apps, and experiments. Real things solving real problems — from network utilities to study aids and beyond.</p>
+    <div class="hero-line"></div>
+  </header>
+
+  <!-- ── FILTER BAR ── -->
+  <div class="filter-bar sr" style="transition-delay:.3s">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="web">Web</button>
+    <button class="filter-btn" data-filter="tool">Tools</button>
+    <button class="filter-btn" data-filter="network">Network</button>
+    <button class="filter-btn" data-filter="study">Study</button>
+    <button class="filter-btn" data-filter="automation">Automation</button>
+  </div>
+
+  <!-- ── SECTION DIVIDER ── -->
+  <div class="section-divider sr" style="transition-delay:.35s">
+    <span class="divider-label">All Projects</span>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       PROJECT GRID
+       ─────────────────────────────────────────────────────
+       HOW TO ADD A NEW PROJECT:
+         1. Duplicate any .proj-wrapper block below
+         2. Update: title, desc, tags, status badge, link href
+         3. Replace the SVG icon or add a screenshot:
+            <div class="proj-visual-bg" style="background-image:url('assets/apps/screenshot.jpg')"></div>
+         4. Set data-cat to one of: web | tool | network | study | automation
+
+       STATUS BADGES:
+         class="proj-badge proj-badge--live"    → Live
+         class="proj-badge proj-badge--wip"     → In Progress
+         class="proj-badge proj-badge--planned" → Planned
+
+       WIDE CARD (spans 2 columns — use for featured projects):
+         Add class "proj-wrapper--wide" to .proj-wrapper
+  ═══════════════════════════════════════════════════════ -->
+  <div class="projects-grid" id="projects-grid">
+
+    <!-- ══ FEATURED: JS Flashcard App ══ (wide, 2-col) -->
+    <div class="proj-wrapper proj-wrapper--wide" data-cat="study">
+      <a href="flashcard-app.html" class="proj-card">
+        <div class="proj-card-line"></div>
+
+        <div class="proj-visual" style="background:linear-gradient(135deg,#2a1e3d 0%,#3d2a5c 100%);">
+          <!-- Replace with: <div class="proj-visual-bg" style="background-image:url('assets/apps/flashcard.jpg')"></div> -->
+<div class="proj-visual-bg" style="background-image:url('assets/apps/flashcard.jpg')"></div>            <rect x="10" y="18" width="52" height="36" rx="5" stroke="#a78bfa" stroke-width="1.5" fill="rgba(167,139,250,.08)"/>
+            <rect x="16" y="24" width="40" height="24" rx="3" stroke="#c4b5fd" stroke-width="1" fill="rgba(196,181,253,.05)"/>
+            <line x1="24" y1="33" x2="48" y2="33" stroke="#c4b5fd" stroke-width="1" opacity=".6"/>
+            <line x1="28" y1="39" x2="44" y2="39" stroke="#c4b5fd" stroke-width="1" opacity=".4"/>
+          </svg>
+          <span class="proj-badge proj-badge--live">Live</span>
+        </div>
+
+        <div class="proj-body">
+          <p class="proj-num">01 / Study</p>
+          <h2 class="proj-title">JavaScript Flashcard App</h2>
+          <p class="proj-desc">An interactive study tool for JavaScript concepts. Features flip-card animations, custom card creation with validation, self-grading, shuffle, and persistent localStorage tracking — all in a single HTML file.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">HTML</span>
+            <span class="proj-tag">JavaScript</span>
+            <span class="proj-tag">Tailwind</span>
+            <span class="proj-tag">localStorage</span>
+          </div>
+          <div class="proj-cta">
+            <a href="flashcard-app.html" class="proj-link">
+              Open App <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+            </a>
+            <a href="https://github.com/tonisp-sudo" target="_blank" class="proj-link" style="transition-delay:.05s">
+              GitHub <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+            </a>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- ══ PROJECT 2 — placeholder ══
+    <div class="proj-wrapper" data-cat="web">
+      <a href="#" class="proj-card">
+        <div class="proj-card-line"></div>
+        <div class="proj-visual" style="background:linear-gradient(135deg,#1a2535 0%,#253545 100%);">
+          <!-- Replace with: <div class="proj-visual-bg" style="background-image:url('assets/apps/project2.jpg')"></div> -->
+          <!-- <svg class="proj-visual-icon" width="60" height="60" fill="none" viewBox="0 0 60 60">
+            <rect x="6" y="10" width="48" height="36" rx="4" stroke="#6e8ec8" stroke-width="1.5" fill="rgba(110,142,200,.07)"/>
+            <line x1="6" y1="20" x2="54" y2="20" stroke="#6e8ec8" stroke-width="1" opacity=".5"/>
+            <circle cx="13" cy="15" r="2" fill="#6e8ec8" opacity=".5"/>
+            <circle cx="20" cy="15" r="2" fill="#6e8ec8" opacity=".35"/>
+            <circle cx="27" cy="15" r="2" fill="#6e8ec8" opacity=".2"/>
+            <rect x="12" y="28" width="20" height="10" rx="2" stroke="#6e8ec8" stroke-width="1" fill="rgba(110,142,200,.1)" opacity=".6"/>
+            <rect x="36" y="28" width="12" height="10" rx="2" stroke="#6e8ec8" stroke-width="1" fill="rgba(110,142,200,.1)" opacity=".4"/>
+          </svg>
+          <span class="proj-badge proj-badge--wip">In Progress</span>
+        </div> --> 
+        <!-- <div class="proj-body">
+          <p class="proj-num">02 / Web</p>
+          <h2 class="proj-title">Project Title</h2>
+          <p class="proj-desc">A short description of what this project does and what problem it solves. Replace this text and update the link, tags, and status badge above.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">Tag 1</span>
+            <span class="proj-tag">Tag 2</span>
+            <span class="proj-tag">Tag 3</span>
+          </div>
+          <div class="proj-cta">
+            <span class="proj-link">Coming Soon</span>
+          </div>
+        </div>
+      </a>
+    </div> -->
+
+    <!-- ══ PROJECT 3 — placeholder ══ -->
+    <!-- <div class="proj-wrapper" data-cat="network">
+      <a href="#" class="proj-card">
+        <div class="proj-card-line"></div>
+        <div class="proj-visual" style="background:linear-gradient(135deg,#1e1a2a 0%,#2a2035 100%);">
+          <svg class="proj-visual-icon" width="60" height="60" fill="none" viewBox="0 0 60 60">
+            <circle cx="30" cy="30" r="22" stroke="#8e6ec8" stroke-width="1.5" fill="rgba(142,110,200,.06)"/>
+            <circle cx="30" cy="30" r="4" fill="#8e6ec8" opacity=".7"/>
+            <circle cx="12" cy="20" r="3" fill="#8e6ec8" opacity=".4"/>
+            <circle cx="48" cy="20" r="3" fill="#8e6ec8" opacity=".4"/>
+            <circle cx="20" cy="46" r="3" fill="#8e6ec8" opacity=".4"/>
+            <circle cx="40" cy="46" r="3" fill="#8e6ec8" opacity=".4"/>
+            <line x1="30" y1="30" x2="12" y2="20" stroke="#8e6ec8" stroke-width=".8" opacity=".4"/>
+            <line x1="30" y1="30" x2="48" y2="20" stroke="#8e6ec8" stroke-width=".8" opacity=".4"/>
+            <line x1="30" y1="30" x2="20" y2="46" stroke="#8e6ec8" stroke-width=".8" opacity=".4"/>
+            <line x1="30" y1="30" x2="40" y2="46" stroke="#8e6ec8" stroke-width=".8" opacity=".4"/>
+          </svg>
+          <span class="proj-badge proj-badge--planned">Planned</span>
+        </div> -->
+        <!-- <div class="proj-body">
+          <p class="proj-num">03 / Network</p>
+          <h2 class="proj-title">Network Project</h2>
+          <p class="proj-desc">Description of a networking or infrastructure-related project. Update this text, the link href, and the tags when ready.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">Python</span>
+            <span class="proj-tag">Networking</span>
+          </div>
+          <div class="proj-cta">
+            <span class="proj-link">Coming Soon</span>
+          </div>
+        </div>
+      </a>
+    </div> -->
+
+    <!-- ══ PROJECT 4 — placeholder ══ -->
+    <!-- <div class="proj-wrapper" data-cat="tool">
+      <a href="#" class="proj-card">
+        <div class="proj-card-line"></div>
+        <div class="proj-visual" style="background:linear-gradient(135deg,#201a14 0%,#30281e 100%);">
+          <svg class="proj-visual-icon" width="60" height="60" fill="none" viewBox="0 0 60 60">
+            <rect x="8" y="8" width="44" height="44" rx="4" stroke="#c8a96e" stroke-width="1.5" fill="rgba(200,169,110,.06)"/>
+            <path d="M18 30h8l4-8 6 16 4-8h6" stroke="#c8a96e" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="proj-badge proj-badge--planned">Planned</span>
+        </div>
+        <div class="proj-body">
+          <p class="proj-num">04 / Tool</p>
+          <h2 class="proj-title">Utility Tool</h2>
+          <p class="proj-desc">A command-line or web-based utility. Add a real description, link, and tech tags when the project is underway.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">Python</span>
+            <span class="proj-tag">CLI</span>
+          </div>
+          <div class="proj-cta">
+            <span class="proj-link">Coming Soon</span>
+          </div>
+        </div>
+      </a>
+    </div> -->
+
+    <!-- ══ PROJECT 5 — placeholder ══ -->
+    <!-- <div class="proj-wrapper" data-cat="automation">
+      <a href="#" class="proj-card">
+        <div class="proj-card-line"></div>
+        <div class="proj-visual" style="background:linear-gradient(135deg,#141e18 0%,#1e2c22 100%);">
+          <svg class="proj-visual-icon" width="60" height="60" fill="none" viewBox="0 0 60 60">
+            <rect x="14" y="8" width="32" height="44" rx="4" stroke="#5a9e6e" stroke-width="1.5" fill="rgba(90,158,110,.06)"/>
+            <line x1="20" y1="20" x2="40" y2="20" stroke="#5a9e6e" stroke-width="1" opacity=".5"/>
+            <line x1="20" y1="28" x2="36" y2="28" stroke="#5a9e6e" stroke-width="1" opacity=".4"/>
+            <line x1="20" y1="36" x2="32" y2="36" stroke="#5a9e6e" stroke-width="1" opacity=".3"/>
+            <circle cx="46" cy="44" r="8" stroke="#5a9e6e" stroke-width="1.5" fill="rgba(90,158,110,.1)"/>
+            <path d="M42 44l3 3 5-5" stroke="#5a9e6e" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="proj-badge proj-badge--planned">Planned</span>
+        </div>
+        <div class="proj-body">
+          <p class="proj-num">05 / Automation</p>
+          <h2 class="proj-title">Automation Script</h2>
+          <p class="proj-desc">A scripted workflow to automate a repetitive task. Fill in real details when this project is active.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">Python</span>
+            <span class="proj-tag">Bash</span>
+          </div>
+          <div class="proj-cta">
+            <span class="proj-link">Coming Soon</span>
+          </div>
+        </div>
+      </a>
+    </div> -->
+
+    <!-- ══ ADD NEW PROJECT ══ (always last — placeholder prompt) -->
+    <!-- <div class="proj-wrapper" data-cat="all">
+      <div class="proj-card proj-card--placeholder">
+        <div class="proj-visual" style="min-height:200px;border-bottom:1.5px dashed rgba(184,147,62,.15);flex-direction:column;gap:1rem;">
+          <svg width="40" height="40" fill="none" viewBox="0 0 40 40" opacity=".2">
+            <circle cx="20" cy="20" r="18" stroke="#c8a96e" stroke-width="1.5"/>
+            <line x1="20" y1="12" x2="20" y2="28" stroke="#c8a96e" stroke-width="1.5"/>
+            <line x1="12" y1="20" x2="28" y2="20" stroke="#c8a96e" stroke-width="1.5"/>
+          </svg>
+          <span style="font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(184,147,62,.25);">New Project</span>
+        </div>
+        <div class="proj-body">
+          <h2 class="proj-title" style="font-size:1.1rem;">Add a project here</h2>
+          <p class="proj-desc">Duplicate any card block in the HTML and fill in your project details — title, description, tech tags, status, and link.</p>
+        </div>
+      </div>
+    </div> -->
+
+  </div><!-- /projects-grid -->
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <p class="footer-copy">© 2026 Tonis Praks. All Rights Reserved.</p>
+    <div class="footer-links">
+      <a href="https://github.com/tonisp-sudo" target="_blank">GitHub</a>
+      <a href="https://www.linkedin.com/in/tonispraks/" target="_blank">LinkedIn</a>
+      <a href="/wiki/site/index.html">Wiki</a>
+    </div>
+  </footer>
+
+  <button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Top">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 11V3M3 7l4-4 4 4"/></svg>
+  </button>
+
+  <script>
+    // ── Cursor ──
+    const dot=document.getElementById('c-dot'),ring=document.getElementById('c-ring');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.cssText=`left:${mx}px;top:${my}px`});
+    document.addEventListener('mouseover',e=>{e.target.closest('a,button,.proj-card')?ring.classList.add('big'):ring.classList.remove('big')});
+    (function ar(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;ring.style.cssText=`left:${rx}px;top:${ry}px`;requestAnimationFrame(ar)})();
+
+    // ── Scroll top ──
+    const sBtn=document.getElementById('scroll-top');
+    window.addEventListener('scroll',()=>sBtn.classList.toggle('vis',scrollY>400));
+
+    // ── Mobile nav ──
+    document.getElementById('nav-toggle').addEventListener('click',()=>document.getElementById('nav-links').classList.toggle('open'));
+    document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',()=>document.getElementById('nav-links').classList.remove('open')));
+
+    // ── Scroll reveal ──
+    const srObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');srObs.unobserve(e.target)}}),{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.sr').forEach(el=>srObs.observe(el));
+
+    // Project cards: mark below-fold ones for reveal, show in-view ones immediately
+    const allCards=document.querySelectorAll('.proj-wrapper');
+    allCards.forEach(el=>{
+      const r=el.getBoundingClientRect();
+      if(r.top>window.innerHeight*.95){
+        el.style.opacity='0';
+        el.style.transform='translateY(28px)';
+      } else {
+        el.classList.add('vis');
+      }
+    });
+
+    const cardObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');e.target.style.opacity='';e.target.style.transform='';cardObs.unobserve(e.target)}}),{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+    allCards.forEach(el=>{if(!el.classList.contains('vis'))cardObs.observe(el);});
+
+    // ── Filter ──
+    document.querySelectorAll('.filter-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const f=btn.dataset.filter;
+        document.querySelectorAll('.proj-wrapper').forEach(card=>{
+          const cat=card.dataset.cat;
+          const show=f==='all'||cat===f||cat==='all';
+          gsap.to(card,{opacity:show?1:.12,scale:show?1:.97,duration:.35,ease:'power2.out'});
+          card.style.pointerEvents=show?'':'none';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
