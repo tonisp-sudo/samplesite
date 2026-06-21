@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>MLA / MSA / Aus-Meat Study Cards</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&family=Barlow+Condensed:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── MEQ Design System ─────────────────────────────
+       Palette pulled from meqsolutions.com:
+         Background:  #0b0c0a  (near-black)
+         Surface:     #141612  (slightly lighter)
+         Surface-2:   #1d2019  (card surface)
+         Green:       #3d7a35  (primary accent)
+         Green-light: #56a84c  (hover / highlight)
+         Green-dark:  #2a5424  (pressed)
+         Cream:       #e8e4dc  (primary text)
+         Muted:       #7a8070  (secondary text)
+         Border:      rgba(255,255,255,0.07)
+    ──────────────────────────────────────────────────── */
+    :root {
+      --bg:          #0b0c0a;
+      --surface:     #141612;
+      --surface2:    #1d2019;
+      --surface3:    #252820;
+      --green:       #3d7a35;
+      --green-light: #56a84c;
+      --green-dark:  #2a5424;
+      --cream:       #e8e4dc;
+      --muted:       #7a8070;
+      --border:      rgba(255,255,255,0.07);
+      --border-green: rgba(61,122,53,0.4);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Barlow', sans-serif;
+      background: var(--bg);
+      color: var(--cream);
+      min-height: 100vh;
+      padding-bottom: 4rem;
+    }
+
+    h1, h2, h3, .condensed {
+      font-family: 'Barlow Condensed', sans-serif;
+    }
+
+    /* ── Flip card ── */
+    .card-scene { perspective: 1200px; }
+    .card-inner {
+      position: relative; width: 100%; height: 100%;
+      transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d; cursor: pointer;
+    }
+    .card-inner.flipped { transform: rotateY(180deg); }
+    .card-face {
+      position: absolute; inset: 0; backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 2.5rem; text-align: center;
+    }
+    .card-front {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      box-shadow: 0 0 0 1px var(--border), 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .card-back {
+      /* MEQ green gradient — matches their brand */
+      background: linear-gradient(145deg, #2a5424 0%, #3d7a35 55%, #4a8c3e 100%);
+      transform: rotateY(180deg); color: var(--cream);
+      box-shadow: 0 20px 60px rgba(61,122,53,0.3);
+    }
+    .card-back.user-back {
+      background: linear-gradient(145deg, #1a3a32 0%, #256b58 55%, #2d8068 100%);
+    }
+
+    /* ── Progress bar ── */
+    .progress-bar { transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+
+    /* ── Buttons ── */
+    .btn-nav {
+      transition: transform 0.15s ease, box-shadow 0.15s ease,
+                  background 0.15s ease, border-color 0.15s ease;
+      font-family: 'Barlow Condensed', sans-serif;
+      letter-spacing: 0.06em;
+    }
+    .btn-nav:hover { transform: translateY(-2px); }
+    .btn-nav:active { transform: translateY(0); }
+
+    /* Primary green button */
+    .btn-primary {
+      background: var(--green);
+      color: var(--cream);
+      border: 1px solid var(--green-light);
+    }
+    .btn-primary:hover {
+      background: var(--green-light);
+      box-shadow: 0 6px 24px rgba(61,122,53,0.4);
+    }
+    .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+    /* Ghost button */
+    .btn-ghost {
+      background: transparent;
+      color: var(--cream);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover {
+      border-color: var(--green-light);
+      color: var(--green-light);
+      box-shadow: 0 4px 16px rgba(61,122,53,0.2);
+    }
+
+    /* ── Hint pulse ── */
+    @keyframes hint-pulse {
+      0%,100% { opacity: 0.5; transform: scale(1); }
+      50%      { opacity: 0.9; transform: scale(1.05); }
+    }
+    .hint-pulse { animation: hint-pulse 2s ease-in-out infinite; }
+
+    /* ── Fade transition ── */
+    .card-inner.fade-out { opacity: 0; }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed; bottom: 2rem; left: 50%;
+      transform: translateX(-50%) translateY(1rem);
+      opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none; z-index: 9999;
+      padding: 0.65rem 1.5rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase;
+      white-space: nowrap;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      border-top: 2px solid transparent;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    #toast.success {
+      background: #0d2810; color: #7ecf76;
+      border-color: #3d7a35;
+    }
+    #toast.error {
+      background: #2a0d0d; color: #e07070;
+      border-color: #7a2020;
+    }
+    #toast.info {
+      background: var(--surface2); color: var(--muted);
+      border-color: var(--border);
+    }
+
+    /* ── Input fields ── */
+    .input-field {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--cream);
+      font-family: 'Barlow', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .input-field::placeholder { color: var(--muted); }
+    .input-field:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 2px rgba(61,122,53,0.2);
+    }
+    .input-field.valid   { border-color: var(--green-light); }
+    .input-field.invalid {
+      border-color: #7a2020;
+      box-shadow: 0 0 0 2px rgba(122,32,32,0.15);
+    }
+
+    /* ── Char counter ── */
+    .char-counter {
+      font-size: 0.65rem;
+      font-family: 'Barlow Condensed', monospace;
+      letter-spacing: 0.08em;
+      text-align: right;
+      transition: color 0.2s;
+    }
+    .char-counter.warn { color: #c8a030; }
+    .char-counter.over { color: #e07070; }
+    .char-counter.ok   { color: var(--muted); }
+
+    /* ── Grid cards ── */
+    .grid-card {
+      background: var(--surface2);
+      padding: 1rem;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .grid-card:hover {
+      border-color: var(--green);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .grid-card.user-card { border-color: rgba(37,104,88,0.4); }
+    .grid-card.user-card:hover { border-color: #256b58; }
+
+    /* ── Stat pills ── */
+    .stat-pill {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 0.35rem 1rem;
+      font-size: 0.7rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── Category badges ── */
+    .cat-badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      font-size: 0.6rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      padding: 0.2rem 0.55rem;
+    }
+
+    /* ── Keyboard hints ── */
+    kbd {
+      display: inline-block; padding: 0.1rem 0.4rem;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: var(--surface2);
+      color: var(--muted);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.65rem; letter-spacing: 0.05em;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+
+    /* ── Score ring ── */
+    .score-ring {
+      width: 64px; height: 64px; position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .score-ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+    .score-ring circle { fill: none; stroke-width: 4; }
+    .ring-bg   { stroke: rgba(255,255,255,0.08); }
+    .ring-fill { stroke: var(--green-light); stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+
+    /* ── Shuffle ── */
+    @keyframes shuffle-bounce {
+      0%  { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-6px) rotate(-3deg); }
+      50% { transform: translateY(0) rotate(0deg); }
+      75% { transform: translateY(-3px) rotate(2deg); }
+      100%{ transform: translateY(0) rotate(0deg); }
+    }
+    .shuffle-anim { animation: shuffle-bounce 0.4s ease; }
+
+    /* ── Section divider ── */
+    .section-divider {
+      display: flex; align-items: center; gap: 0.75rem;
+      color: var(--muted);
+      font-size: 0.65rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      margin: 1rem 0 0.5rem;
+    }
+    .section-divider::before, .section-divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* ── Filter buttons (JS-controlled) ── */
+    .filter-btn {
+      font-family: 'Barlow Condensed', sans-serif;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── Thin top accent line on header ── */
+    .header-accent {
+      height: 3px;
+      background: linear-gradient(90deg, var(--green) 0%, var(--green-light) 60%, transparent 100%);
+    }
+
+    /* ── Horizontal rule ── */
+    hr { border-color: var(--border); }
+
+    /* ── Notice banner ── */
+    .notice-banner {
+      background: var(--surface3);
+      border: 1px solid var(--border-green);
+      border-left: 3px solid var(--green);
+    }
+
+    /* ── Mono label ── */
+    .label-mono {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── MEQ logo mark (text) ── */
+    .logo-mark {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--green-dark); }
+  </style>
+</head>
+
+<body>
+
+  <!-- Toast -->
+  <div id="toast"></div>
+
+  <!-- ── Top accent line ── -->
+  <div class="header-accent"></div>
+
+  <!-- ── Header ── -->
+  <header class="pt-10 pb-4 px-4 text-center" style="border-bottom: 1px solid var(--border);">
+
+    <!-- Eyebrow label -->
+    <p class="label-mono mb-4" style="color: var(--green-light);">Study Tool · Meat Industry</p>
+
+    <!-- Title -->
+    <h1 class="condensed font-bold tracking-tight mb-1"
+        style="font-size: clamp(2.4rem, 6vw, 4rem); line-height: 0.95; color: var(--cream);">
+      MLA / MSA / AUS&#8209;MEAT
+    </h1>
+    <h2 class="condensed font-medium mb-5"
+        style="font-size: clamp(1.1rem, 3vw, 1.8rem); color: var(--green-light); letter-spacing: 0.06em;">
+      FLASHCARDS
+    </h2>
+
+    <p style="color: var(--muted); font-size: 0.9rem; max-width: 34rem; margin: 0 auto; line-height: 1.65;">
+      Study concepts from Meat &amp; Livestock Australia, Meat Standards Australia (MSA), and Aus&#8209;Meat.
+      Click a card to reveal the answer.
+    </p>
+
+    <!-- Stats pills -->
+    <div class="flex justify-center gap-2 mt-5 flex-wrap" id="stats-row">
+      <div class="stat-pill" style="color: var(--green-light);" id="stat-total">— cards</div>
+      <div class="stat-pill" style="color: #7ecf76;"            id="stat-known">0 known ✓</div>
+      <div class="stat-pill" style="color: #e07070;"            id="stat-review">0 to review</div>
+      <div class="stat-pill" style="color: #6dbfb0;"            id="stat-user">0 custom</div>
+    </div>
+
+  </header>
+
+  <!-- ── Progress ── -->
+  <div style="max-width: 32rem; margin: 1.5rem auto 0; padding: 0 1.5rem;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
+      <span style="font-size: 0.7rem; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);" id="progress-label">Card 1 of —</span>
+      <span style="font-size: 0.7rem; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);" id="progress-pct">—%</span>
+    </div>
+    <div style="width: 100%; background: var(--surface3); height: 2px; overflow: hidden;">
+      <div id="progress-bar" class="progress-bar" style="background: var(--green-light); height: 2px; width: 0%;"></div>
+    </div>
+  </div>
+
+  <!-- ── Filter bar ── -->
+  <div class="flex justify-center gap-2 mt-4 px-4 flex-wrap" id="filter-bar">
+    <button onclick="setFilter('all')"    data-filter="all"
+      class="filter-btn text-xs px-4 py-1.5 transition-all"
+      style="background: var(--green); color: var(--cream); border: 1px solid var(--green-light);">All</button>
+    <button onclick="setFilter('master')" data-filter="master"
+      class="filter-btn text-xs px-4 py-1.5 transition-all btn-ghost">Built-in</button>
+    <button onclick="setFilter('user')"   data-filter="user"
+      class="filter-btn text-xs px-4 py-1.5 transition-all btn-ghost">My Cards</button>
+    <button onclick="setFilter('review')" data-filter="review"
+      class="filter-btn text-xs px-4 py-1.5 transition-all btn-ghost">To Review</button>
+  </div>
+
+  <!-- ── Card ── -->
+  <div class="flex justify-center px-6 mt-6">
+    <div class="card-scene w-full" style="max-width: 32rem; height: 290px;">
+      <div class="card-inner" id="card-inner">
+
+        <!-- Front -->
+        <div class="card-face card-front">
+          <div id="front-badge"
+            style="font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green-light); margin-bottom: 0.9rem;">
+            Question
+          </div>
+          <p style="color: var(--cream); font-size: 1.2rem; font-weight: 500; line-height: 1.5;" id="question-text">Loading…</p>
+          <div class="hint-pulse mt-5 flex items-center gap-1.5"
+               style="font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);">
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/></svg>
+            Tap to flip
+          </div>
+        </div>
+
+        <!-- Back -->
+        <div class="card-face card-back" id="card-back-face">
+          <div style="font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(232,228,220,0.6); margin-bottom: 0.9rem;">
+            Answer
+          </div>
+          <p style="color: var(--cream); font-size: 1.2rem; font-weight: 500; line-height: 1.5;" id="answer-text">…</p>
+          <div class="mt-5 flex items-center gap-1.5"
+               style="font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(232,228,220,0.5);">
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Tap to flip back
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Self-grade buttons ── -->
+  <div id="grade-row" class="hidden flex justify-center gap-3 mt-3">
+    <button onclick="gradeCard('known')"
+      class="btn-nav text-xs px-5 py-2 font-semibold"
+      style="background: #1a3d18; color: #7ecf76; border: 1px solid #3d7a35;">
+      ✓ Got it
+    </button>
+    <button onclick="gradeCard('review')"
+      class="btn-nav text-xs px-5 py-2 font-semibold"
+      style="background: #2a1010; color: #e07070; border: 1px solid #7a2020;">
+      ↺ Review again
+    </button>
+  </div>
+
+  <!-- ── Navigation ── -->
+  <div class="flex justify-center items-center gap-4 mt-5">
+    <button id="btn-prev" onclick="navigate(-1)"
+      class="btn-nav btn-ghost font-semibold px-7 py-2.5 text-sm">
+      ← Prev
+    </button>
+
+    <!-- Score ring -->
+    <div class="score-ring" title="Known cards">
+      <svg viewBox="0 0 64 64" width="64" height="64">
+        <circle class="ring-bg" cx="32" cy="32" r="26"/>
+        <circle class="ring-fill" id="ring-fill" cx="32" cy="32" r="26" stroke-dasharray="163.4" stroke-dashoffset="163.4"/>
+      </svg>
+      <div class="text-center z-10">
+        <div id="ring-label"
+          style="font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; font-weight: 700; color: var(--green-light); letter-spacing: 0.05em;">
+          0%
+        </div>
+      </div>
+    </div>
+
+    <button id="btn-next" onclick="navigate(1)"
+      class="btn-nav btn-primary font-semibold px-7 py-2.5 text-sm">
+      Next →
+    </button>
+  </div>
+
+  <!-- ── Secondary actions ── -->
+  <div class="flex justify-center gap-6 mt-4 flex-wrap"
+       style="font-size: 0.78rem; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.08em; text-transform: uppercase;">
+    <button onclick="shuffleDeck()"
+      style="color: var(--muted); transition: color 0.2s;"
+      onmouseover="this.style.color='var(--green-light)'" onmouseout="this.style.color='var(--muted)'">
+      ⇄ Shuffle
+    </button>
+    <button onclick="resetProgress()"
+      style="color: var(--muted); transition: color 0.2s;"
+      onmouseover="this.style.color='#e07070'" onmouseout="this.style.color='var(--muted)'">
+      ↺ Reset Progress
+    </button>
+    <button onclick="toggleGrid()" id="toggle-grid-btn"
+      style="color: var(--muted); transition: color 0.2s;"
+      onmouseover="this.style.color='var(--green-light)'" onmouseout="this.style.color='var(--muted)'">
+      View All Cards
+    </button>
+  </div>
+
+  <!-- Keyboard hint -->
+  <div class="flex justify-center gap-4 mt-3 flex-wrap"
+       style="color: var(--muted); font-size: 0.68rem; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.06em;">
+    <span><kbd>←</kbd> <kbd>→</kbd> Navigate</span>
+    <span><kbd>Space</kbd> Flip</span>
+    <span><kbd>K</kbd> Known · <kbd>R</kbd> Review</span>
+  </div>
+
+  <!-- Thin divider -->
+  <div style="max-width: 32rem; margin: 2rem auto; padding: 0 1.5rem;">
+    <hr>
+  </div>
+
+  <!-- ── Grid View ── -->
+  <div id="grid-view" class="hidden" style="max-width: 40rem; margin: 0 auto; padding: 0 1.5rem;">
+    <h2 class="condensed text-center font-semibold mb-4"
+        style="font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted);">
+      All Cards in Deck
+    </h2>
+    <div id="grid-container" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+    <div class="flex justify-center mt-4">
+      <button onclick="toggleGrid()"
+        style="font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s;"
+        onmouseover="this.style.color='var(--green-light)'" onmouseout="this.style.color='var(--muted)'">
+        Hide Grid
+      </button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════
+       ADD CARD SECTION
+  ════════════════════════════════════════════════ -->
+  <div style="max-width: 32rem; margin: 0 auto; padding: 0 1.5rem; margin-top: 2.5rem;">
+
+    <!-- Toggle button -->
+    <button onclick="toggleAddForm()" id="add-toggle-btn"
+      class="w-full flex items-center justify-between transition-all group"
+      style="background: var(--surface2); border: 1px solid var(--border); padding: 1rem 1.25rem; color: var(--cream);"
+      onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div class="flex items-center gap-3">
+        <div style="width: 2rem; height: 2rem; background: var(--green-dark); display: flex; align-items: center; justify-content: center; transition: background 0.2s;">
+          <svg style="width: 1rem; height: 1rem; color: var(--green-light);" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        </div>
+        <div class="text-left">
+          <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.9rem; letter-spacing: 0.06em; text-transform: uppercase;">Add Your Own Card</div>
+          <div style="font-size: 0.75rem; color: var(--muted); margin-top: 0.1rem;">Saved locally in your browser</div>
+        </div>
+      </div>
+      <svg id="add-chevron" style="width: 1rem; height: 1rem; color: var(--muted); transition: transform 0.2s;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+    </button>
+
+    <!-- Form -->
+    <div id="add-form" class="hidden" style="margin-top: 2px; background: var(--surface2); border: 1px solid var(--border); border-top: none; padding: 1.25rem;">
+
+      <!-- Notice banner -->
+      <div class="notice-banner flex gap-3 mb-5" style="padding: 0.75rem 1rem;">
+        <svg style="width: 1rem; height: 1rem; color: var(--green-light); flex-shrink: 0; margin-top: 0.1rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <p style="font-size: 0.78rem; color: var(--muted); line-height: 1.6;">
+          Cards are saved in <strong style="color: var(--cream);">your browser only</strong> and never touch the built-in deck.
+          They appear with a <span style="color: #6dbfb0; font-weight: 600;">teal tag</span> so you can tell them apart.
+        </p>
+      </div>
+
+      <!-- Question field -->
+      <div style="margin-bottom: 1rem;">
+        <label class="label-mono" style="display: block; margin-bottom: 0.5rem;">Question</label>
+        <textarea id="inp-question" rows="2"
+          class="input-field resize-none"
+          maxlength="200"
+          placeholder="e.g. What does MSA stand for?"
+          oninput="validateField('question')"></textarea>
+        <div class="flex justify-between items-center mt-1">
+          <span id="err-question" class="hidden" style="font-size: 0.7rem; color: #e07070;"></span>
+          <span id="cnt-question" class="char-counter ok ml-auto">0 / 200</span>
+        </div>
+      </div>
+
+      <!-- Answer field -->
+      <div style="margin-bottom: 1.25rem;">
+        <label class="label-mono" style="display: block; margin-bottom: 0.5rem;">Answer</label>
+        <textarea id="inp-answer" rows="2"
+          class="input-field resize-none"
+          maxlength="300"
+          placeholder="e.g. Meat Standards Australia"
+          oninput="validateField('answer')"></textarea>
+        <div class="flex justify-between items-center mt-1">
+          <span id="err-answer" class="hidden" style="font-size: 0.7rem; color: #e07070;"></span>
+          <span id="cnt-answer" class="char-counter ok ml-auto">0 / 300</span>
+        </div>
+      </div>
+
+      <!-- Rules checklist -->
+      <div class="grid grid-cols-2 gap-y-1.5 gap-x-3 mb-5"
+           style="background: var(--surface3); border: 1px solid var(--border); padding: 0.75rem 1rem;">
+        <div class="validation-rule flex items-center gap-1.5" id="rule-q-min"
+             style="font-size: 0.68rem; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.06em; color: var(--muted);">
+          <span class="rule-icon">○</span> Question ≥ 10 chars
+        </div>
+        <div class="validation-rule flex items-center gap-1.5" id="rule-a-min"
+             style="font-size: 0.68rem; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.06em; color: var(--muted);">
+          <span class="rule-icon">○</span> Answer ≥ 3 chars
+        </div>
+        <div class="validation-rule flex items-center gap-1.5" id="rule-no-dup"
+             style="font-size: 0.68rem; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.06em; color: var(--muted);">
+          <span class="rule-icon">○</span> Not a duplicate
+        </div>
+        <div class="validation-rule flex items-center gap-1.5" id="rule-no-spam"
+             style="font-size: 0.68rem; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.06em; color: var(--muted);">
+          <span class="rule-icon">○</span> No repeated chars
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button onclick="addCard()" id="btn-add-card"
+        class="btn-nav btn-primary w-full py-3 font-semibold text-sm disabled:opacity-35 disabled:cursor-not-allowed"
+        style="letter-spacing: 0.1em; text-transform: uppercase;"
+        disabled>
+        Save to My Cards
+      </button>
+
+      <p class="text-center mt-3" id="user-count-msg"
+         style="font-size: 0.68rem; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);">
+        You have 0 custom cards saved.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── User cards manager ── -->
+  <div style="max-width: 32rem; margin: 1rem auto 0; padding: 0 1.5rem;" id="user-manager" class="hidden">
+    <div class="section-divider">My Saved Cards</div>
+    <div id="user-cards-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+    <div class="flex justify-center mt-3">
+      <button onclick="clearAllUserCards()"
+        style="font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: #e07070; text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s;"
+        onmouseover="this.style.color='#ff9090'" onmouseout="this.style.color='#e07070'">
+        Clear All My Cards
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Footer mark ── -->
+  <div class="text-center mt-12" style="padding-bottom: 2rem;">
+    <p class="logo-mark" style="color: var(--surface3); letter-spacing: 0.3em;">MLA · MSA · AUS-MEAT</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       JAVASCRIPT — unchanged from original
+       Only MASTER_DECK has been cleared.
+  ════════════════════════════════════════════ -->
+  <script>
+  'use strict';
+
+  // ════════════════════════════════════════════════
+  // MASTER DECK
+  // Add your built-in cards here as:
+  //   { q: "Question text", a: "Answer text" }
+  // These are read-only and never go to localStorage.
+  // ════════════════════════════════════════════════
+  const MASTER_DECK = [
+  { q: "How is MSA good for consumer?", a: "Consumer does not need advanced knowledge of industry to identify premium product."},
+  { q: "Why is MSA beneficial for processors, feedlots and producers?", a: "It provides detailed feedback on eating quality."},
+  { q: "MLA stands for ...", a: "Meat and Livestock Australia"},
+  { q: "What is the main function of MLA", a: "MLA invests and deals with marketing, R & D and product innovation for beef and sheep."},
+  { q: "Where does bulk of MLA funding come from?", a: "Levies paid on livestock sales, see more at https://www.mla.com.au/about-mla/how-we-are-funded/ "},
+  { q: "Why would an abbetoir need MSA Marble score?", a: "To group carcases into boning runs to meet their customer orders."},
+  { q: "How would brand owners use MSA Marbel score?", a: "For quality assurance and premium brand creation."},
+  { q: "How would a producer benefit from knowing MSA Marble score?", a: "For benchmarking genetics and nutrition for future generations."},
+  { q: "Why have MSA graded beef?", a: "It will assure consumer that cut will meet a certian quality when cooked by method shown."},
+  { q: "How can stress reduce animal's eating quality?", a: "Glycogen stored in muscles gets converted in to lactic acid at time of stress or activity, decreasing muscle pH level."},
+  { q: "What can be effects of low pH in beef?", a: "Protein denatures, causing it to retain less water and contract, leading to tougher / less juicy cut. It can also cause discoloration (pale)"},
+  { q: "Acceptable pH range for MSA is between ... and ...", a: "Acceptable pH range for MSA is between 5.30 and 5.70"},
+  { q: "List 5 issues caused by high pH levels in beef.", a: "Low visual appeal, coarse texture, high water retention, reduced shelf life (bacterial growth), can appear undercooked even after extensive cooking."},
+  { q: "What is required to export beef from Australia?", a: ""},
+  { q: "What are the main functions of AUS-MEAT?", a: "1) Maintaining language, 2)Label integrity (export labels), 3)Auditing, 4) Carcase trim standards, 5)Objective measurements (color chips), 6) Training of graders" },
+  { q: "What is the primary objective of the ICMJ Association?", a: "To expose and encourage students into careers in the meat industry." },
+  { q: "What three broad attributes contribute to carcase suitability?", a: "Eating Quality, Yield (Trimness), and Muscling." },
+  { q: "How is 'Quality' defined in the context of beef carcases?", a: "Fitness for purpose, which varies based on end use (e.g., marbling for food service)." },
+  { q: "Where is fat colour assessed on a carcase?", a: "The intermuscular fat adjacent to the rib eye muscle." },
+  { q: "Does fat colour impact MSA eating quality requirements?", a: "No, but it affects saleability due to consumer preference for whiter fat." },
+  { q: "What is the preferred meat colour for consumers at the retail level?", a: "Bright cherry red." },
+  { q: "What causes 'dark cutting' meat?", a: "Pre-slaughter stress leading to the depletion of muscle glycogen." },
+  { q: "What is the maximum acceptable pH level for MSA grading?", a: "5.70." },
+  { q: "Define marbling in beef.", a: "Fat deposited between individual muscle fibres, assessed at the ribbing site." },
+  { q: "What are the three factors used to assess marbling?", a: "Distribution, piece size, and total amount." },
+  { q: "Why is marbling beneficial to eating quality besides tenderness?", a: "It positively impacts juiciness and flavour." },
+  { q: "What is 'blood splash' (Ecchymosis)?", a: "Haemorrhaging in muscles caused by abnormally high blood pressure before exsanguination." },
+  { q: "What does the ossification score measure?", a: "The physiological age of the animal." },
+  { q: "In what order does ossification occur along the backbone?", a: "Sacral (tail), then lumbar (loin), then thoracic (head)." },
+  { q: "How does aging affect muscle texture?", a: "Collagen fibres form crosslinks that strengthen the muscle, making it tougher." },
+  { q: "What is 'soft siding'?", a: "When a carcase is not sawn exactly in the middle of the spine, obscuring ossification." },
+  { q: "What does hump height indicate in cattle?", a: "Tropical breed content (e.g., Bos indicus)." },
+  { q: "Why can high tropical breed content reduce tenderness?", a: "Increased connective tissue and higher calpastatin levels that slow tenderisation." },
+  { q: "How is hump height recorded?", a: "In 5mm increments, excluding external fat." },
+  { q: "What defines carcase yield?", a: "The amount of retail or saleable product achieved from a given carcase weight." },
+  { q: "Where is the P8 fat measurement taken?", a: "At the P8 site on the rump." },
+  { q: "What is the minimum rib fat required for MSA carcases?", a: "3mm." },
+  { q: "What are the negative effects of insufficient fat coverage?", a: "Compromised eating quality (toughness) and increased weight loss during chilling." },
+  { q: "What is Eye Muscle Area (EMA)?", a: "A measure of the longissimus dorsi muscle size in square centimetres." },
+  { q: "How does hide puller damage affect yield?", a: "Fat is removed with the hide, exposing muscle to dehydration and uneven chilling." },
+  { q: "What defines a 'scorable bruise'?", a: "An area of exposed muscle damage that cannot be covered by a 100mm diameter circle." },
+  { q: "What four attributes determine consumer eating experience?", a: "Tenderness, flavour, juiciness, and overall liking." },
+  { q: "What causes meat pH to drop from neutral to its ultimate value?", a: "The conversion of muscle glycogen to lactic acid during rigor mortis." },
+  { q: "What is a major consequence of meat with a pH over 5.7?", a: "Reduced shelf life due to rapid bacterial growth." },
+  { q: "What is 'feathering' in beef evaluation?", a: "Fat streaks between the ribs." },
+  { q: "What information is typically found on a carcase ticket?", a: "Carcase weight, P8 fat depth, and dentition." },
+  { q: "What is the 'MSA Index' (CMQ4)?", a: "A score representing predicted eating quality calculated from various carcase attributes." },
+  { q: "Name the high-value primals from the loin.", a: "Striploin, Tenderloin, and Shortloin." },
+  { q: "Which primal does the 'Ribeye Steak' come from?", a: "Cube Roll." },
+  { q: "What are three required answer areas for retail cut identification?", a: "Species, retail cut name, and the primal it was derived from." }
+];
+  
+
+    // Add your MLA / MSA / Aus-Meat cards here
+
+
+  // ════════════════════════════════════════════════
+  // STORAGE — user cards only (localStorage)
+  // ════════════════════════════════════════════════
+  const LS_KEY     = 'tpu_flashcards_v2';
+  const LS_GRADES  = 'tpu_flashcards_grades';
+  const LS_FILTER  = 'tpu_flashcards_filter';
+
+  function loadUserCards() {
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch { return []; }
+  }
+
+  function saveUserCards(arr) {
+    localStorage.setItem(LS_KEY, JSON.stringify(arr));
+  }
+
+  function loadGrades() {
+    try {
+      const raw = localStorage.getItem(LS_GRADES);
+      return raw ? JSON.parse(raw) : {};
+    } catch { return {}; }
+  }
+
+  function saveGrades(g) {
+    localStorage.setItem(LS_GRADES, JSON.stringify(g));
+  }
+
+  let grades = loadGrades();
+  let userCards = loadUserCards();
+
+  // ════════════════════════════════════════════════
+  // DECK ASSEMBLY
+  // ════════════════════════════════════════════════
+  let activeDeck    = [];
+  let currentIndex  = 0;
+  let isFlipped     = false;
+  let currentFilter = localStorage.getItem(LS_FILTER) || 'all';
+
+  function buildDeck() {
+    const master = MASTER_DECK.map((c, i) => ({ ...c, source: 'master', id: 'master-' + i }));
+    const user   = userCards.map(c => ({ ...c, source: 'user' }));
+    const all    = [...master, ...user];
+
+    if (currentFilter === 'master') {
+      activeDeck = master;
+    } else if (currentFilter === 'user') {
+      activeDeck = user;
+    } else if (currentFilter === 'review') {
+      activeDeck = all.filter(c => grades[c.id] === 'review');
+    } else {
+      activeDeck = all;
+    }
+
+    currentIndex = Math.min(currentIndex, Math.max(0, activeDeck.length - 1));
+    return activeDeck;
+  }
+
+  // ════════════════════════════════════════════════
+  // RENDER
+  // ════════════════════════════════════════════════
+  const cardInner   = document.getElementById('card-inner');
+  const questionEl  = document.getElementById('question-text');
+  const answerEl    = document.getElementById('answer-text');
+  const progressBar = document.getElementById('progress-bar');
+  const progressLbl = document.getElementById('progress-label');
+  const progressPct = document.getElementById('progress-pct');
+  const gradeRow    = document.getElementById('grade-row');
+  const backFace    = document.getElementById('card-back-face');
+  const frontBadge  = document.getElementById('front-badge');
+
+  function renderCard() {
+    if (activeDeck.length === 0) {
+      questionEl.textContent  = 'No cards in this filter.';
+      answerEl.textContent    = 'Try switching the filter above.';
+      progressLbl.textContent = 'No cards';
+      progressPct.textContent = '—';
+      progressBar.style.width = '0%';
+      updateGradeButtons();
+      updateNavButtons();
+      return;
+    }
+
+    const card  = activeDeck[currentIndex];
+    const grade = grades[card.id];
+
+    questionEl.textContent = card.q;
+    answerEl.textContent   = card.a;
+
+    // User card back tint
+    backFace.className = 'card-face card-back' + (card.source === 'user' ? ' user-back' : '');
+
+    // Front badge
+    frontBadge.textContent = card.source === 'user' ? '★ My Card' : 'Question';
+    frontBadge.style.color = card.source === 'user' ? '#6dbfb0' : 'var(--green-light)';
+
+    // Progress
+    const pct = Math.round(((currentIndex + 1) / activeDeck.length) * 100);
+    progressBar.style.width = pct + '%';
+    progressLbl.textContent = `Card ${currentIndex + 1} of ${activeDeck.length}`;
+    progressPct.textContent = pct + '%';
+
+    updateNavButtons();
+    updateStats();
+    updateScoreRing();
+    updateGradeButtons();
+  }
+
+  function updateNavButtons() {
+    const prev = document.getElementById('btn-prev');
+    const next = document.getElementById('btn-next');
+    const none = activeDeck.length === 0;
+    prev.disabled = none || currentIndex === 0;
+    prev.classList.toggle('opacity-40', none || currentIndex === 0);
+    next.disabled = none || currentIndex === activeDeck.length - 1;
+    next.classList.toggle('opacity-40', none || currentIndex === activeDeck.length - 1);
+  }
+
+  function updateGradeButtons() {
+    gradeRow.classList.toggle('hidden', !isFlipped || activeDeck.length === 0);
+    if (!isFlipped || activeDeck.length === 0) return;
+    const card  = activeDeck[currentIndex];
+    const grade = grades[card.id];
+    const known  = gradeRow.children[0];
+    const review = gradeRow.children[1];
+    known.style.outline  = grade === 'known'  ? '2px solid #56a84c' : 'none';
+    review.style.outline = grade === 'review' ? '2px solid #c05050' : 'none';
+  }
+
+  function updateStats() {
+    const master = MASTER_DECK.map((c, i) => 'master-' + i);
+    const user   = userCards.map(c => c.id);
+    const all    = [...master, ...user];
+    const knownCount  = all.filter(id => grades[id] === 'known').length;
+    const reviewCount = all.filter(id => grades[id] === 'review').length;
+
+    document.getElementById('stat-total').textContent  = `${all.length} cards`;
+    document.getElementById('stat-known').textContent  = `${knownCount} known ✓`;
+    document.getElementById('stat-review').textContent = `${reviewCount} to review`;
+    document.getElementById('stat-user').textContent   = `${userCards.length} custom`;
+    document.getElementById('user-count-msg').textContent =
+      `You have ${userCards.length} custom card${userCards.length !== 1 ? 's' : ''} saved.`;
+  }
+
+  function updateScoreRing() {
+    const master     = MASTER_DECK.map((c, i) => 'master-' + i);
+    const user       = userCards.map(c => c.id);
+    const all        = [...master, ...user];
+    const knownCount = all.filter(id => grades[id] === 'known').length;
+    const pct        = all.length ? knownCount / all.length : 0;
+    const circumf    = 2 * Math.PI * 26;
+    document.getElementById('ring-fill').style.strokeDashoffset = circumf * (1 - pct);
+    document.getElementById('ring-label').textContent = Math.round(pct * 100) + '%';
+  }
+
+  // ════════════════════════════════════════════════
+  // INTERACTIONS
+  // ════════════════════════════════════════════════
+  cardInner.addEventListener('click', flipCard);
+
+  function flipCard() {
+    if (activeDeck.length === 0) return;
+    isFlipped = !isFlipped;
+    cardInner.classList.toggle('flipped', isFlipped);
+    updateGradeButtons();
+  }
+
+  function navigate(dir) {
+    const next = currentIndex + dir;
+    if (next < 0 || next >= activeDeck.length) return;
+    cardInner.classList.add('fade-out');
+    setTimeout(() => {
+      currentIndex = next;
+      isFlipped = false;
+      cardInner.classList.remove('flipped', 'fade-out');
+      renderCard();
+    }, 180);
+  }
+
+  function gradeCard(grade) {
+    if (activeDeck.length === 0) return;
+    const card = activeDeck[currentIndex];
+    grades[card.id] = grade;
+    saveGrades(grades);
+    updateStats();
+    updateScoreRing();
+    updateGradeButtons();
+    showToast(grade === 'known' ? '✓ Marked as known' : '↺ Added to review list',
+              grade === 'known' ? 'success' : 'info');
+    if (currentIndex < activeDeck.length - 1) {
+      setTimeout(() => navigate(1), 400);
+    }
+  }
+
+  function shuffleDeck() {
+    for (let i = activeDeck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [activeDeck[i], activeDeck[j]] = [activeDeck[j], activeDeck[i]];
+    }
+    currentIndex = 0;
+    isFlipped = false;
+    cardInner.classList.remove('flipped');
+    cardInner.classList.add('shuffle-anim');
+    cardInner.addEventListener('animationend', () => cardInner.classList.remove('shuffle-anim'), { once: true });
+    renderCard();
+    showToast('⇄ Deck shuffled', 'info');
+  }
+
+  function resetProgress() {
+    if (!confirm('Reset all progress? Your custom cards will be kept.')) return;
+    grades = {};
+    saveGrades(grades);
+    updateStats();
+    updateScoreRing();
+    updateGradeButtons();
+    showToast('↺ Progress reset', 'info');
+  }
+
+  function setFilter(f) {
+    currentFilter = f;
+    localStorage.setItem(LS_FILTER, f);
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      const active = btn.dataset.filter === f;
+      btn.style.background   = active ? 'var(--green)'       : 'transparent';
+      btn.style.color        = active ? 'var(--cream)'       : 'var(--muted)';
+      btn.style.borderColor  = active ? 'var(--green-light)' : 'var(--border)';
+    });
+    buildDeck();
+    currentIndex = 0;
+    isFlipped = false;
+    cardInner.classList.remove('flipped');
+    renderCard();
+  }
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', e => {
+    if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if (e.key === 'ArrowRight' || e.key === 'l') navigate(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'h') navigate(-1);
+    if (e.key === ' ') { e.preventDefault(); flipCard(); }
+    if (e.key === 'k' || e.key === 'K') gradeCard('known');
+    if (e.key === 'r' || e.key === 'R') gradeCard('review');
+  });
+
+  // ════════════════════════════════════════════════
+  // GRID VIEW
+  // ════════════════════════════════════════════════
+  function toggleGrid() {
+    const grid = document.getElementById('grid-view');
+    const btn  = document.getElementById('toggle-grid-btn');
+    if (grid.classList.contains('hidden')) {
+      buildGridView();
+      grid.classList.remove('hidden');
+      btn.textContent = 'Hide All Cards';
+    } else {
+      grid.classList.add('hidden');
+      btn.textContent = 'View All Cards';
+    }
+  }
+
+  function buildGridView() {
+    const container = document.getElementById('grid-container');
+    const master = MASTER_DECK.map((c, i) => ({ ...c, source: 'master', id: 'master-' + i }));
+    const user   = userCards.map(c => ({ ...c, source: 'user' }));
+    const all    = [...master, ...user];
+
+    container.innerHTML = all.map((c, i) => {
+      const grade = grades[c.id];
+      const gradeTag = grade === 'known'
+        ? '<span class="cat-badge" style="background:rgba(61,122,53,0.25);color:#7ecf76;">✓ Known</span>'
+        : grade === 'review'
+        ? '<span class="cat-badge" style="background:rgba(122,32,32,0.25);color:#e07070;">↺ Review</span>'
+        : '';
+      const srcTag = c.source === 'user'
+        ? '<span class="cat-badge" style="background:rgba(37,104,88,0.25);color:#6dbfb0;">★ Mine</span>'
+        : '<span class="cat-badge" style="background:rgba(61,122,53,0.15);color:var(--green-light);">Built-in</span>';
+      return `
+        <div onclick="jumpTo(${i})" class="grid-card ${c.source === 'user' ? 'user-card' : ''}">
+          <div class="flex items-center justify-between mb-1.5">
+            <div style="font-size:0.65rem;font-family:'Barlow Condensed',sans-serif;letter-spacing:0.1em;color:var(--muted);">#${i + 1}</div>
+            <div class="flex gap-1">${srcTag}${gradeTag}</div>
+          </div>
+          <p style="color:var(--cream);font-size:0.85rem;font-weight:500;line-height:1.45;">${c.q}</p>
+          <p style="color:var(--muted);font-size:0.75rem;margin-top:0.4rem;line-height:1.4;font-style:italic;">${c.a}</p>
+        </div>`;
+    }).join('');
+  }
+
+  function jumpTo(idx) {
+    document.getElementById('grid-view').classList.add('hidden');
+    document.getElementById('toggle-grid-btn').textContent = 'View All Cards';
+    const master = MASTER_DECK.map((c, i) => ({ ...c, source: 'master', id: 'master-' + i }));
+    const user   = userCards.map(c => ({ ...c, source: 'user' }));
+    const all    = [...master, ...user];
+    const card   = all[idx];
+    if (card.source === 'master' && currentFilter === 'user') setFilter('all');
+    if (card.source === 'user'   && currentFilter === 'master') setFilter('all');
+    buildDeck();
+    currentIndex = activeDeck.findIndex(c => c.id === card.id);
+    if (currentIndex < 0) currentIndex = 0;
+    isFlipped = false;
+    cardInner.classList.remove('flipped');
+    renderCard();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ════════════════════════════════════════════════
+  // ADD CARD — validation + localStorage only
+  // ════════════════════════════════════════════════
+  const BLOCKED_PATTERNS = [
+    /(.)\1{5,}/,
+    /^[\W\d\s]+$/,
+    /https?:\/\//i,
+    /\b(fuck|shit|ass|cunt|bitch)\b/i,
+  ];
+
+  function toggleAddForm() {
+    const form    = document.getElementById('add-form');
+    const chevron = document.getElementById('add-chevron');
+    const open    = form.classList.toggle('hidden');
+    chevron.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
+    if (!open) renderUserManager();
+  }
+
+  function validateField(field) {
+    const inp = document.getElementById(`inp-${field}`);
+    const err = document.getElementById(`err-${field}`);
+    const cnt = document.getElementById(`cnt-${field}`);
+    const val = inp.value.trim();
+    const max = parseInt(inp.getAttribute('maxlength'));
+    const len = inp.value.length;
+
+    cnt.textContent = `${len} / ${max}`;
+    cnt.className   = 'char-counter ' + (len > max * 0.9 ? (len >= max ? 'over' : 'warn') : 'ok');
+
+    updateRule('rule-q-min',   field === 'question' ? val.length >= 10 : null);
+    updateRule('rule-a-min',   field === 'answer'   ? val.length >= 3  : null);
+    updateRule('rule-no-spam', BLOCKED_PATTERNS.some(r => r.test(val)) ? false : val.length > 0 ? true : null);
+    updateRule('rule-no-dup',  checkDuplicate(val) && val.length > 0 ? false : val.length > 0 ? true : null);
+
+    if (val.length === 0) {
+      inp.className = 'input-field resize-none';
+      err.classList.add('hidden');
+    } else {
+      const ok     = field === 'question' ? val.length >= 10 : val.length >= 3;
+      const noSpam = !BLOCKED_PATTERNS.some(r => r.test(val));
+      const noDup  = field === 'question' ? !checkDuplicate(val) : true;
+      const valid  = ok && noSpam && noDup;
+      inp.className = 'input-field resize-none ' + (valid ? 'valid' : 'invalid');
+      err.textContent = !ok     ? (field === 'question' ? 'At least 10 characters required.' : 'At least 3 characters required.')
+                      : !noSpam ? 'Looks like spam or blocked content.'
+                      : !noDup  ? 'A card with this question already exists.'
+                      : '';
+      err.classList.toggle('hidden', valid);
+    }
+    checkSubmitReady();
+  }
+
+  function checkDuplicate(val) {
+    if (!val) return false;
+    const norm = val.toLowerCase().trim();
+    return MASTER_DECK.some(c => c.q.toLowerCase().trim() === norm)
+        || userCards.some(c => c.q.toLowerCase().trim() === norm);
+  }
+
+  function updateRule(id, pass) {
+    const el   = document.getElementById(id);
+    if (!el) return;
+    const icon = el.querySelector('.rule-icon');
+    if (pass === null) {
+      el.style.color   = 'var(--muted)';
+      icon.textContent = '○';
+    } else if (pass) {
+      el.style.color   = '#7ecf76';
+      icon.textContent = '✓';
+    } else {
+      el.style.color   = '#e07070';
+      icon.textContent = '✕';
+    }
+  }
+
+  function checkSubmitReady() {
+    const q   = document.getElementById('inp-question').value.trim();
+    const a   = document.getElementById('inp-answer').value.trim();
+    const btn = document.getElementById('btn-add-card');
+    const qOk   = q.length >= 10;
+    const aOk   = a.length >= 3;
+    const qSafe = !BLOCKED_PATTERNS.some(r => r.test(q));
+    const aSafe = !BLOCKED_PATTERNS.some(r => r.test(a));
+    const noDup = !checkDuplicate(q);
+    btn.disabled = !(qOk && aOk && qSafe && aSafe && noDup);
+  }
+
+  function addCard() {
+    const q = document.getElementById('inp-question').value.trim();
+    const a = document.getElementById('inp-answer').value.trim();
+    if (q.length < 10) return showToast('Question too short.', 'error');
+    if (a.length < 3)  return showToast('Answer too short.', 'error');
+    if (BLOCKED_PATTERNS.some(r => r.test(q) || r.test(a))) return showToast('Blocked content detected.', 'error');
+    if (checkDuplicate(q)) return showToast('Duplicate question.', 'error');
+    if (userCards.length >= 80) return showToast('Limit of 80 custom cards reached.', 'error');
+
+    const newCard = {
+      q, a,
+      id:      'user-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
+      source:  'user',
+      created: new Date().toISOString(),
+    };
+
+    userCards.push(newCard);
+    saveUserCards(userCards);
+    grades[newCard.id] = undefined;
+
+    document.getElementById('inp-question').value = '';
+    document.getElementById('inp-answer').value   = '';
+    ['question','answer'].forEach(f => {
+      document.getElementById(`inp-${f}`).className  = 'input-field resize-none';
+      document.getElementById(`err-${f}`).classList.add('hidden');
+      document.getElementById(`cnt-${f}`).textContent = `0 / ${f === 'question' ? 200 : 300}`;
+    });
+    ['rule-q-min','rule-a-min','rule-no-dup','rule-no-spam'].forEach(r => updateRule(r, null));
+    document.getElementById('btn-add-card').disabled = true;
+
+    buildDeck();
+    setFilter('all');
+    currentIndex = activeDeck.findIndex(c => c.id === newCard.id);
+    if (currentIndex < 0) currentIndex = 0;
+    isFlipped = false;
+    cardInner.classList.remove('flipped');
+    renderCard();
+    renderUserManager();
+    showToast('★ Card saved to My Cards!', 'success');
+  }
+
+  // ════════════════════════════════════════════════
+  // USER CARDS MANAGER
+  // ════════════════════════════════════════════════
+  function renderUserManager() {
+    const mgr  = document.getElementById('user-manager');
+    const list = document.getElementById('user-cards-list');
+    if (userCards.length === 0) { mgr.classList.add('hidden'); return; }
+    mgr.classList.remove('hidden');
+    list.innerHTML = userCards.map((c, i) => `
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:0.85rem 1rem;position:relative;" class="group">
+        <div class="flex items-start justify-between gap-2">
+          <p style="font-size:0.85rem;font-weight:500;color:var(--cream);line-height:1.45;flex:1;">${escapeHtml(c.q)}</p>
+          <button onclick="deleteUserCard('${c.id}')"
+            style="flex-shrink:0;opacity:0;color:#e07070;padding:0.15rem;transition:opacity 0.2s;"
+            class="group-hover:opacity-100"
+            onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'"
+            title="Delete card">
+            <svg style="width:0.85rem;height:0.85rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+        <p style="font-size:0.75rem;color:var(--muted);font-style:italic;line-height:1.4;margin-top:0.3rem;">${escapeHtml(c.a)}</p>
+        <div class="flex items-center gap-1.5 mt-2">
+          <span class="cat-badge" style="background:rgba(37,104,88,0.25);color:#6dbfb0;">★ Mine</span>
+          ${grades[c.id] === 'known'  ? '<span class="cat-badge" style="background:rgba(61,122,53,0.25);color:#7ecf76;">✓ Known</span>'  : ''}
+          ${grades[c.id] === 'review' ? '<span class="cat-badge" style="background:rgba(122,32,32,0.25);color:#e07070;">↺ Review</span>' : ''}
+          <span style="font-size:0.65rem;font-family:\'Barlow Condensed\',sans-serif;letter-spacing:0.06em;color:var(--muted);margin-left:auto;">${new Date(c.created).toLocaleDateString()}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function deleteUserCard(id) {
+    if (!confirm('Delete this card?')) return;
+    userCards = userCards.filter(c => c.id !== id);
+    delete grades[id];
+    saveUserCards(userCards);
+    saveGrades(grades);
+    buildDeck();
+    currentIndex = Math.min(currentIndex, Math.max(0, activeDeck.length - 1));
+    renderCard();
+    renderUserManager();
+    showToast('Card deleted.', 'info');
+  }
+
+  function clearAllUserCards() {
+    if (!confirm(`Delete all ${userCards.length} custom cards? This cannot be undone.`)) return;
+    userCards.forEach(c => delete grades[c.id]);
+    userCards = [];
+    saveUserCards([]);
+    saveGrades(grades);
+    buildDeck();
+    currentIndex = 0;
+    renderCard();
+    renderUserManager();
+    document.getElementById('user-manager').classList.add('hidden');
+    showToast('All custom cards cleared.', 'info');
+  }
+
+  // ════════════════════════════════════════════════
+  // UTILITIES
+  // ════════════════════════════════════════════════
+  let toastTimer;
+  function showToast(msg, type = 'info') {
+    const t = document.getElementById('toast');
+    clearTimeout(toastTimer);
+    t.textContent = msg;
+    t.className   = `show ${type}`;
+    toastTimer = setTimeout(() => { t.classList.remove('show'); }, 2500);
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ════════════════════════════════════════════════
+  // INIT
+  // ════════════════════════════════════════════════
+  (function init() {
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      const active = btn.dataset.filter === currentFilter;
+      btn.style.background  = active ? 'var(--green)'       : 'transparent';
+      btn.style.color       = active ? 'var(--cream)'       : 'var(--muted)';
+      btn.style.borderColor = active ? 'var(--green-light)' : 'var(--border)';
+    });
+    buildDeck();
+    renderCard();
+    renderUserManager();
+  })();
+  </script>
+</body>
+</html>

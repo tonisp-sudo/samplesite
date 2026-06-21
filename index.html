@@ -12,6 +12,9 @@
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -60,13 +63,40 @@
   </div>
   
   <main class="min-h-screen">
-    <!-- Page content will go here -->
-    <div class="container mx-auto py-20 text-center">
-      <h1 class="text-4xl font-syne font-bold mb-4">Foundation Test</h1>
-      <p class="text-text-muted max-w-md mx-auto">
-        This is a test of the theme foundation. Navigation, footer, and background
-        should be visible.
-      </p>
+    <!-- HERO -->
+    <section id="hero">
+      <div style="max-width:860px">
+        <p class="hero-eyebrow">Welcome to the universe of</p>
+        <h1 class="hero-name">TONIS<br><span class="outline">PRAKS</span></h1>
+        <p class="hero-sub">Developer. Creator. Explorer. A personal space where study, projects, and captured moments converge.</p>
+        <div class="hero-actions">
+          <a href="#universe" class="btn-solid">Explore <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 7h10M7 3l4 4-4 4"/></svg></a>
+          <a href="apps.html" class="btn-outline">Apps</a>
+        </div>
+      </div>
+      <div class="scroll-hint"><div class="scroll-line"></div>Scroll</div>
+    </section>
+
+    <!-- TICKER -->
+    <div class="ticker-wrap">
+      <div class="ticker-track">
+        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
+        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
+        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
+        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
+        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
+        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
+        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
+        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
+        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
+        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
+        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
+        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
+        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
+        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
+        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
+        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
+      </div>
     </div>
   </main>
   
@@ -93,6 +123,148 @@
           document.getElementById('footer-container').innerHTML = html;
         });
     });
+  </script>
+
+  <!-- Cursor -->
+  <script>
+    const dot = document.getElementById('c-dot'), ring = document.getElementById('c-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.cssText = `left:${mx}px;top:${my}px`;
+    });
+    document.addEventListener('mouseover', e => {
+      e.target.closest('a,button') ? ring.classList.add('big') : ring.classList.remove('big');
+    });
+    (function ar() {
+      rx += (mx - rx) * 0.11;
+      ry += (my - ry) * 0.11;
+      ring.style.cssText = `left:${rx}px;top:${ry}px`;
+      requestAnimationFrame(ar);
+    })();
+  </script>
+
+  <!-- Navbar scroll + mobile drawer -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      function initNav() {
+        const nb = document.getElementById('navbar');
+        const toggle = document.getElementById('nav-toggle');
+        const links = document.getElementById('nav-links');
+        if (!nb || !toggle || !links) {
+          setTimeout(initNav, 100);
+          return;
+        }
+        window.addEventListener('scroll', () => {
+          if (window.scrollY > 50) {
+            nb.style.background = 'rgba(11,12,10,0.9)';
+            nb.style.backdropFilter = 'blur(14px)';
+            nb.style.borderBottom = '1px solid rgba(240,240,240,0.1)';
+          } else {
+            nb.style.background = 'transparent';
+            nb.style.backdropFilter = 'none';
+            nb.style.borderBottom = 'none';
+          }
+        });
+        toggle.addEventListener('click', () => links.classList.toggle('open'));
+        links.querySelectorAll('a').forEach(a => {
+          a.addEventListener('click', () => links.classList.remove('open'));
+        });
+      }
+      initNav();
+    });
+  </script>
+
+  <!-- p5.js particle morph background -->
+  <script>
+    new p5(function(p) {
+      const wrap = document.getElementById('p5-wrap');
+      const N = 130;
+      const PALETTE = ['#6366f1','#818cf8','#a78bfa','#60a5fa','#818cf8','#c4b5fd'];
+      let pts = [], shapeIdx = 0;
+
+      function shape(idx, cx, cy, r) {
+        const out = [];
+        if (idx === 0) {
+          for (let i = 0; i < N; i++) out.push({x: cx + p.random(-1,1) * r * 1.8, y: cy + p.random(-1,1) * r * 1.2});
+        } else if (idx === 1) {
+          for (let i = 0; i < N; i++) { const a = i / N * p.TWO_PI; out.push({x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r}); }
+        } else if (idx === 2) {
+          const c = Math.ceil(Math.sqrt(N));
+          for (let i = 0; i < N; i++) { const col = i % c, row = Math.floor(i / c); out.push({x: cx - r + (col / (c-1)) * r * 2, y: cy - r * 0.7 + (row / (c-1)) * r * 1.4}); }
+        } else if (idx === 3) {
+          for (let i = 0; i < N; i++) { const a = i / N * p.TWO_PI; const rr = i % 2 === 0 ? r : r * 0.42; out.push({x: cx + Math.cos(a) * rr, y: cy + Math.sin(a) * rr}); }
+        } else {
+          for (let i = 0; i < N; i++) { const a = i / N * p.TWO_PI * 3; const rr = i / N * r; out.push({x: cx + Math.cos(a) * rr, y: cy + Math.sin(a) * rr}); }
+        }
+        return out;
+      }
+
+      p.setup = function() {
+        const cnv = p.createCanvas(window.innerWidth, window.innerHeight);
+        cnv.parent(wrap);
+        const r = Math.min(p.width, p.height) * 0.25;
+        const init = shape(0, p.width / 2, p.height / 2, r);
+        for (let i = 0; i < N; i++) {
+          const col = p.color(PALETTE[Math.floor(p.random(PALETTE.length))]);
+          pts.push({x: init[i].x, y: init[i].y, tx: init[i].x, ty: init[i].y, vx: 0, vy: 0, sz: p.random(3, 6.5), col, a: p.random(100, 190), sp: p.random(0.04, 0.09)});
+        }
+        let si = 1;
+        function next() {
+          const r2 = Math.min(p.width, p.height) * 0.25;
+          const s = shape(si, p.width / 2, p.height / 2, r2);
+          pts.forEach((pt, i) => { pt.tx = s[i].x; pt.ty = s[i].y; });
+          si = (si + 1) % 5;
+          setTimeout(next, 3600);
+        }
+        setTimeout(next, 3200);
+      };
+
+      p.draw = function() {
+        p.clear();
+        for (let i = 0; i < N; i++) {
+          for (let j = i + 1; j < N; j++) {
+            const d = p.dist(pts[i].x, pts[i].y, pts[j].x, pts[j].y);
+            if (d < 72) {
+              p.stroke(99, 102, 241, p.map(d, 0, 72, 22, 0));
+              p.strokeWeight(0.35);
+              p.line(pts[i].x, pts[i].y, pts[j].x, pts[j].y);
+            }
+          }
+        }
+        pts.forEach(pt => {
+          pt.vx += (pt.tx - pt.x) * pt.sp;
+          pt.vy += (pt.ty - pt.y) * pt.sp;
+          pt.vx *= 0.76;
+          pt.vy *= 0.76;
+          pt.x += pt.vx;
+          pt.y += pt.vy;
+          const dx = pt.x - p.mouseX, dy = pt.y - p.mouseY, md = Math.sqrt(dx * dx + dy * dy);
+          if (md < 85) { const f = (85 - md) / 85; pt.x += (dx / md) * f * 5.5; pt.y += (dy / md) * f * 5.5; }
+          p.noStroke();
+          const c = pt.col;
+          p.fill(p.red(c), p.green(c), p.blue(c), pt.a);
+          p.ellipse(pt.x, pt.y, pt.sz);
+        });
+      };
+
+      p.mousePressed = function() {
+        shapeIdx = (shapeIdx + 1) % 5;
+        const r = Math.min(p.width, p.height) * 0.25;
+        const s = shape(shapeIdx, p.width / 2, p.height / 2, r);
+        pts.forEach((pt, i) => { pt.tx = s[i].x; pt.ty = s[i].y; });
+      };
+
+      p.windowResized = function() { p.resizeCanvas(window.innerWidth, window.innerHeight); };
+    });
+  </script>
+
+  <!-- Scroll reveal -->
+  <script>
+    const obs = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+    }), {threshold: 0.1, rootMargin: '0px 0px -50px 0px'});
+    document.querySelectorAll('.sr').forEach(el => obs.observe(el));
   </script>
 </body>
 </html>
