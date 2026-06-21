@@ -1,0 +1,70 @@
+/* ===== COLOR SYSTEM ===== */
+:root {
+  /* Base dark theme */
+  --color-base: #0b0c0a;
+  --color-base-light: #121212;
+  --color-base-card: #1a1a1a;
+  
+  /* Accent color options - uncomment ONE */
+  /* TEAL: #00c8b3, #00e6cf, #009e8d */
+  /* --color-accent: #00c8b3;
+  --color-accent-light: #00e6cf;
+  --color-accent-dark: #009e8d; */
+  
+  /* INDIGO: #6366f1, #818cf8, #4f46e5 */
+  --color-accent: #6366f1;
+  --color-accent-light: #818cf8;
+  --color-accent-dark: #4f46e5;
+  
+  /* Text colors */
+  --color-text: #f0f0f0;
+  --color-text-muted: #a0a0a0;
+  --color-border: rgba(240, 240, 240, 0.1);
+}
+
+/* ===== BASE STYLES ===== */
+*,*::before,*::after { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+}
+
+html { 
+  scroll-behavior: smooth; 
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background-color: var(--color-base);
+  color: var(--color-text);
+  overflow-x: hidden;
+}
+
+/* ===== TEXTURE & EFFECTS ===== */
+/* Grain texture overlay */
+body::after { 
+  content: ''; 
+  position: fixed; 
+  inset: 0; 
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); 
+  pointer-events: none; 
+  z-index: 9000; 
+  opacity: 0.3;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
