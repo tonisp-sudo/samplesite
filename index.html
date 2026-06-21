@@ -98,6 +98,44 @@
         <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
       </div>
     </div>
+
+    <!-- MY UNIVERSE -->
+    <section id="universe">
+      <div class="sr"><p class="s-label">Navigate</p><h2 class="s-title">My Universe</h2></div>
+      <div class="cards-grid">
+
+        <a href="/wiki/site/index.html" class="u-card" style="background:linear-gradient(145deg,#1e2235,#0f121e)">
+          <div class="u-card-top"></div>
+          <div class="u-card-body">
+            <p class="u-card-num">01 / Study</p>
+            <h3 class="u-card-title">Study &<br>Learning</h3>
+            <p class="u-card-desc">Notes, courses, certs, and the endless journey of learning everything about tech and the world.</p>
+            <span class="u-card-link">Enter <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 7h10M7 3l4 4-4 4"/></svg></span>
+          </div>
+        </a>
+
+        <a href="apps.html" class="u-card" style="background:linear-gradient(145deg,#2a1e1a,#160f0a)">
+          <div class="u-card-top"></div>
+          <div class="u-card-body">
+            <p class="u-card-num">02 / Apps</p>
+            <h3 class="u-card-title">Applications<br>& Projects</h3>
+            <p class="u-card-desc">Built tools, web apps, and experiments solving real problems with code.</p>
+            <span class="u-card-link">Explore <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 7h10M7 3l4 4-4 4"/></svg></span>
+          </div>
+        </a>
+
+        <a href="gallery.html" class="u-card" style="background:linear-gradient(145deg,#1a2520,#0c1410)">
+          <div class="u-card-top"></div>
+          <div class="u-card-body">
+            <p class="u-card-num">03 / Gallery</p>
+            <h3 class="u-card-title">Photo<br>Gallery</h3>
+            <p class="u-card-desc">The world through my lens. Landscapes, life, and quiet moments worth preserving.</p>
+            <span class="u-card-link">View Gallery <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 7h10M7 3l4 4-4 4"/></svg></span>
+          </div>
+        </a>
+
+      </div>
+    </section>
   </main>
   
   <!-- Footer (Shared Partial) -->
@@ -265,6 +303,24 @@
       if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
     }), {threshold: 0.1, rootMargin: '0px 0px -50px 0px'});
     document.querySelectorAll('.sr').forEach(el => obs.observe(el));
+  </script>
+
+  <!-- Universe cards GSAP entrance -->
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+    document.addEventListener('DOMContentLoaded', function() {
+      gsap.from('.u-card', {
+        scrollTrigger: {
+          trigger: '#universe',
+          start: 'top 75%'
+        },
+        opacity: 0,
+        y: 60,
+        duration: 0.7,
+        stagger: 0.15,
+        ease: 'power2.out'
+      });
+    });
   </script>
 </body>
 </html>
