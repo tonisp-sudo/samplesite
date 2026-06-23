@@ -96,16 +96,22 @@
 
     // ── Desktop mega-menu: hover intent ─────────────────────────────────────
     if (desktop) {
-      desktop.addEventListener('mouseenter', (e) => {
+      let lastHoveredMega = null;
+      desktop.addEventListener('mouseover', (e) => {
         const li = e.target.closest('li[data-mega]');
         if (li) {
           const panelId = 'mega-' + li.getAttribute('data-mega');
-          if (activeMega && activeMega !== panelId) {
-            closeMegaMenu();
+          if (panelId !== lastHoveredMega) {
+            lastHoveredMega = panelId;
+            if (activeMega && activeMega !== panelId) {
+              closeMegaMenu();
+            }
+            openMegaMenu(panelId);
           }
-          openMegaMenu(panelId);
+        } else {
+          lastHoveredMega = null;
         }
-      }, true);
+      });
 
       // Use mouseleave on the ul to close when cursor leaves all nav items
       desktop.addEventListener('mouseleave', () => {
