@@ -15,6 +15,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -48,6 +49,11 @@
   
   <!-- Site CSS -->
   <link rel="stylesheet" href="css/site.css">
+  
+  <!-- Mega-menu transition utilities -->
+  <style>
+    [id^='mega-'] { transition: opacity 0.2s ease; }
+  </style>
 </head>
 <body class="bg-base text-text">
   <!-- Custom cursor elements -->
@@ -107,7 +113,10 @@
         <a href="/wiki/site/index.html" class="u-card" style="background:linear-gradient(145deg,#1e2235,#0f121e)">
           <div class="u-card-top"></div>
           <div class="u-card-body">
-            <p class="u-card-num">01 / Study</p>
+            <div style="display:flex;align-items:center;gap:0.6rem;">
+              <i data-lucide="graduation-cap" style="width:20px;height:20px;color:var(--color-accent-light);"></i>
+              <p class="u-card-num">01 / Study</p>
+            </div>
             <h3 class="u-card-title">Study &<br>Learning</h3>
             <p class="u-card-desc">Notes, courses, certs, and the endless journey of learning everything about tech and the world.</p>
             <span class="u-card-link">Enter <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 7h10M7 3l4 4-4 4"/></svg></span>
@@ -117,7 +126,10 @@
         <a href="apps.html" class="u-card" style="background:linear-gradient(145deg,#2a1e1a,#160f0a)">
           <div class="u-card-top"></div>
           <div class="u-card-body">
-            <p class="u-card-num">02 / Apps</p>
+            <div style="display:flex;align-items:center;gap:0.6rem;">
+              <i data-lucide="code-2" style="width:20px;height:20px;color:var(--color-accent-light);"></i>
+              <p class="u-card-num">02 / Apps</p>
+            </div>
             <h3 class="u-card-title">Applications<br>& Projects</h3>
             <p class="u-card-desc">Built tools, web apps, and experiments solving real problems with code.</p>
             <span class="u-card-link">Explore <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 7h10M7 3l4 4-4 4"/></svg></span>
@@ -127,7 +139,10 @@
         <a href="gallery.html" class="u-card" style="background:linear-gradient(145deg,#1a2520,#0c1410)">
           <div class="u-card-top"></div>
           <div class="u-card-body">
-            <p class="u-card-num">03 / Gallery</p>
+            <div style="display:flex;align-items:center;gap:0.6rem;">
+              <i data-lucide="camera" style="width:20px;height:20px;color:var(--color-accent-light);"></i>
+              <p class="u-card-num">03 / Gallery</p>
+            </div>
             <h3 class="u-card-title">Photo<br>Gallery</h3>
             <p class="u-card-desc">The world through my lens. Landscapes, life, and quiet moments worth preserving.</p>
             <span class="u-card-link">View Gallery <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 7h10M7 3l4 4-4 4"/></svg></span>
@@ -182,36 +197,8 @@
     })();
   </script>
 
-  <!-- Navbar scroll + mobile drawer -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      function initNav() {
-        const nb = document.getElementById('navbar');
-        const toggle = document.getElementById('nav-toggle');
-        const links = document.getElementById('nav-links');
-        if (!nb || !toggle || !links) {
-          setTimeout(initNav, 100);
-          return;
-        }
-        window.addEventListener('scroll', () => {
-          if (window.scrollY > 50) {
-            nb.style.background = 'rgba(11,12,10,0.9)';
-            nb.style.backdropFilter = 'blur(14px)';
-            nb.style.borderBottom = '1px solid rgba(240,240,240,0.1)';
-          } else {
-            nb.style.background = 'transparent';
-            nb.style.backdropFilter = 'none';
-            nb.style.borderBottom = 'none';
-          }
-        });
-        toggle.addEventListener('click', () => links.classList.toggle('open'));
-        links.querySelectorAll('a').forEach(a => {
-          a.addEventListener('click', () => links.classList.remove('open'));
-        });
-      }
-      initNav();
-    });
-  </script>
+  <!-- Navigation logic -->
+  <script src="js/nav.js"></script>
 
   <!-- p5.js particle morph background -->
   <script>
@@ -296,6 +283,9 @@
       p.windowResized = function() { p.resizeCanvas(window.innerWidth, window.innerHeight); };
     });
   </script>
+
+  <!-- Initialize Lucide icons -->
+  <script>lucide.createIcons();</script>
 
   <!-- Scroll reveal -->
   <script>

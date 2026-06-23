@@ -18,6 +18,9 @@ before doing anything. The rules in this file are not optional.
 - `css/site.css`, `partials/nav.html`, `partials/footer.html` exist from an
   earlier "foundation setup" step. **Do not assume their contents are
   correct or current — read them fresh before touching anything.**
+- `js/nav.js` — Apple-style navigation logic with deferred init
+  (MutationObserver), mega-menu hover/click, mobile drawer, focus trap,
+  event delegation for async partial injection.
 - `msa.html` is currently **untracked** in git. Decide whether to commit it
   or leave it — don't silently include/exclude it.
 - `apps.html`, `gallery.html`, `flashcard-app.html` have **not** been
@@ -98,24 +101,15 @@ and `cat`/`read` on the actual files as your first action, every session.**
 1. **Re-verify current file state** (read every file fresh, run
    `git log --oneline -10`, `git status`). Report findings before doing
    anything else.
-2. 2. **Rebuild the hero + nav section of `index.html`** (this was done once
-   before but lost — see chat history for the spec/content that was
-   confirmed working via raw `cat` output, if available). Includes: custom
-   lag-following cursor, p5.js particle background, eyebrow/headline
-   (text-stroke style)/CTA buttons/scroll hint with staggered fade-up
-   entrance, nav with mobile drawer + scroll-triggered blur.
-
-   **Cursor + particle JS — implement from the ORIGINAL site, not from
-   memory or any prior attempt:** the original pre-redesign `index.html`
-   (git commit `defb14f`, currently restored to disk) contains working,
-   confirmed JS for: the lag-following cursor (`#c-dot` instant-follow dot
-   + `#c-ring` eased-follow ring that grows via `.big` class on hover over
-   `a, button`), and the p5.js particle-morph background (shape-cycling
-   point cloud with connecting lines, mouse-repulsion, click-to-morph).
-   Read that JS directly out of the current `index.html` (or `git show
-   defb14f:index.html` if it's been overwritten again) and port it over
-   as-is, only recoloring the particle palette and cursor ring color for
-   the dark theme — do not rewrite the physics/logic from scratch.
+2. ~~**Navigation rebuild (HTML + JS)** — DONE.~~
+   - `partials/nav.html`: Apple-style nav with mega-menu panels, mobile
+     drawer, backdrop blur, full ARIA attributes.
+   - `js/nav.js`: Deferred init via MutationObserver, mega-menu open/close
+     (click + hover intent), mobile drawer toggle, focus trap, Escape key,
+     event delegation for async partial injection. Chevron rotation uses
+     `rotate-180` for Apple-style UX.
+   - `index.html`: References `js/nav.js`, includes inline `<style>` for
+     mega-menu opacity transitions, removed old broken inline nav script.
 3. **Build remaining homepage sections**, one at a time, confirming each
    before moving on: ticker/marquee strip, "My Universe" 3-card grid,
    horizontal drag-scroll gallery preview, footer.

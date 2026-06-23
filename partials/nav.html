@@ -1,22 +1,425 @@
-<!-- NAVIGATION PARTIAL -->
-<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 py-6 px-12 flex items-center justify-between transition-all duration-400">
-  <a href="#hero" class="nav-logo font-syne font-extrabold text-lg tracking-wide text-text">
-    TONIS PRAKS <span class="text-accent">UNIVERSE</span>
-  </a>
+<!-- NAVIGATION PARTIAL — Apple-style with mega-menus -->
+<nav id="navbar" 
+     class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+     role="navigation"
+     aria-label="Main navigation">
   
-  <button id="nav-toggle" class="md:hidden" aria-label="Menu" style="background:none;border:none;cursor:none;color:var(--color-text);padding:0.4rem;">
-    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5">
-      <line x1="2" y1="5" x2="20" y2="5"/>
-      <line x1="2" y1="11" x2="20" y2="11"/>
-      <line x1="2" y1="17" x2="20" y2="17"/>
-    </svg>
-  </button>
+  <!-- Main nav bar -->
+  <div id="nav-bar" class="flex items-center justify-between px-6 lg:px-12 py-4">
+    
+    <!-- Logo -->
+    <a href="#hero" class="nav-logo font-syne font-extrabold text-lg tracking-wide text-text relative z-50">
+      TONIS PRAKS <span class="text-accent">UNIVERSE</span>
+    </a>
+    
+    <!-- Desktop navigation links -->
+    <ul id="nav-desktop" class="hidden lg:flex items-center space-x-2 list-none">
+      
+      <!-- Home (simple link) -->
+      <li>
+        <a href="#hero" 
+           class="nav-link font-mono text-xs tracking-wide uppercase text-text-muted hover:text-text transition-colors duration-200 px-4 py-2 rounded-lg hover:bg-white/5">
+          Home
+        </a>
+      </li>
+      
+      <!-- Universe (mega-menu trigger) -->
+      <li class="relative" data-mega="universe">
+        <button class="nav-link font-mono text-xs tracking-wide uppercase text-text-muted hover:text-text transition-colors duration-200 px-4 py-2 rounded-lg hover:bg-white/5 flex items-center gap-1"
+                aria-expanded="false"
+                aria-haspopup="true"
+                aria-controls="mega-universe">
+          Universe
+          <svg class="w-3 h-3 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </button>
+      </li>
+      
+      <!-- Gallery (simple link) -->
+      <li>
+        <a href="gallery.html" 
+           class="nav-link font-mono text-xs tracking-wide uppercase text-text-muted hover:text-text transition-colors duration-200 px-4 py-2 rounded-lg hover:bg-white/5">
+          Gallery
+        </a>
+      </li>
+      
+      <!-- Apps (mega-menu trigger) -->
+      <li class="relative" data-mega="apps">
+        <button class="nav-link font-mono text-xs tracking-wide uppercase text-text-muted hover:text-text transition-colors duration-200 px-4 py-2 rounded-lg hover:bg-white/5 flex items-center gap-1"
+                aria-expanded="false"
+                aria-haspopup="true"
+                aria-controls="mega-apps">
+          Apps
+          <svg class="w-3 h-3 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </button>
+      </li>
+      
+      <!-- Learn (mega-menu trigger) -->
+      <li class="relative" data-mega="learn">
+        <button class="nav-link font-mono text-xs tracking-wide uppercase text-text-muted hover:text-text transition-colors duration-200 px-4 py-2 rounded-lg hover:bg-white/5 flex items-center gap-1"
+                aria-expanded="false"
+                aria-haspopup="true"
+                aria-controls="mega-learn">
+          Learn
+          <svg class="w-3 h-3 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </button>
+      </li>
+      
+    </ul>
+    
+    <!-- Mobile hamburger button -->
+    <button id="nav-toggle" 
+            class="lg:hidden relative z-50 p-2 rounded-lg hover:bg-white/10 transition-colors"
+            aria-label="Toggle navigation menu"
+            aria-expanded="false"
+            aria-controls="nav-mobile-drawer">
+      <svg id="hamburger-icon" class="w-6 h-6 text-text" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path id="line1" d="M4 6h16" stroke-linecap="round"/>
+        <path id="line2" d="M4 12h16" stroke-linecap="round"/>
+        <path id="line3" d="M4 18h16" stroke-linecap="round"/>
+      </svg>
+    </button>
+    
+  </div>
   
-  <ul id="nav-links" class="flex space-x-10 list-none">
-    <li><a href="#hero" class="nav-link font-mono text-xs tracking-wide uppercase text-text-muted hover:text-text transition-colors duration-200">Home</a></li>
-    <li><a href="#universe" class="nav-link font-mono text-xs tracking-wide uppercase text-text-muted hover:text-text transition-colors duration-200">Universe</a></li>
-    <li><a href="gallery.html" class="nav-link font-mono text-xs tracking-wide uppercase text-text-muted hover:text-text transition-colors duration-200">Gallery</a></li>
-    <li><a href="apps.html" class="nav-link font-mono text-xs tracking-wide uppercase text-text-muted hover:text-text transition-colors duration-200">Apps</a></li>
-    <li><a href="/wiki/site/index.html" class="nav-link font-mono text-xs tracking-wide uppercase text-text-muted hover:text-text transition-colors duration-200">Learn</a></li>
-  </ul>
+  <!-- MEGA-MENU: Universe -->
+  <div id="mega-universe" 
+       class="hidden absolute top-full left-0 right-0 z-40"
+       role="menu"
+       aria-labelledby="mega-universe-trigger">
+    <div class="bg-base-light/80 backdrop-blur-xl border-t border-b border-white/10">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          
+          <!-- Study -->
+          <a href="/wiki/site/index.html" 
+             class="mega-card group p-6 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-accent/30 transition-all duration-300"
+             role="menuitem">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center">
+                <svg class="w-5 h-5 text-accent-light" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                  <path d="M12 14l9-5-9-5-9 5 9 5z"/>
+                  <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                </svg>
+              </div>
+              <span class="font-mono text-xs text-accent-light uppercase tracking-wider">Study</span>
+            </div>
+            <h3 class="font-syne font-bold text-lg text-text mb-2 group-hover:text-accent-light transition-colors">
+              Study & Learning
+            </h3>
+            <p class="text-text-muted text-sm leading-relaxed">
+              Notes, courses, certifications, and the endless journey of learning about tech and the world.
+            </p>
+          </a>
+          
+          <!-- Apps -->
+          <a href="apps.html" 
+             class="mega-card group p-6 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-accent/30 transition-all duration-300"
+             role="menuitem">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center">
+                <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                  <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                </svg>
+              </div>
+              <span class="font-mono text-xs text-orange-400 uppercase tracking-wider">Apps</span>
+            </div>
+            <h3 class="font-syne font-bold text-lg text-text mb-2 group-hover:text-orange-400 transition-colors">
+              Applications & Projects
+            </h3>
+            <p class="text-text-muted text-sm leading-relaxed">
+              Built tools, web apps, and experiments solving real problems with code.
+            </p>
+          </a>
+          
+          <!-- Gallery -->
+          <a href="gallery.html" 
+             class="mega-card group p-6 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-accent/30 transition-all duration-300"
+             role="menuitem">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                  <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+              </div>
+              <span class="font-mono text-xs text-emerald-400 uppercase tracking-wider">Gallery</span>
+            </div>
+            <h3 class="font-syne font-bold text-lg text-text mb-2 group-hover:text-emerald-400 transition-colors">
+              Photo Gallery
+            </h3>
+            <p class="text-text-muted text-sm leading-relaxed">
+              The world through my lens. Landscapes, life, and quiet moments worth preserving.
+            </p>
+          </a>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- MEGA-MENU: Apps -->
+  <div id="mega-apps" 
+       class="hidden absolute top-full left-0 right-0 z-40"
+       role="menu"
+       aria-labelledby="mega-apps-trigger">
+    <div class="bg-base-light/80 backdrop-blur-xl border-t border-b border-white/10">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          <!-- Flashcard App -->
+          <a href="flashcard-app.html" 
+             class="mega-card group p-5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-accent/30 transition-all duration-300"
+             role="menuitem">
+            <div class="w-10 h-10 rounded-lg bg-violet-500/20 flex items-center justify-center mb-4">
+              <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+              </svg>
+            </div>
+            <h4 class="font-syne font-semibold text-text mb-1 group-hover:text-violet-400 transition-colors">
+              Flashcards
+            </h4>
+            <p class="text-text-muted text-xs">
+              Study and memorize with spaced repetition.
+            </p>
+          </a>
+          
+          <!-- MSA App -->
+          <a href="msa.html" 
+             class="mega-card group p-5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-accent/30 transition-all duration-300"
+             role="menuitem">
+            <div class="w-10 h-10 rounded-lg bg-cyan-500/20 flex items-center justify-center mb-4">
+              <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+              </svg>
+            </div>
+            <h4 class="font-syne font-semibold text-text mb-1 group-hover:text-cyan-400 transition-colors">
+              MSA Dashboard
+            </h4>
+            <p class="text-text-muted text-xs">
+              Analytics and data visualization tools.
+            </p>
+          </a>
+          
+          <!-- Gallery App -->
+          <a href="gallery.html" 
+             class="mega-card group p-5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-accent/30 transition-all duration-300"
+             role="menuitem">
+            <div class="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center mb-4">
+              <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <h4 class="font-syne font-semibold text-text mb-1 group-hover:text-emerald-400 transition-colors">
+              Gallery
+            </h4>
+            <p class="text-text-muted text-xs">
+              Photo collection and media viewer.
+            </p>
+          </a>
+          
+          <!-- View All -->
+          <a href="apps.html" 
+             class="mega-card group p-5 rounded-xl bg-accent/10 hover:bg-accent/20 border border-accent/20 hover:border-accent/40 transition-all duration-300"
+             role="menuitem">
+            <div class="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center mb-4">
+              <svg class="w-5 h-5 text-accent-light" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+              </svg>
+            </div>
+            <h4 class="font-syne font-semibold text-accent-light mb-1">
+              View All Apps
+            </h4>
+            <p class="text-text-muted text-xs">
+              Browse the complete collection.
+            </p>
+          </a>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- MEGA-MENU: Learn -->
+  <div id="mega-learn" 
+       class="hidden absolute top-full left-0 right-0 z-40"
+       role="menu"
+       aria-labelledby="mega-learn-trigger">
+    <div class="bg-base-light/80 backdrop-blur-xl border-t border-b border-white/10">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          
+          <!-- Wiki -->
+          <a href="/wiki/site/index.html" 
+             class="mega-card group p-6 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-accent/30 transition-all duration-300"
+             role="menuitem">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-xl bg-sky-500/20 flex items-center justify-center">
+                <svg class="w-5 h-5 text-sky-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                  <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+              </div>
+              <span class="font-mono text-xs text-sky-400 uppercase tracking-wider">Wiki</span>
+            </div>
+            <h3 class="font-syne font-bold text-lg text-text mb-2 group-hover:text-sky-400 transition-colors">
+              Knowledge Base
+            </h3>
+            <p class="text-text-muted text-sm leading-relaxed">
+              Comprehensive notes, documentation, and reference materials.
+            </p>
+          </a>
+          
+          <!-- Courses -->
+          <a href="/wiki/site/index.html" 
+             class="mega-card group p-6 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-accent/30 transition-all duration-300"
+             role="menuitem">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
+                <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                  <path d="M12 14l9-5-9-5-9 5 9 5z"/>
+                  <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                  <path d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/>
+                </svg>
+              </div>
+              <span class="font-mono text-xs text-amber-400 uppercase tracking-wider">Courses</span>
+            </div>
+            <h3 class="font-syne font-bold text-lg text-text mb-2 group-hover:text-amber-400 transition-colors">
+              Learning Paths
+            </h3>
+            <p class="text-text-muted text-sm leading-relaxed">
+              Structured courses and tutorials for skill development.
+            </p>
+          </a>
+          
+          <!-- Resources -->
+          <a href="/wiki/site/index.html" 
+             class="mega-card group p-6 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-accent/30 transition-all duration-300"
+             role="menuitem">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-xl bg-rose-500/20 flex items-center justify-center">
+                <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                  <path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                </svg>
+              </div>
+              <span class="font-mono text-xs text-rose-400 uppercase tracking-wider">Resources</span>
+            </div>
+            <h3 class="font-syne font-bold text-lg text-text mb-2 group-hover:text-rose-400 transition-colors">
+              Useful Links
+            </h3>
+            <p class="text-text-muted text-sm leading-relaxed">
+              Curated bookmarks, tools, and external learning resources.
+            </p>
+          </a>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  
 </nav>
+
+<!-- Mobile drawer overlay -->
+<div id="nav-overlay" 
+     class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300"
+     aria-hidden="true">
+</div>
+
+<!-- Mobile drawer -->
+<div id="nav-mobile-drawer"
+     class="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-base-light/95 backdrop-blur-xl border-l border-white/10 z-50 transform translate-x-full transition-transform duration-300 lg:hidden overflow-y-auto"
+     role="dialog"
+     aria-modal="true"
+     aria-label="Navigation menu">
+  
+  <!-- Mobile drawer header -->
+  <div class="flex items-center justify-between p-6 border-b border-white/10">
+    <span class="font-syne font-bold text-text">Menu</span>
+    <button id="nav-close" 
+            class="p-2 rounded-lg hover:bg-white/10 transition-colors"
+            aria-label="Close navigation menu">
+      <svg class="w-5 h-5 text-text" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M6 18L18 6M6 6l12 12" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+  
+  <!-- Mobile drawer links -->
+  <nav class="p-6" aria-label="Mobile navigation">
+    <ul class="space-y-1 list-none">
+      
+      <!-- Home -->
+      <li>
+        <a href="#hero" 
+           class="mobile-nav-link block px-4 py-3 rounded-xl font-syne font-medium text-text hover:bg-white/10 transition-colors">
+          Home
+        </a>
+      </li>
+      
+      <!-- Universe section -->
+      <li>
+        <button class="mobile-mega-trigger w-full flex items-center justify-between px-4 py-3 rounded-xl font-syne font-medium text-text hover:bg-white/10 transition-colors"
+                aria-expanded="false"
+                aria-controls="mobile-universe">
+          Universe
+          <svg class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+        <ul id="mobile-universe" class="hidden pl-4 mt-1 space-y-1">
+          <li><a href="/wiki/site/index.html" class="mobile-nav-link block px-4 py-2 rounded-lg text-text-muted hover:text-text hover:bg-white/5 transition-colors text-sm">Study & Learning</a></li>
+          <li><a href="apps.html" class="mobile-nav-link block px-4 py-2 rounded-lg text-text-muted hover:text-text hover:bg-white/5 transition-colors text-sm">Apps & Projects</a></li>
+          <li><a href="gallery.html" class="mobile-nav-link block px-4 py-2 rounded-lg text-text-muted hover:text-text hover:bg-white/5 transition-colors text-sm">Photo Gallery</a></li>
+        </ul>
+      </li>
+      
+      <!-- Gallery -->
+      <li>
+        <a href="gallery.html" 
+           class="mobile-nav-link block px-4 py-3 rounded-xl font-syne font-medium text-text hover:bg-white/10 transition-colors">
+          Gallery
+        </a>
+      </li>
+      
+      <!-- Apps section -->
+      <li>
+        <button class="mobile-mega-trigger w-full flex items-center justify-between px-4 py-3 rounded-xl font-syne font-medium text-text hover:bg-white/10 transition-colors"
+                aria-expanded="false"
+                aria-controls="mobile-apps">
+          Apps
+          <svg class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+        <ul id="mobile-apps" class="hidden pl-4 mt-1 space-y-1">
+          <li><a href="flashcard-app.html" class="mobile-nav-link block px-4 py-2 rounded-lg text-text-muted hover:text-text hover:bg-white/5 transition-colors text-sm">Flashcards</a></li>
+          <li><a href="msa.html" class="mobile-nav-link block px-4 py-2 rounded-lg text-text-muted hover:text-text hover:bg-white/5 transition-colors text-sm">MSA Dashboard</a></li>
+          <li><a href="gallery.html" class="mobile-nav-link block px-4 py-2 rounded-lg text-text-muted hover:text-text hover:bg-white/5 transition-colors text-sm">Gallery</a></li>
+          <li><a href="apps.html" class="mobile-nav-link block px-4 py-2 rounded-lg text-accent-light hover:bg-accent/10 transition-colors text-sm font-medium">View All Apps →</a></li>
+        </ul>
+      </li>
+      
+      <!-- Learn section -->
+      <li>
+        <button class="mobile-mega-trigger w-full flex items-center justify-between px-4 py-3 rounded-xl font-syne font-medium text-text hover:bg-white/10 transition-colors"
+                aria-expanded="false"
+                aria-controls="mobile-learn">
+          Learn
+          <svg class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+        <ul id="mobile-learn" class="hidden pl-4 mt-1 space-y-1">
+          <li><a href="/wiki/site/index.html" class="mobile-nav-link block px-4 py-2 rounded-lg text-text-muted hover:text-text hover:bg-white/5 transition-colors text-sm">Knowledge Base</a></li>
+          <li><a href="/wiki/site/index.html" class="mobile-nav-link block px-4 py-2 rounded-lg text-text-muted hover:text-text hover:bg-white/5 transition-colors text-sm">Learning Paths</a></li>
+          <li><a href="/wiki/site/index.html" class="mobile-nav-link block px-4 py-2 rounded-lg text-text-muted hover:text-text hover:bg-white/5 transition-colors text-sm">Useful Links</a></li>
+        </ul>
+      </li>
+      
+    </ul>
+  </nav>
+  
+</div>
