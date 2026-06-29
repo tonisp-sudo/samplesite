@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Template - Base Page</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            syne: ['Syne', 'sans-serif'],
+            mono: ['Space Mono', 'monospace'],
+            body: ['DM Sans', 'sans-serif']
+          },
+          colors: {
+            base: {
+              DEFAULT: '#0b0c0a',
+              light: '#121212',
+              card: '#1a1a1a'
+            },
+            text: {
+              DEFAULT: '#f0f0f0',
+              muted: '#a0a0a0'
+            },
+            border: 'rgba(240, 240, 240, 0.1)',
+            accent: {
+              DEFAULT: '#6366f1',  // Indigo accent
+              light: '#818cf8',
+              dark: '#4f46e5'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Template CSS (contains all styling) -->
+  <link rel="stylesheet" href="template.css">
+  
+  <!-- Mega-menu transition utilities -->
+  <style>
+    [id^='mega-'] { transition: opacity 0.2s ease; }
+  </style>
+</head>
+<body class="bg-base text-text">
+  <!-- Custom cursor elements -->
+  <div id="c-dot"></div>
+  <div id="c-ring"></div>
+  
+  <!-- Particle background container -->
+  <div id="p5-wrap"></div>
+  
+  <!-- Navigation (Shared Partial) -->
+  <div id="nav-container">
+    <!-- Content will be injected by JavaScript -->
+  </div>
+  
+  <main class="min-h-screen">
+    <!-- Your content goes here -->
+    <section>
+      <div style="max-width:860px">
+        <h1>Template Page</h1>
+        <p>This is a base template for all subsequent pages. All styling is included in template.css.</p>
+      </div>
+    </section>
+  </main>
+  
+  <!-- Footer (Shared Partial) -->
+  <div id="footer-container">
+    <!-- Content will be injected by JavaScript -->
+  </div>
+  
+  <!-- Scripts -->
+  <script>
+    // Load partials
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load navigation
+      fetch('partials/nav.html')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('nav-container').innerHTML = html;
+        });
+      
+      // Load footer
+      fetch('partials/footer.html')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('footer-container').innerHTML = html;
+        });
+    });
+  </script>
+
+  <!-- Cursor -->
+  <script>
+    const dot = document.getElementById('c-dot'), ring = document.getElementById('c-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.cssText = `left:${mx}px;top:${my}px`;
+    });
+    document.addEventListener('mouseover', e => {
+      e.target.closest('a,button') ? ring.classList.add('big') : ring.classList.remove('big');
+    });
+    (function ar() {
+      rx += (mx - rx) * 0.11;
+      ry += (my - ry) * 0.11;
+      ring.style.cssText = `left:${rx}px;top:${ry}px`;
+      requestAnimationFrame(ar);
+    })();
+  </script>
+
+  <!-- Navigation logic -->
+  <script src="js/nav.js"></script>
+
+  <!-- p5.js particle morph background -->
+  <script>
+    new p5(function(p) {
+      const wrap = document.getElementById('p5-wrap');
+      const N = 130;
+      const PALETTE = ['#6366f1','#818cf8','#a78bfa','#60a5fa','#818cf8','#c4b5fd'];
+      let pts = [], shapeIdx = 0;
+
+      function shape(idx, cx, cy, r) {
+        const out = [];
+        if (idx === 0) {
+          for (let i = 0; i < N; i++) out.push({x: cx + p.random(-1,1) * r * 1.8, y: cy + p.random(-1,1) * r * 1.2});
+        } else if (idx === 1) {
+          for (let i = 0; i < N; i++) { const a = i / N * p.TWO_PI; out.push({x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r}); }
+        } else if (idx === 2) {
+          const c = Math.ceil(Math.sqrt(N));
+          for (let i = 0; i < N; i++) { const col = i % c, row = Math.floor(i / c); out.push({x: cx - r + (col / (c-1)) * r * 2, y: cy - r * 0.7 + (row / (c-1)) * r * 1.4}); }
+        } else if (idx === 3) {
+          for (let i = 0; i < N; i++) { const a = i / N * p.TWO_PI; const rr = i % 2 === 0 ? r : r * 0.42; out.push({x: cx + Math.cos(a) * rr, y: cy + Math.sin(a) * rr}); }
+        } else {
+          for (let i = 0; i < N; i++) { const a = i / N * p.TWO_PI * 3; const rr = i / N * r; out.push({x: cx + Math.cos(a) * rr, y: cy + Math.sin(a) * rr}); }
+        }
+        return out;
+      }
+
+      p.setup = function() {
+        const cnv = p.createCanvas(window.innerWidth, window.innerHeight);
+        cnv.parent(wrap);
+        const r = Math.min(p.width, p.height) * 0.25;
+        const init = shape(0, p.width / 2, p.height / 2, r);
+        for (let i = 0; i < N; i++) {
+          const col = p.color(PALETTE[Math.floor(p.random(PALETTE.length))]);
+          pts.push({x: init[i].x, y: init[i].y, tx: init[i].x, ty: init[i].y, vx: 0, vy: 0, sz: p.random(3, 6.5), col, a: p.random(100, 190), sp: p.random(0.04, 0.09)});
+        }
+        let si = 1;
+        function next() {
+          const r2 = Math.min(p.width, p.height) * 0.25;
+          const s = shape(si, p.width / 2, p.height / 2, r2);
+          pts.forEach((pt, i) => { pt.tx = s[i].x; pt.ty = s[i].y; });
+          si = (si + 1) % 5;
+          setTimeout(next, 3600);
+        }
+        setTimeout(next, 3200);
+      };
+
+      p.draw = function() {
+        p.clear();
+        for (let i = 0; i < N; i++) {
+          for (let j = i + 1; j < N; j++) {
+            const d = p.dist(pts[i].x, pts[i].y, pts[j].x, pts[j].y);
+            if (d < 72) {
+              p.stroke(99, 102, 241, p.map(d, 0, 72, 22, 0));
+              p.strokeWeight(0.35);
+              p.line(pts[i].x, pts[i].y, pts[j].x, pts[j].y);
+            }
+          }
+        }
+        pts.forEach(pt => {
+          pt.vx += (pt.tx - pt.x) * pt.sp;
+          pt.vy += (pt.ty - pt.y) * pt.sp;
+          pt.vx *= 0.76;
+          pt.vy *= 0.76;
+          pt.x += pt.vx;
+          pt.y += pt.vy;
+          const dx = pt.x - p.mouseX, dy = pt.y - p.mouseY, md = Math.sqrt(dx * dx + dy * dy);
+          if (md < 85) { const f = (85 - md) / 85; pt.x += (dx / md) * f * 5.5; pt.y += (dy / md) * f * 5.5; }
+          p.noStroke();
+          const c = pt.col;
+          p.fill(p.red(c), p.green(c), p.blue(c), pt.a);
+          p.ellipse(pt.x, pt.y, pt.sz);
+        });
+      };
+
+      p.mousePressed = function() {
+        shapeIdx = (shapeIdx + 1) % 5;
+        const r = Math.min(p.width, p.height) * 0.25;
+        const s = shape(shapeIdx, p.width / 2, p.height / 2, r);
+        pts.forEach((pt, i) => { pt.tx = s[i].x; pt.ty = s[i].y; });
+      };
+
+      p.windowResized = function() { p.resizeCanvas(window.innerWidth, window.innerHeight); };
+    });
+  </script>
+
+  <!-- Initialize Lucide icons -->
+  <script>lucide.createIcons();</script>
+
+  <!-- Scroll reveal -->
+  <script>
+    const obs = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+    }), {threshold: 0.1, rootMargin: '0px 0px -50px 0px'});
+    document.querySelectorAll('.sr').forEach(el => obs.observe(el));
+  </script>
+
+  <!-- Universe cards GSAP entrance -->
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+    document.addEventListener('DOMContentLoaded', function() {
+      gsap.from('.u-card', {
+        scrollTrigger: {
+          trigger: '#universe',
+          start: 'top 75%'
+        },
+        opacity: 0,
+        y: 60,
+        duration: 0.7,
+        stagger: 0.15,
+        ease: 'power2.out'
+      });
+    });
+  </script>
+</body>
+</html>
