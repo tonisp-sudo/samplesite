@@ -1,0 +1,14 @@
+{
+  "name": "tonis-praks-universe-web-dev",
+  "version": "1.0.0",
+  "description": "Web development tools and extensions for Tonis Praks Universe website",
+  "keywords": ["pi-package", "web-development", "html", "css", "javascript"],
+  "pi": {
+    "extensions": ["./.pi/agent/extensions"],
+    "skills": ["./.pi/agent/skills"],
+    "prompts": ["./.pi/agent/prompts"],
+    "themes": ["./.pi/agent/themes"]
+  },
+  "author": "Tonis Praks",
+  "license": "MIT"
+}

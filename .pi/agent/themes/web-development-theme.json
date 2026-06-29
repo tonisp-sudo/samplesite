@@ -1,0 +1,27 @@
+{
+  "name": "web-development",
+  "description": "Theme optimized for web development with code-focused aesthetics",
+  "colors": {
+    "base": "#1a1a1a",
+    "text": "#f0f0f0",
+    "accent": "#6366f1",
+    "accent-light": "#818cf8",
+    "accent-dark": "#4f46e5",
+    "border": "rgba(240, 240, 240, 0.1)",
+    "card": "#1a1a1a",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "error": "#ef4444"
+  },
+  "styles": {
+    "editor": {
+      "fontFamily": "'DM Sans', 'Segoe UI', sans-serif",
+      "fontSize": "14px",
+      "lineHeight": "1.5"
+    },
+    "terminal": {
+      "background": "#1a1a1a",
+      "foreground": "#f0f0f0"
+    }
+  }
+}
