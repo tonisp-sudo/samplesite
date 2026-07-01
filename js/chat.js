@@ -1,6 +1,6 @@
 /**
  * Chat Widget Module
- * Compact chat widget that connects to Cloudflare Worker -> OpenRouter
+ * Compact chat widget with minimize/maximize controls
  */
 (function () {
   'use strict';
@@ -17,9 +17,13 @@
   let chatHistory = [];
   let isLoading = false;
   let isOpen = false;
+  let isMaximized = false;
+  let isMinimized = false;
 
   // ── DOM Elements ───────────────────────────────────────────────────────────
   let widget, toggle, box, messages, form, input, sendBtn;
+  let minimizeBtn, maximizeBtn, closeBtn;
+  let iconOpen, iconClose;
 
   // ── Initialize ─────────────────────────────────────────────────────────────
   function init() {
@@ -30,6 +34,11 @@
     form = document.getElementById('chat-form');
     input = document.getElementById('chat-input');
     sendBtn = document.getElementById('chat-send');
+    minimizeBtn = document.getElementById('chat-minimize');
+    maximizeBtn = document.getElementById('chat-maximize');
+    closeBtn = document.getElementById('chat-close');
+    iconOpen = document.getElementById('chat-icon-open');
+    iconClose = document.getElementById('chat-icon-close');
 
     if (!widget || !toggle || !box) {
       console.log('[CHAT] Widget elements not found');
@@ -38,7 +47,11 @@
 
     // Bind events
     toggle.addEventListener('click', toggleChat);
+    closeBtn.addEventListener('click', closeChat);
+    minimizeBtn.addEventListener('click', toggleMinimize);
+    maximizeBtn.addEventListener('click', toggleMaximize);
     form.addEventListener('submit', handleSubmit);
+    
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
@@ -52,21 +65,73 @@
     console.log('[CHAT] Widget initialized');
   }
 
-  // ── Toggle Chat ────────────────────────────────────────────────────────────
+  // ── Toggle Chat (Open/Close) ───────────────────────────────────────────────
   function toggleChat() {
-    isOpen = !isOpen;
-    const iconOpen = document.getElementById('chat-icon-open');
-    const iconClose = document.getElementById('chat-icon-close');
-
     if (isOpen) {
-      box.classList.remove('chat-box-hidden');
-      iconOpen.style.display = 'none';
-      iconClose.style.display = 'block';
-      input.focus();
+      closeChat();
     } else {
-      box.classList.add('chat-box-hidden');
-      iconOpen.style.display = 'block';
-      iconClose.style.display = 'none';
+      openChat();
+    }
+  }
+
+  function openChat() {
+    isOpen = true;
+    box.classList.remove('chat-box-hidden');
+    iconOpen.style.display = 'none';
+    iconClose.style.display = 'block';
+    
+    // Reset minimize/maximize states
+    if (isMinimized) toggleMinimize();
+    if (isMaximized) toggleMaximize();
+    
+    input.focus();
+  }
+
+  function closeChat() {
+    isOpen = false;
+    isMinimized = false;
+    isMaximized = false;
+    box.classList.add('chat-box-hidden');
+    box.classList.remove('chat-minimized', 'chat-maximized');
+    iconOpen.style.display = 'block';
+    iconClose.style.display = 'none';
+  }
+
+  // ── Toggle Minimize ────────────────────────────────────────────────────────
+  function toggleMinimize() {
+    isMinimized = !isMinimized;
+    
+    if (isMinimized) {
+      box.classList.add('chat-minimized');
+      // Update minimize button icon to restore
+      minimizeBtn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>`;
+    } else {
+      box.classList.remove('chat-minimized');
+      // Restore minimize icon
+      minimizeBtn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M5 12h14" stroke-linecap="round"/>
+      </svg>`;
+    }
+  }
+
+  // ── Toggle Maximize ────────────────────────────────────────────────────────
+  function toggleMaximize() {
+    isMaximized = !isMaximized;
+    
+    if (isMaximized) {
+      box.classList.add('chat-maximized');
+      // Update maximize button icon to restore
+      maximizeBtn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M4 14h6v6M14 4h6v6M14 14l6 6M4 4l6 6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>`;
+    } else {
+      box.classList.remove('chat-maximized');
+      // Restore maximize icon
+      maximizeBtn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M8 3v3a2 2 0 01-2 2H3m18 0h-3a2 2 0 01-2-2V3m0 18v-3a2 2 0 012-2h3M3 16h3a2 2 0 012 2v3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>`;
     }
   }
 
@@ -96,7 +161,6 @@
 
     try {
       console.log('[CHAT] Sending to:', CONFIG.workerUrl);
-      console.log('[CHAT] Payload:', { model: CONFIG.model, messages: chatHistory.length });
 
       const response = await fetch(CONFIG.workerUrl, {
         method: 'POST',
