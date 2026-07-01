@@ -95,6 +95,9 @@
     sendBtn.disabled = true;
 
     try {
+      console.log('[CHAT] Sending to:', CONFIG.workerUrl);
+      console.log('[CHAT] Payload:', { model: CONFIG.model, messages: chatHistory.length });
+
       const response = await fetch(CONFIG.workerUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -107,22 +110,24 @@
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`);
-      }
-
+      console.log('[CHAT] Response status:', response.status);
       const data = await response.json();
+      console.log('[CHAT] Response data:', data);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status} - ${data.error?.message || 'Unknown error'}`);
+      }
 
       if (data.choices && data.choices[0] && data.choices[0].message) {
         const reply = data.choices[0].message.content;
         chatHistory.push({ role: 'assistant', content: reply });
         addMessage('bot', reply);
       } else {
-        throw new Error('Invalid response');
+        throw new Error('Invalid response format: ' + JSON.stringify(data));
       }
     } catch (error) {
       console.error('[CHAT] Error:', error);
-      addMessage('error', 'Sorry, something went wrong. Please try again.');
+      addMessage('error', `Error: ${error.message}`);
     } finally {
       isLoading = false;
       sendBtn.disabled = false;

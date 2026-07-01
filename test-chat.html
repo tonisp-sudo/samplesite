@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Test</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #1a1a1a; color: #f0f0f0; }
+    #log { background: #0b0c0a; padding: 15px; border-radius: 8px; margin-top: 20px; white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
+    button { padding: 10px 20px; background: #6366f1; color: white; border: none; border-radius: 6px; cursor: pointer; }
+    button:hover { background: #4f46e5; }
+    input { padding: 10px; width: 300px; border-radius: 6px; border: 1px solid #333; background: #0b0c0a; color: #f0f0f0; }
+  </style>
+</head>
+<body>
+  <h1>Chat Worker Test</h1>
+  <p>Worker URL: <code>https://mla-chatbot.tonispraks94.workers.dev/</code></p>
+  <p>Model: <code>google/gemma-4-31b-it:free</code></p>
+  
+  <div style="margin-top: 20px;">
+    <input type="text" id="testInput" value="Hello, who are you?" />
+    <button onclick="testChat()">Test Connection</button>
+  </div>
+  
+  <div id="log">Click "Test Connection" to send a test message...</div>
+
+  <script>
+    const WORKER_URL = 'https://mla-chatbot.tonispraks94.workers.dev/';
+    const MODEL = 'google/gemma-4-31b-it:free';
+    
+    async function testChat() {
+      const log = document.getElementById('log');
+      const input = document.getElementById('testInput').value;
+      
+      log.textContent = `Sending request to: ${WORKER_URL}\n`;
+      log.textContent += `Model: ${MODEL}\n`;
+      log.textContent += `Message: ${input}\n\n`;
+      log.textContent += 'Waiting for response...\n';
+      
+      try {
+        const response = await fetch(WORKER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: MODEL,
+            messages: [{ role: 'user', content: input }]
+          })
+        });
+        
+        log.textContent += `Response Status: ${response.status}\n`;
+        
+        const data = await response.json();
+        log.textContent += `Response Data:\n${JSON.stringify(data, null, 2)}\n\n`;
+        
+        if (data.choices && data.choices[0]) {
+          log.textContent += `✅ SUCCESS! Reply: ${data.choices[0].message.content}\n`;
+        } else {
+          log.textContent += `❌ No choices in response\n`;
+        }
+      } catch (error) {
+        log.textContent += `❌ ERROR: ${error.message}\n`;
+        log.textContent += `This is likely a CORS issue or the worker is down.\n`;
+      }
+    }
+  </script>
+</body>
+</html>
