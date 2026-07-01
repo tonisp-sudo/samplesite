@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -47,8 +48,54 @@
     }
   </script>
   <link rel="stylesheet" href="template.css">
+  
+  <!-- Mega-menu transition utilities -->
   <style>
-    /* ===== PROJECT CARD STYLES (MISSING FROM TEMPLATE.CSS) ===== */
+    [id^='mega-'] { transition: opacity 0.2s ease; }
+  </style>
+  <style>
+    /* ===== APPS HERO OVERRIDE ===== */
+    .apps-hero {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      z-index: 10;
+      padding: 0 3rem;
+    }
+
+    @media (max-width: 768px) {
+      .apps-hero {
+        padding: 0 1.5rem;
+      }
+    }
+
+    .hero-line {
+      position: absolute;
+      bottom: 4rem;
+      left: 3rem;
+      width: 36px;
+      height: 1px;
+      background: var(--color-text-muted);
+    }
+
+    .hero-line::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--color-accent);
+      animation: lineRun 2s 1.6s ease-in-out infinite;
+    }
+
+    @keyframes lineRun {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    /* ===== PROJECT CARD STYLES ===== */
     .projects-grid { padding:0 3rem 8rem;display:grid;grid-template-columns:repeat(3,1fr);gap:2px; }
     @media(max-width:1100px) { .projects-grid { grid-template-columns:repeat(2,1fr); } }
     @media(max-width:640px) { .projects-grid { grid-template-columns:1fr;padding:0 1.5rem 5rem; } }
@@ -172,17 +219,22 @@
   <div id="c-dot"></div>
   <div id="c-ring"></div>
 
+  <!-- Particle background container -->
+  <div id="p5-wrap"></div>
+
   <!-- Navigation (Shared Partial) -->
   <div id="nav-container"></div>
 
   <main class="min-h-screen">
     <!-- Hero Section -->
-    <header class="apps-hero">
-      <p class="hero-eyebrow sr">02 / Applications & Projects</p>
-      <h1 class="sr" style="transition-delay:.1s">APPS &<br><span class="outline">PROJECTS</span></h1>
-      <p class="sr" style="transition-delay:.2s">Built tools, web apps, and experiments. Real things solving real problems — from network utilities to study aids and beyond.</p>
-      <div class="hero-line"></div>
-    </header>
+    <section id="hero">
+      <div style="max-width:860px">
+        <p class="hero-eyebrow">02 / Applications & Projects</p>
+        <h1 class="hero-name">APPS &<br><span class="outline">PROJECTS</span></h1>
+        <p class="hero-sub">Built tools, web apps, and experiments. Real things solving real problems — from network utilities to study aids and beyond.</p>
+      </div>
+      <div class="scroll-hint"><div class="scroll-line"></div>Scroll</div>
+    </section>
 
     <!-- Filter Bar -->
     <div class="filter-bar sr" style="transition-delay:.3s">
@@ -461,5 +513,92 @@
 
   <!-- Initialize Lucide icons -->
   <script>lucide.createIcons();</script>
+
+  <!-- Navigation logic -->
+  <script src="js/nav.js"></script>
+
+  <!-- p5.js particle morph background -->
+  <script>
+    new p5(function(p) {
+      const wrap = document.getElementById('p5-wrap');
+      const N = 130;
+      const PALETTE = ['#6366f1','#818cf8','#a78bfa','#60a5fa','#818cf8','#c4b5fd'];
+      let pts = [], shapeIdx = 0;
+
+      function shape(idx, cx, cy, r) {
+        const out = [];
+        if (idx === 0) {
+          for (let i = 0; i < N; i++) out.push({x: cx + p.random(-1,1) * r * 1.8, y: cy + p.random(-1,1) * r * 1.2});
+        } else if (idx === 1) {
+          for (let i = 0; i < N; i++) { const a = i / N * p.TWO_PI; out.push({x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r}); }
+        } else if (idx === 2) {
+          const c = Math.ceil(Math.sqrt(N));
+          for (let i = 0; i < N; i++) { const col = i % c, row = Math.floor(i / c); out.push({x: cx - r + (col / (c-1)) * r * 2, y: cy - r * 0.7 + (row / (c-1)) * r * 1.4}); }
+        } else if (idx === 3) {
+          for (let i = 0; i < N; i++) { const a = i / N * p.TWO_PI; const rr = i % 2 === 0 ? r : r * 0.42; out.push({x: cx + Math.cos(a) * rr, y: cy + Math.sin(a) * rr}); }
+        } else {
+          for (let i = 0; i < N; i++) { const a = i / N * p.TWO_PI * 3; const rr = i / N * r; out.push({x: cx + Math.cos(a) * rr, y: cy + Math.sin(a) * rr}); }
+        }
+        return out;
+      }
+
+      p.setup = function() {
+        const cnv = p.createCanvas(window.innerWidth, window.innerHeight);
+        cnv.parent(wrap);
+        const r = Math.min(p.width, p.height) * 0.25;
+        const init = shape(0, p.width / 2, p.height / 2, r);
+        for (let i = 0; i < N; i++) {
+          const col = p.color(PALETTE[Math.floor(p.random(PALETTE.length))]);
+          pts.push({x: init[i].x, y: init[i].y, tx: init[i].x, ty: init[i].y, vx: 0, vy: 0, sz: p.random(3, 6.5), col, a: p.random(100, 190), sp: p.random(0.04, 0.09)});
+        }
+        let si = 1;
+        function next() {
+          const r2 = Math.min(p.width, p.height) * 0.25;
+          const s = shape(si, p.width / 2, p.height / 2, r2);
+          pts.forEach((pt, i) => { pt.tx = s[i].x; pt.ty = s[i].y; });
+          si = (si + 1) % 5;
+          setTimeout(next, 3600);
+        }
+        setTimeout(next, 3200);
+      };
+
+      p.draw = function() {
+        p.clear();
+        for (let i = 0; i < N; i++) {
+          for (let j = i + 1; j < N; j++) {
+            const d = p.dist(pts[i].x, pts[i].y, pts[j].x, pts[j].y);
+            if (d < 72) {
+              p.stroke(99, 102, 241, p.map(d, 0, 72, 22, 0));
+              p.strokeWeight(0.35);
+              p.line(pts[i].x, pts[i].y, pts[j].x, pts[j].y);
+            }
+          }
+        }
+        pts.forEach(pt => {
+          pt.vx += (pt.tx - pt.x) * pt.sp;
+          pt.vy += (pt.ty - pt.y) * pt.sp;
+          pt.vx *= 0.76;
+          pt.vy *= 0.76;
+          pt.x += pt.vx;
+          pt.y += pt.vy;
+          const dx = pt.x - p.mouseX, dy = pt.y - p.mouseY, md = Math.sqrt(dx * dx + dy * dy);
+          if (md < 85) { const f = (85 - md) / 85; pt.x += (dx / md) * f * 5.5; pt.y += (dy / md) * f * 5.5; }
+          p.noStroke();
+          const c = pt.col;
+          p.fill(p.red(c), p.green(c), p.blue(c), pt.a);
+          p.ellipse(pt.x, pt.y, pt.sz);
+        });
+      };
+
+      p.mousePressed = function() {
+        shapeIdx = (shapeIdx + 1) % 5;
+        const r = Math.min(p.width, p.height) * 0.25;
+        const s = shape(shapeIdx, p.width / 2, p.height / 2, r);
+        pts.forEach((pt, i) => { pt.tx = s[i].x; pt.ty = s[i].y; });
+      };
+
+      p.windowResized = function() { p.resizeCanvas(window.innerWidth, window.innerHeight); };
+    });
+  </script>
 </body>
 </html>
