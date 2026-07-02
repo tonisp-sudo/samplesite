@@ -356,13 +356,49 @@
         <p class="hero-eyebrow">Welcome to the universe of</p>
         <h1 class="hero-name">TONIS<br><span class="outline">PRAKS</span></h1>
         <p class="hero-sub">Developer. Creator. Explorer. A personal space where study, projects, and captured moments converge.</p>
-        <div class="hero-actions">
+        <div class="hero-actions" id="hero-actions-static">
           <a href="#universe" class="btn-solid">Explore <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 7h10M7 3l4 4-4 4"/></svg></a>
           <a href="apps.html" class="btn-outline">Apps</a>
         </div>
       </div>
+      <!-- Typewriter container (non-intrusive enhancement) -->
+      <div id="typewriter-wrap" style="max-width:860px;position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;padding:0 3rem;">
+        <div>
+          <p id="typewriter-text" class="hero-eyebrow" style="margin-bottom:0;"></p>
+          <h1 id="typewriter-name" class="hero-name" style="opacity:0;"></h1>
+          <p id="typewriter-sub" class="hero-sub" style="opacity:0;margin-top:2rem;"></p>
+          <div id="typewriter-actions" class="hero-actions" style="opacity:0;">
+            <a href="#universe" class="btn-solid">Explore <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 7h10M7 3l4 4-4 4"/></svg></a>
+            <a href="apps.html" class="btn-outline">Apps</a>
+          </div>
+        </div>
+      </div>
       <div class="scroll-hint"><div class="scroll-line"></div>Scroll</div>
     </section>
+
+
+    <!-- Hide original hero content (typewriter takes over) -->
+    <style>
+      #typewriter-wrap { z-index: 20; }
+      #hero > div:first-child { opacity: 0 !important; pointer-events: none; }
+      #typewriter-text::after {
+        content: '|';
+        animation: tw-blink 0.7s step-end infinite;
+        color: var(--color-accent);
+        font-weight: 400;
+      }
+      @keyframes tw-blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+      }
+      #typewriter-wrap.tw-fade-in {
+        animation: twFadeIn 1.2s ease forwards;
+      }
+      @keyframes twFadeIn {
+        0%   { opacity: 0.4; filter: blur(2px); transform: translateY(6px); }
+        100% { opacity: 1;   filter: blur(0);    transform: translateY(0); }
+      }
+    </style>
 
     <!-- CHAT WIDGET -->
     <div id="chat-widget">
@@ -630,6 +666,96 @@
 
   <!-- Initialize Lucide icons -->
   <script>lucide.createIcons();</script>
+
+  <!-- ═══ TYPEWRITER EFFECT (non-intrusive) ═══ -->
+  <script>
+    (function() {
+      'use strict';
+
+      var $ = function(id) { return document.getElementById(id); };
+      var typewriterEl  = $('typewriter-text');
+      var nameEl        = $('typewriter-name');
+      var subEl         = $('typewriter-sub');
+      var actionsEl     = $('typewriter-actions');
+
+      if (!typewriterEl || !nameEl || !subEl) return;
+
+      /* ── Lines to type (styled identically to the original hero) ── */
+      var lines = [
+        { el: typewriterEl, text: 'Welcome to the universe of', speed: 55,  delay: 900  },
+        { el: nameEl,       text: 'TONIS',  speed: 90,  delay: 700, html: 'TONIS<br><span class="outline">PRAKS</span>' },
+        { el: subEl,        text: 'Developer. Creator. Explorer. A personal space where study, projects, and captured moments converge.', speed: 30, delay: 600 }
+      ];
+
+      var typeIdx = 0;
+      var charIdx = 0;
+      var deleting = false;
+      var pauseTimer = null;
+
+      function type() {
+        var line = lines[typeIdx];
+        var full = line.text;
+
+        if (!deleting) {
+          /* ── Typing ── */
+          charIdx++;
+          line.el.textContent = full.substring(0, charIdx);
+
+          if (charIdx === full.length) {
+            /* Finished typing this line */
+            if (line.html) line.el.innerHTML = line.html;
+
+            if (typeIdx === lines.length - 1) {
+              /* Last line typed — reveal all three lines, then fade in */
+              typewriterEl.textContent = lines[0].text;
+              nameEl.innerHTML         = lines[1].html || lines[1].text;
+              subEl.textContent        = lines[2].text;
+              var wrap = document.getElementById('typewriter-wrap');
+              if (wrap) {
+                wrap.style.opacity = '0';
+                requestAnimationFrame(function() {
+                  wrap.classList.add('tw-fade-in');
+                });
+              }
+              actionsEl.style.opacity = '1';
+              actionsEl.style.animation = 'fadeUp 0.8s 1.4s forwards';
+              return; // done
+            }
+
+            /* Pause, then start backspacing */
+            pauseTimer = setTimeout(function() {
+              deleting = true;
+              type();
+            }, line.delay);
+            return;
+          }
+
+          setTimeout(type, line.speed);
+
+        } else {
+          /* ── Backspacing ── */
+          charIdx--;
+          line.el.textContent = full.substring(0, charIdx);
+
+          if (charIdx === 0) {
+            /* Finished deleting — move to next line */
+            deleting = false;
+            typeIdx++;
+            charIdx = 0;
+
+            /* Small pause before typing next line */
+            pauseTimer = setTimeout(type, 300);
+            return;
+          }
+
+          setTimeout(type, 25); // fast backspace
+        }
+      }
+
+      /* ── Kick off after a short delay ── */
+      setTimeout(type, 600);
+    })();
+  </script>
 
   <!-- Scroll reveal -->
   <script>
