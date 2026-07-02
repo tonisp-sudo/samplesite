@@ -88,7 +88,7 @@
     // Load partials
     document.addEventListener('DOMContentLoaded', function() {
       // Load navigation
-      fetch('partials/nav.html')
+      fetch('partials/nav.html?v=' + Date.now())
         .then(response => response.text())
         .then(html => {
           document.getElementById('nav-container').innerHTML = html;

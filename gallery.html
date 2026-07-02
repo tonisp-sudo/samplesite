@@ -522,7 +522,7 @@
   <script>
     // ── Load shared nav partial ──
     document.addEventListener('DOMContentLoaded', function() {
-      fetch('partials/nav.html')
+      fetch('partials/nav.html?v=' + Date.now())
         .then(response => response.text())
         .then(html => {
           document.getElementById('nav-container').innerHTML = html;
