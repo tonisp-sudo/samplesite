@@ -8,7 +8,7 @@
   // ── Configuration ──────────────────────────────────────────────────────────
   const CONFIG = {
     workerUrl: 'https://mla-chatbot.tonispraks94.workers.dev/',
-    model: 'google/gemma-4-31b-it:free',
+    model: 'openrouter/free',
     systemPrompt: 'You are a helpful assistant for the Tonis Praks Universe website. Be friendly, concise, and helpful.',
     maxHistory: 20
   };

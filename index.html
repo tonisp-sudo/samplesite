@@ -335,6 +335,31 @@
       }
     }
   </style>
+
+
+
+  <!-- Hide original hero content (typewriter takes over) -->
+  <style>
+    #typewriter-wrap { z-index: 20; }
+    #hero > div:first-child { opacity: 0 !important; pointer-events: none; }
+    #typewriter-text::after {
+      content: '|';
+      animation: tw-blink 0.7s step-end infinite;
+      color: var(--color-accent);
+      font-weight: 400;
+    }
+    @keyframes tw-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    #typewriter-wrap.tw-fade-in {
+      animation: twFadeIn 1.2s ease forwards;
+    }
+    @keyframes twFadeIn {
+      0%   { opacity: 0.4; filter: blur(2px); transform: translateY(6px); }
+      100% { opacity: 1;   filter: blur(0);    transform: translateY(0); }
+    }
+  </style>
 </head>
 <body class="bg-base text-text">
   <!-- Custom cursor elements -->
@@ -376,29 +401,6 @@
       <div class="scroll-hint"><div class="scroll-line"></div>Scroll</div>
     </section>
 
-
-    <!-- Hide original hero content (typewriter takes over) -->
-    <style>
-      #typewriter-wrap { z-index: 20; }
-      #hero > div:first-child { opacity: 0 !important; pointer-events: none; }
-      #typewriter-text::after {
-        content: '|';
-        animation: tw-blink 0.7s step-end infinite;
-        color: var(--color-accent);
-        font-weight: 400;
-      }
-      @keyframes tw-blink {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0; }
-      }
-      #typewriter-wrap.tw-fade-in {
-        animation: twFadeIn 1.2s ease forwards;
-      }
-      @keyframes twFadeIn {
-        0%   { opacity: 0.4; filter: blur(2px); transform: translateY(6px); }
-        100% { opacity: 1;   filter: blur(0);    transform: translateY(0); }
-      }
-    </style>
 
     <!-- CHAT WIDGET -->
     <div id="chat-widget">
@@ -456,28 +458,6 @@
       </div>
     </div>
     
-
-    <!-- TICKER -->
-    <div class="ticker-wrap">
-      <div class="ticker-track">
-        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
-        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
-        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
-        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
-        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
-        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
-        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
-        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
-        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
-        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
-        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
-        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
-        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
-        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
-        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
-        <span class="ticker-item">TONIS PRAKS UNIVERSE</span>
-      </div>
-    </div>
 
     <!-- MY UNIVERSE -->
     <section id="universe">
